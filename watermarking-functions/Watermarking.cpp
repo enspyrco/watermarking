@@ -4,6 +4,26 @@
 using namespace std;
 using namespace cv;
 
+// takes 2d array in the form of a 1d array in row major order
+void shiftIntoNewArray(double* array, double* shifted_array, int array_height, int array_width, int message_num)
+{
+	int v_shift, h_shift;
+	v_shift = (message_num / array_width) % array_height;
+	h_shift = message_num % array_width;
+
+	int i, j, k, l;
+	for (i = 0; i < array_height; i++)
+	{
+		k = (i + v_shift) % array_height;
+		for (j = 0; j < array_width; j++)
+		{
+			l = (j + h_shift) % array_width;
+			shifted_array[k*array_width + l] = array[i*array_width + j];
+		}
+	}
+
+}
+
 int fastCorrelation(int height, int width, double *matrix1, double *matrix2, double* correlation_vals)
 {
 
@@ -101,3 +121,33 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int water
     return 1;
 
 }
+
+int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* watermarkArray, int message_num)
+{
+
+	int i, j;
+
+	double* shifted_mark = new double[watermarkHeight*watermarkWidth];
+	shiftIntoNewArray(watermarkArray, shifted_mark, watermarkHeight, watermarkWidth, message_num);
+
+	Mat mat = cv::Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type, pixelsArray);
+
+	cv::dft(mat, mat, cv::DFT_REAL_OUTPUT, mat.rows);
+
+	for (i = 0; i < watermarkHeight; i++)
+		for (j = 0; j < watermarkWidth; j++)
+			mat.at<double>(i + 1, j + 1) += shifted_mark[i*watermarkWidth + j];
+
+	cv::dft(mat, mat, cv::DFT_INVERSE | cv::DFT_REAL_OUTPUT | cv::DFT_SCALE);
+
+	for (i = 0; i < mat.rows; i++)
+		for (j = 0; j < mat.cols; j++)
+			pixelsArray[i*mat.cols + j] = mat.at<double>(i, j);
+
+	delete[] shifted_mark; 
+
+	return 1;
+
+}
+
+
