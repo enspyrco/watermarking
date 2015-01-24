@@ -4,7 +4,38 @@
 using namespace std;
 using namespace cv;
 
+// p is any prime, k is a constant that defines the family of arrays produced by shifts
+// array is assumed to be packed into 1d, in row major order
+void generateArray(int p, int k, double* array)
+{
+    int i, j, shift;
+    int* legendre = new int[p];
+    
+    // set all values to -1
+    for(i = 0; i < p; i++)
+    {
+        legendre[i] = -1;
+    }
+    // set all values where index is a square (mod p) to 1
+    for(i = 0; i < p; i++)
+    {
+        j = (i*i) % p;
+        legendre[j] = 1;
+    }
+    
+    for(i = 0; i < p; i++)
+    {
+        shift = (i*i*k) % p;
+        for(j = 0; j < p; j++) {
+            array[j*p+i] = legendre[(j+shift)%p];
+        }
+    }
+    
+}
+
 // takes 2d array in the form of a 1d array in row major order
+// applies right shift, then downward shift
+//  - right shift = message % array_width, down shift = message / array_width
 void shiftIntoNewArray(double* array, double* shifted_array, int array_height, int array_width, int message_num)
 {
 	int v_shift, h_shift;
@@ -27,6 +58,11 @@ void shiftIntoNewArray(double* array, double* shifted_array, int array_height, i
 int fastCorrelation(int height, int width, double *matrix1, double *matrix2, double* correlation_vals)
 {
 
+    // TODO - need to check array sizes are the same, return -1 if not 
+    // TODO - this function could be sped up using the packed format for the complex output
+    //      - (see http://docs.opencv.org/modules/core/doc/operations_on_arrays.html#dft)
+    //      - this would require coding the complex multiplication and complex conjugate
+    
     int i,j;
     Mat mat1 = Mat(height, width, DataType<double>::type, matrix1);
     Mat mat2 = Mat(height, width, DataType<double>::type, matrix2);
@@ -122,6 +158,7 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int water
 
 }
 
+// Note: original watermark remains unshifted, ie. no side effects 
 int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* watermarkArray, int message_num)
 {
 
