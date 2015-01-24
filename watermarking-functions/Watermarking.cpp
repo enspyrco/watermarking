@@ -22,7 +22,7 @@ void generateArray(int p, int k, double* array)
         j = (i*i) % p;
         legendre[j] = 1;
     }
-    
+    // shift the legendre sequence to make up each column
     for(i = 0; i < p; i++)
     {
         shift = (i*i*k) % p;
