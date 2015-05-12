@@ -33,6 +33,61 @@ void generateArray(int p, int k, double* array)
     
 }
 
+// p is any prime, k is a constant that defines the family of arrays produced by shifts
+// k is spread across coefficients
+// array is assumed to be packed into 1d, in row major order
+void generateArray2(int p, int k, double* array)
+{
+    
+    int i, j, l, m, shift;
+    int* legendre = new int[p];
+    
+    // spread k across coefficients
+    if(k > p) {
+        l = p;
+        m = k - p;
+    } else {
+        l = k;
+        m = 0;
+    }
+    
+    // set all values to -1
+    for(i = 0; i < p; i++)
+    {
+        legendre[i] = -1;
+    }
+    // set all values where index is a square (mod p) to 1
+    for(i = 0; i < p; i++)
+    {
+        j = (i*i) % p;
+        legendre[j] = 1;
+    }
+    // shift the legendre sequence to make up each column
+    for(i = 0; i < p; i++)
+    {
+        shift = ((i*i*i*k) + (i*l)) % p;
+        for(j = 0; j < p; j++) {
+            array[j*p+i] = legendre[(j+shift)%p];
+        }
+    }
+    
+}
+
+void generateArray3(int p, int k, double* array)
+{
+    
+}
+
+void generateArray4(int p, int k, double* array)
+{
+    
+}
+
+void generateArray5(int p, int k, double* array)
+{
+    
+}
+
 // takes 2d array in the form of a 1d array in row major order
 // applies right shift, then downward shift
 //  - right shift = message % array_width, down shift = message / array_width
@@ -187,4 +242,26 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int water
 
 }
 
+double peak2rms(double* array, int array_len)
+{
+    
+    // calculate message and peak2rms
+    double maxVal = 0.0;
+    int i, maxI = -1;
+    for(i = 0; i < array_len; i++)
+    {
+        if(array[i] > maxVal)
+        {
+            maxVal = array[i];
+            maxI = i;
+        }
+    }
+    
+    double ms = 0;
+    for (i = 0; i < array_len; i++)
+        ms += (array[i] * array[i]) / array_len;
+    
+    return maxVal / sqrt(ms); 
+    
+}
 
