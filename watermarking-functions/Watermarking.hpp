@@ -9,4 +9,4 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int water
 int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* extracted_mark);
 int fastCorrelation(int height, int width, double *matrix1, double *matrix2, double* correlation_vals);
 void shiftIntoNewArray(double* array, double* shifted_array, int array_height, int array_width, int message_num);
-double peak2rms(double* array); 
+double peak2rms(double* array, int array_len); 
