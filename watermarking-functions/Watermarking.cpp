@@ -1,5 +1,6 @@
 
 #include <opencv2/core/core.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
 using namespace std;
 using namespace cv;
@@ -265,3 +266,110 @@ double peak2rms(double* array, int array_len)
     
 }
 
+std::vector<int> getShifts(std::string ascii, int arraySize)
+{
+    
+    vector<int> bits;
+    vector<int> shifts;
+    
+    boost::multiprecision::cpp_int u = 1;
+    for(unsigned i = 1; i <= 100; ++i)
+        u *= i;
+    
+//    std::cout << "Message is: " << ascii << std::endl;
+//    std::cout << "Message consists of " << (ascii.length()*7) << " bits." << std::endl;
+    
+    unsigned char c;
+    for(unsigned char_num = 0; char_num < ascii.length(); char_num++) {
+        c = ascii.at(char_num);
+        for(int shift = 6; shift >= 0; shift--) {
+            bits.push_back(c >> shift & 1);
+        }
+    }
+    
+//    std::cout << "bitsArray: ";
+//    std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
+//    std::cout << std::endl;
+    
+    boost::multiprecision::cpp_int big_int_total = bits.front();
+    boost::multiprecision::cpp_int big_int_num;
+    for(int bit_num = 1; bit_num < bits.size(); bit_num++) {
+        big_int_num = 2;
+        int bit = bits.at(bit_num);
+        if(bit == 1) {
+            for(int i = 1; i < bit_num; i++) {
+                big_int_num *= 2;
+            }
+            big_int_total += big_int_num;
+        }
+    }
+    
+    boost::multiprecision::cpp_int n = big_int_total;
+    boost::multiprecision::cpp_int z;
+    while (n > 0) {
+        z = n % arraySize;
+        int messageDigit = z.template convert_to<int>();
+        shifts.push_back(messageDigit);
+        n  = n / arraySize;
+    }
+    
+//    std::cout << "shiftDigitsArray: ";
+//    std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
+//    std::cout  << std::endl;
+    
+    return shifts;
+    
+}
+
+std::string getASCII(std::vector<int> shifts, int arraySize)
+{
+    
+    boost::multiprecision::cpp_int n, z;
+    
+    //    std::cout << "shiftDigitsArray: ";
+    //    std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
+    //    std::cout  << std::endl;
+    
+    std::vector<int> bits;
+    
+    n = shifts.front();
+    for(int shiftDigitNum = 1; shiftDigitNum < shifts.size(); shiftDigitNum++) {
+        z = shifts.at(shiftDigitNum);
+        for(int i = 0; i < shiftDigitNum; i++) {
+            z *= arraySize;
+        }
+        n += z;
+    }
+    
+    while (n > 0) {
+        z = n % 2;
+        bits.push_back(z.template convert_to<int>());
+        n = n / 2;
+    }
+    
+    //    std::cout << "bitsArray: ";
+    //    std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
+    //    std::cout << std::endl;
+    
+    int char_count = 0, bit;
+    unsigned char char_sum = 0;
+    std::string messageStr;
+    while(bits.size() > 0) {
+        
+        bit = bits.front();
+        char_sum += bit * pow(2,6-char_count);
+        bits.erase (bits.begin()); // remove first element
+        char_count++;
+        char_count %= 7;
+        if(char_count == 0) {
+            messageStr.append(1, char_sum);
+            char_sum = 0;
+        }
+        
+    }
+    
+    //    std::cout << "Message is: " << messageStr << std::endl;
+    
+    return messageStr;
+    
+}
