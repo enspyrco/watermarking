@@ -4,9 +4,6 @@
 
 void generateArray(int p, int k, double* array);
 void generateArray2(int p, int k, double* array);
-void generateArray3(int p, int k, double* array);
-void generateArray4(int p, int k, double* array);
-void generateArray5(int p, int k, double* array);
 int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* watermarkArray);
 int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* watermarkArray, int message_num); 
 int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* extracted_mark);

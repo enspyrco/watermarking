@@ -74,21 +74,6 @@ void generateArray2(int p, int k, double* array)
     
 }
 
-void generateArray3(int p, int k, double* array)
-{
-    
-}
-
-void generateArray4(int p, int k, double* array)
-{
-    
-}
-
-void generateArray5(int p, int k, double* array)
-{
-    
-}
-
 // takes 2d array in the form of a 1d array in row major order
 // applies right shift, then downward shift
 //  - right shift = message % array_width, down shift = message / array_width
