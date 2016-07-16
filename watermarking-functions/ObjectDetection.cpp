@@ -19,16 +19,15 @@
 using namespace std;
 using namespace cv;
 
-void detectObject(Mat& img_object, Mat& img_scene, Mat& detected_img)
+int detectObject(Mat& img_object, Mat& img_scene, Mat& detected_img)
 {
 
     try
 	{
 
 		//-- Step 1: Detect the keypoints using SURF Detector
-		int minHessian = 400;
-
-		cv::Ptr<Feature2D> f2d = xfeatures2d::SURF::create();
+		
+        cv::Ptr<Feature2D> f2d = xfeatures2d::SURF::create();
 
 		std::vector<KeyPoint> keypoints_object, keypoints_scene;
 
@@ -36,13 +35,15 @@ void detectObject(Mat& img_object, Mat& img_scene, Mat& detected_img)
   		f2d->detect( img_scene, keypoints_scene );
 
 		//-- Step 2: Calculate descriptors (feature vectors)
-		Mat descriptors_object, descriptors_scene;
+		
+        Mat descriptors_object, descriptors_scene;
 
 		f2d->compute( img_object, keypoints_object, descriptors_object );
   		f2d->compute( img_scene, keypoints_scene, descriptors_scene );
 
 		//-- Step 3: Matching descriptor vectors using FLANN matcher
-		FlannBasedMatcher matcher;
+		
+        FlannBasedMatcher matcher;
 		std::vector< DMatch > matches;
 		matcher.match( descriptors_object, descriptors_scene, matches );
 
@@ -55,9 +56,6 @@ void detectObject(Mat& img_object, Mat& img_scene, Mat& detected_img)
 		    if( dist < min_dist ) min_dist = dist;
 		    if( dist > max_dist ) max_dist = dist;
 		}
-
-//		LOGD("-- Max dist : %f \n", max_dist );
-//		LOGD("-- Min dist : %f \n", min_dist );
 
 		//-- Draw only "good" matches (i.e. whose distance is less than 3*min_dist )
 		std::vector< DMatch > good_matches;
@@ -99,16 +97,19 @@ void detectObject(Mat& img_object, Mat& img_scene, Mat& detected_img)
 		line( img_scene, scene_corners[2], scene_corners[3], Scalar( 0, 255, 0), 12 );
 		line( img_scene, scene_corners[3], scene_corners[0], Scalar( 0, 255, 0), 12 );
 
-//		return good_matches.size();
+		return good_matches.size();
 
 	}
 	catch(cv::Exception& e)
 	{
 //		LOGD("nativeCreateObject caught cv::Exception: %s", e.what());
+        return 0;
+        
 	}
 	catch (...)
 	{
 //		LOGD("nativeDetect caught unknown exception");
+        return 0;
 	}
 
 }
