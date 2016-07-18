@@ -162,6 +162,7 @@ int fastCorrelation(int height, int width, double *matrix1, double *matrix2, dou
 
 }
 
+// convert to freqency domain and extract watermark data from the top-left square of the image data
 int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth, double* pixelsArray, double* extracted_mark)
 {
 	int i,j;
@@ -226,6 +227,25 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int water
 
 	return 1;
 
+}
+
+
+// subtract the original object image from the extracted object image and put the result into a 1d array  
+void extractMarkedImageDataWithSubtraction(Mat& extracted_obj_img, Mat& obj_img, double * marked_image_data) {
+    
+    // subtract the original object and store the result in a double array
+    
+    int subtracted_value;
+    for(int y = 0; y < obj_img.rows; y++)
+    {
+        for(int x = 0; x < obj_img.cols; x++)
+        {
+            subtracted_value = extracted_obj_img.at<uchar>(y,x) - obj_img.at<uchar>(y,x);
+            
+            marked_image_data[y*obj_img.cols+x] = subtracted_value/255.0f;
+        }
+    }
+    
 }
 
 double peak2rms(double* array, int array_len)
