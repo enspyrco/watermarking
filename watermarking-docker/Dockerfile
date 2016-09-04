@@ -30,3 +30,6 @@ RUN make install
 
 WORKDIR /
 RUN rm -rf /tmp/*
+
+# note: OpenCV is built without the aruco module as it was causing compile errors, seems like a recent change is the problem, see discussion below 
+# http://answers.opencv.org/question/101157/opencv-310-compile-with-contrib-error-when-compile-aruco/
