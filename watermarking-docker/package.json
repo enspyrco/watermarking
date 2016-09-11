@@ -1,0 +1,18 @@
+{
+  "name": "watermarking-docker",
+  "version": "1.0.0",
+  "description": "Installs firebase server sdk",
+  "main": "listener.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/watermarking_band/watermarking-docker.git"
+  },
+  "author": "Nick Meinhold",
+  "homepage": "https://bitbucket.org/watermarking_band/watermarking-docker#readme",
+  "dependencies": {
+    "firebase": "^3.3.1"
+  }
+}
