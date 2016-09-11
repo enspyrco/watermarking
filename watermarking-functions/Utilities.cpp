@@ -8,6 +8,9 @@
 
 #include "Utilities.hpp"
 
+#include <boost/math/special_functions/prime.hpp>
+#include <algorithm>
+
 // convert opencv type to a human readable string
 // Note: code taken from Stack Overflow answer, don't assume it is correct
 // http://stackoverflow.com/a/17820615/1992736 
@@ -47,6 +50,30 @@ void saveImageToFile(std::string file_name, cv::Mat& imageMat) {
     catch (std::runtime_error& ex) {
         std::cerr << "Exception converting " << file_name << " image to PNG format: " << ex.what() << std::endl;
     }
+    
+}
+
+int largestPrimeFor(cv::Mat& imgMat) {
+    
+    int minImgDim = std::min(imgMat.rows, imgMat.cols);
+    
+    // we avoid marking the first row and col (dc components) so the largest
+    // square array we can use is 2 less than the min dimension
+    
+    int maxArrayDim = minImgDim - 2;
+    
+    // the arrays are size p*p where p is a prime so find the largest prime we can use, ie. closest to maxArrayDim
+    
+    int maxP;
+    
+    for(int i = 0; i < 10000; i++) {
+        if(boost::math::prime(i) > maxArrayDim) {
+            maxP = boost::math::prime(i-1);
+            break;
+        }
+    }
+    
+    return maxP;
     
 }
 

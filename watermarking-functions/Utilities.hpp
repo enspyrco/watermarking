@@ -13,6 +13,7 @@
 
 std::string ocv_type2str(int type);
 void saveImageToFile(std::string file_name, cv::Mat& imageMat);
+int largestPrimeFor(cv::Mat& imgMat);
 void findShiftAndPSNR(double* array, int array_len, double& peak2rms, int& shift);
 
 #endif /* Utilities_hpp */
