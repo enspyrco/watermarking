@@ -1,5 +1,14 @@
 FROM watermarking2:latest
 
+# install boost 
+RUN apt-get install -y libboost-all-dev
+
+# copy over the C++ for the marking software 
+COPY main.cpp /main.cpp
+COPY watermarking-functions /watermarking-functions
+
+
+
 # install nodejs and npm
 RUN apt-get install -y nodejs npm 
 
@@ -17,4 +26,4 @@ COPY listener.js /listener.js
 COPY mark.sh /mark.sh
 RUN chmod +x /mark.sh
 
-CMD ["node", "listener.js"]
+#CMD ["node", "listener.js"]
