@@ -33,11 +33,11 @@ var ref = db.ref("marking-entries/incomplete");
 // Retrieve new posts as they are added to our database
 ref.on("child_added", function(snapshot, prevChildKey) {
   var newEntry = snapshot.val();
-  if(newEntry.path != null) {
+  if(newEntry.filePath != null) {
   	// console.log("path: " + newEntry.path);
   	// console.log("file: " + newEntry.file);
 
-  	exec("./mark.sh " + newEntry.path + " " + newEntry.file, markingComplete);
+  	exec("./mark.sh " + newEntry.filePath + " " + newEntry.imageName + " " + newEntry.message + " " + newEntry.markingStrength, markingComplete);
   }
 });
 
