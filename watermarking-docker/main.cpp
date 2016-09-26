@@ -22,10 +22,11 @@ int main(int argc, const char * argv[]) {
         return -1;
     }
     
-    std::cout << "file: " << argv[argc-3] << ", message = " << argv[argc-2] << std::endl;
+    // std::cout << "image name: " << argv[argc-3] << ", message = " << argv[argc-2] << std::endl;
     
     int strength = atoi(argv[argc-1]);
     std::string message = argv[argc-2];
+    std::string img_name = argv[argc-3]; 
     
     // read in image and convert to 3 channel BGR
     
@@ -104,14 +105,14 @@ int main(int argc, const char * argv[]) {
     compression_params.push_back(9);
     
     try {
-        imwrite("out.png", original, compression_params);
+        imwrite(img_name+".png", original, compression_params);
     }
     catch (cv::Exception& ex) {
         fprintf(stderr, "Exception writing out image to PNG format: %s\n", ex.what());
         return 1;
     }
     
-    std::cout << "file is " << hsvImage.rows << " x " << hsvImage.cols << " image of type " << ocv_type2str(hsvImage.type()) << std::endl;
+    // std::cout << "file is " << hsvImage.rows << " x " << hsvImage.cols << " image of type " << ocv_type2str(hsvImage.type()) << std::endl;
     
     return 0;
 }

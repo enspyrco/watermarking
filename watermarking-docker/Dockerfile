@@ -7,6 +7,9 @@ RUN apt-get install -y libboost-all-dev
 COPY main.cpp /main.cpp
 COPY watermarking-functions /watermarking-functions
 
+# compile the marking software 
+RUN g++ main.cpp watermarking-functions/WatermarkDetection.cpp watermarking-functions/Utilities.cpp -I. -I/usr/include/ -I/usr/local/include -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -o mark-image 
+
 
 
 # install nodejs and npm

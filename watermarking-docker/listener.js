@@ -7,7 +7,7 @@ firebase.initializeApp({
 });
 
 // setup variables for running shell script 
-var sys = require('util')
+var sys = require('util');
 var exec = require('child_process').exec;
 // callback that is run when process terminates 
 function markingComplete(error, stdout, stderr) { 
@@ -28,16 +28,16 @@ function markingComplete(error, stdout, stderr) {
 
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 var db = firebase.database();
-var ref = db.ref("marking-entries/incomplete");
+var ref = db.ref("marking/incomplete");
 
 // Retrieve new posts as they are added to our database
 ref.on("child_added", function(snapshot, prevChildKey) {
   var newEntry = snapshot.val();
-  if(newEntry.path != null) {
+  if(newEntry.path !== null) {
   	// console.log("path: " + newEntry.path);
   	// console.log("file: " + newEntry.file);
 
-  	exec("./mark.sh " + newEntry.path + " " + newEntry.file, markingComplete);
+  	exec("./mark.sh " + newEntry.path + " " + newEntry.name + " " + newEntry.message + " " + newEntry.strength + " " + snapshot.key, markingComplete);
   }
 });
 
