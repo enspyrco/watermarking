@@ -3,7 +3,7 @@ var firebase = require("firebase");
 // Initialize the app with a service account, granting admin privileges
 firebase.initializeApp({
   databaseURL: "https://watermarking-print-and-scan.firebaseio.com/",
-  serviceAccount: "./WatermarkingPrintAndScan-8705059a4ba1.json" // /keys/
+  serviceAccount: "/keys/WatermarkingPrintAndScan-8705059a4ba1.json" // /keys/
 });
 
 // setup variables for running shell script 

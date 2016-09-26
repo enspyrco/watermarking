@@ -5,8 +5,8 @@
 # $4 = strength 
 # $5 = uid 
 
-gsutil cp "$1" "/tmp/$2" 
+gsutil cp "gs://watermarking-print-and-scan.appspot.com/$1" "/tmp/$2" 
 
 ./mark-image "/tmp/$2" $2 $3 $4 
 
-gsutil $2.png gs://watermarking-print-and-scan.appspot.com/marked-images/$5
+gsutil cp $2.png "gs://watermarking-print-and-scan.appspot.com/marked-images/$5/$2.png"
