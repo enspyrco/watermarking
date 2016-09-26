@@ -16,8 +16,8 @@
 int main(int argc, const char * argv[]) {
     
     // check args have been passed in
-    // args are: file path, image name, strength
-    if(argc != 4) {
+    // args are: file path, image name, message, strength
+    if(argc != 5) {
         std::cout << "incorrect number of arguments" << std::endl;
         return -1;
     }
@@ -25,12 +25,14 @@ int main(int argc, const char * argv[]) {
     // std::cout << "image name: " << argv[argc-3] << ", message = " << argv[argc-2] << std::endl;
     
     int strength = atoi(argv[argc-1]);
+    std::string strengthString = argv[argc-1];
     std::string message = argv[argc-2];
-    std::string img_name = argv[argc-3]; 
+    std::string imageName = argv[argc-3];
+    std::string filePath = argv[argc-4];
     
     // read in image and convert to 3 channel BGR
     
-    cv::Mat original = cv::imread(argv[argc-3], cv::IMREAD_COLOR);
+    cv::Mat original = cv::imread(filePath, cv::IMREAD_COLOR);
     
     // calculate the largest prime for this image
     
@@ -105,7 +107,7 @@ int main(int argc, const char * argv[]) {
     compression_params.push_back(9);
     
     try {
-        imwrite(img_name+".png", original, compression_params);
+        imwrite(imageName + ".png", original, compression_params);
     }
     catch (cv::Exception& ex) {
         fprintf(stderr, "Exception writing out image to PNG format: %s\n", ex.what());
