@@ -1,4 +1,41 @@
-FROM watermarking2:latest
+FROM ubuntu:latest
+
+RUN apt-get update
+
+# opencv 
+
+# from http://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html 
+# compiler 
+RUN apt-get install -y build-essential
+# required
+RUN apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+# optional
+#RUN apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+# for getting ccmake for GUI based CMake 
+RUN apt-get install -y cmake-curses-gui
+
+
+RUN apt-get install -y wget
+RUN apt-get install -y unzip
+WORKDIR /tmp
+RUN wget https://github.com/Itseez/opencv/archive/3.1.0.zip
+RUN unzip 3.1.0.zip
+
+RUN mkdir /tmp/opencv-3.1.0/build
+WORKDIR /tmp/opencv-3.1.0/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_aruco=OFF ..
+RUN make 
+RUN make install/strip
+
+WORKDIR /
+RUN rm -rf /tmp/*
+
+# note: OpenCV is built without the aruco module as it was causing compile errors, seems like a recent change is the problem, see discussion below 
+# http://answers.opencv.org/question/101157/opencv-310-compile-with-contrib-error-when-compile-aruco/
+
+
+# boost & npm 
 
 # install boost 
 RUN apt-get install -y libboost-all-dev
@@ -6,16 +43,7 @@ RUN apt-get install -y libboost-all-dev
 # install nodejs and npm
 RUN apt-get install -y nodejs npm 
 
-
-# copy the key for gsutil 
-COPY WatermarkingPrintAndScan-320faf6a7881.p12 /keys/WatermarkingPrintAndScan-320faf6a7881.p12
-
-# copy over the C++ for the marking software 
-COPY main.cpp /main.cpp
-COPY watermarking-functions /watermarking-functions
-
-# compile the marking software 
-RUN g++ main.cpp watermarking-functions/WatermarkDetection.cpp watermarking-functions/Utilities.cpp -I. -I/usr/include/ -I/usr/local/include -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -o mark-image 
+# firebase server sdk 
 
 # copy the json key 
 COPY WatermarkingPrintAndScan-8705059a4ba1.json /keys/WatermarkingPrintAndScan-8705059a4ba1.json
@@ -24,11 +52,15 @@ COPY WatermarkingPrintAndScan-8705059a4ba1.json /keys/WatermarkingPrintAndScan-8
 COPY package.json /package.json
 RUN npm install
 
-# copy the listener node app 
-COPY listener.js /listener.js
 
-# copy the shell script and make executable 
-COPY mark.sh /mark.sh
-RUN chmod +x /mark.sh
+# gsutil 
 
-CMD ["nodejs", "listener.js"]
+# Install gsutil with Python package index, as described in: 
+# https://cloud.google.com/storage/docs/gsutil_install#linux 
+
+# Several packages are required to successfully install gsutil from PyPI 
+RUN apt-get -y install python-setuptools libffi-dev libssl-dev python-pip
+
+RUN pip install gsutil
+
+COPY WatermarkingPrintAndScan-320faf6a7881.p12 /keys/WatermarkingPrintAndScan-320faf6a7881.p12
