@@ -28,16 +28,33 @@ function markingComplete(error, stdout, stderr) {
 
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 var db = firebase.database();
-var ref = db.ref("marking/incomplete");
+var markingRef = db.ref("marking/incomplete");
+var markedRef = db.ref("marked-images");
 
 // Retrieve new posts as they are added to our database
-ref.on("child_added", function(snapshot, prevChildKey) {
+markingRef.on("child_added", function(snapshot, prevChildKey) {
   var newEntry = snapshot.val();
   if(newEntry.path !== null) {
   	// console.log("path: " + newEntry.path);
   	// console.log("file: " + newEntry.file);
 
-  	exec("./mark.sh " + newEntry.path + " " + newEntry.name + " " + newEntry.message + " " + newEntry.strength + " " + snapshot.key, markingComplete);
+    var timestamp = String(Date.now());
+
+  	exec("./mark.sh " + newEntry.path + " " + newEntry.name + " " + newEntry.message + " " + newEntry.strength + " " + snapshot.key + " " + timestamp, markingComplete);
+
+    var userMarkedRef = markedRef.child(snapshot.key);
+
+    // create a new db entry for the marked image 
+    userMarkedRef.push().set({
+      name: newEntry.name,
+      message: newEntry.message,
+      strength: newEntry.strength,
+      path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + newEntry.name + ".png"
+
+    });
+
+    markingRef.child(snapshot.key).remove();
+
   }
 });
 

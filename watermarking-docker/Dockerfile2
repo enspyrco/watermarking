@@ -1,4 +1,4 @@
-FROM wm1
+FROM asia.gcr.io/watermarking-print-and-scan/wm2
 
 
 # mark-image C++ program 
