@@ -107,7 +107,7 @@ int main(int argc, const char * argv[]) {
     compression_params.push_back(9);
     
     try {
-        imwrite(imageName + ".png", original, compression_params);
+        imwrite(filePath + "-marked.png", original, compression_params);
     }
     catch (cv::Exception& ex) {
         fprintf(stderr, "Exception writing out image to PNG format: %s\n", ex.what());

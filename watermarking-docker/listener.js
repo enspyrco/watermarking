@@ -21,13 +21,14 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
   var newEntry = snapshot.val();
   if(newEntry.path !== null) {
 
-    markingRef.child(snapshot.key).child('progress').set('Server has noticed db entry');
+    markingRef.child(snapshot.key).child('progress').set('Server has received request and is downloading original image...');
 
     // create a timestamp so we can store the marked image with a unique path 
     var timestamp = String(Date.now());
+    var filePath = '/tmp/'+snapshot.key+'/'+newEntry.name;
 
     // execFile: executes a file with the specified arguments
-    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+newEntry.path, '/tmp/'+newEntry.name], function(error, stdout, stderr){
+    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+newEntry.path, filePath], function(error, stdout, stderr){
       
       if (error) { // update the db entry with the error 
         markingRef.child(snapshot.key).child('error').set('Error downloading original image: '+error);
@@ -38,9 +39,9 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
       // Pass out stdout for docker log 
       console.log('Downloaded image.\n'+stdout);
       // Update progress for webapp UI 
-      markingRef.child(snapshot.key).child('progress').set('Downloaded image');
+      markingRef.child(snapshot.key).child('progress').set('Server downloaded image, now marking...');
 
-      execFile('./mark-image', ['/tmp/'+newEntry.name, newEntry.name, newEntry.message, 'newEntry.strength'], function(error, stdout, stderr){
+      execFile('./mark-image', [filePath, newEntry.name, newEntry.message, newEntry.strength], function(error, stdout, stderr){
       
         if (error) { // update the db entry with the error 
           markingRef.child(snapshot.key).child('error').set('Error marking image: '+error);
@@ -51,9 +52,9 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
         // Pass out stdout for docker log 
         console.log('Marked image.\n'+stdout);
         // Update progress for webapp UI 
-        markingRef.child(snapshot.key).child('progress').set('Marked image');
+        markingRef.child(snapshot.key).child('progress').set('Server completed marking, uploading marked image...');
 
-        execFile('gsutil', ['cp', newEntry.name+'.png', 'gs://watermarking-print-and-scan.appspot.com/marked-images/'+snapshot.key+'/'+timestamp+'/'+newEntry.name+'.png'], function(error, stdout, stderr){
+        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/marked-images/'+snapshot.key+'/'+timestamp+'/'+newEntry.name+'.png'], function(error, stdout, stderr){
       
           if (error) { // update the db entry with the error 
             markingRef.child(snapshot.key).child('error').set('Error uploading marked image: '+error);

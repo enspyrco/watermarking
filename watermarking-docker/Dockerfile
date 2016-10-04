@@ -12,13 +12,9 @@ RUN g++ main.cpp watermarking-functions/WatermarkDetection.cpp watermarking-func
 
 
 
-# listener.js & mark.sh 
+# listener.js 
 
 # copy the listener node app 
 COPY listener.js /listener.js
-
-# copy the shell script and make executable 
-COPY mark.sh /mark.sh
-RUN chmod +x /mark.sh
 
 CMD ["nodejs", "listener.js"]
