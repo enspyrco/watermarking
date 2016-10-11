@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  mark.cpp
 //  WatermarkingMarkImage
 //
 //  Created by Nicholas Meinhold on 9/09/2016.

@@ -1,15 +1,18 @@
 FROM asia.gcr.io/watermarking-print-and-scan/wm2
 
 
-# mark-image C++ program 
+# marking and detection C++ programs 
 
-# copy over the C++ for the marking software 
-COPY main.cpp /main.cpp
+# copy over the C++ for the marking and detecting software 
+COPY mark.cpp /mark.cpp
+COPY detect.cpp /detect.cpp
 COPY watermarking-functions /watermarking-functions
 
 # compile the marking software 
-RUN g++ main.cpp watermarking-functions/WatermarkDetection.cpp watermarking-functions/Utilities.cpp -I. -I/usr/include/ -I/usr/local/include -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -o mark-image 
+RUN g++ mark.cpp watermarking-functions/WatermarkDetection.cpp watermarking-functions/Utilities.cpp -I. -I/usr/include/ -I/usr/local/include -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -o mark-image
 
+# compile the detection software 
+RUN g++ detect.cpp watermarking-functions/WatermarkDetection.cpp watermarking-functions/Utilities.cpp -I. -I/usr/include/ -I/usr/local/include -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -o detect-wm
 
 
 # listener.js 
