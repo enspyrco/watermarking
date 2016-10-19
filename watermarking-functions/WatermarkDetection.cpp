@@ -277,13 +277,11 @@ std::vector<int> getShifts(std::string ascii, int arraySize)
     vector<int> bits;
     vector<int> shifts;
     
-    boost::multiprecision::cpp_int u = 1;
-    for(unsigned i = 1; i <= 100; ++i)
-        u *= i;
-    
+//    // print the input
 //    std::cout << "Message is: " << ascii << std::endl;
 //    std::cout << "Message consists of " << (ascii.length()*7) << " bits." << std::endl;
     
+    // convert ASCII to an array of bits (base 2)
     unsigned char c;
     for(unsigned char_num = 0; char_num < ascii.length(); char_num++) {
         c = ascii.at(char_num);
@@ -292,10 +290,12 @@ std::vector<int> getShifts(std::string ascii, int arraySize)
         }
     }
     
+//    // print the array of bits
 //    std::cout << "bitsArray: ";
 //    std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
 //    std::cout << std::endl;
     
+    // convert array of bits (base 2) to base 10
     boost::multiprecision::cpp_int big_int_total = bits.front();
     boost::multiprecision::cpp_int big_int_num;
     for(int bit_num = 1; bit_num < bits.size(); bit_num++) {
@@ -309,6 +309,7 @@ std::vector<int> getShifts(std::string ascii, int arraySize)
         }
     }
     
+    // convert base 10 to shifts (base arraySize)
     boost::multiprecision::cpp_int n = big_int_total;
     boost::multiprecision::cpp_int z;
     while (n > 0) {
@@ -318,6 +319,7 @@ std::vector<int> getShifts(std::string ascii, int arraySize)
         n  = n / arraySize;
     }
     
+//    // print the output 
 //    std::cout << "shiftDigitsArray: ";
 //    std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
 //    std::cout  << std::endl;
@@ -331,12 +333,13 @@ std::string getASCII(std::vector<int> shifts, int arraySize)
     
     boost::multiprecision::cpp_int n, z;
     
-    //    std::cout << "shiftDigitsArray: ";
-    //    std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
-    //    std::cout  << std::endl;
+//    // print input
+//    std::cout << "shiftDigitsArray: ";
+//    std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
+//    std::cout  << std::endl;
     
+    // convert base array-size to base 10 (store in n)
     std::vector<int> bits;
-    
     n = shifts.front();
     for(int shiftDigitNum = 1; shiftDigitNum < shifts.size(); shiftDigitNum++) {
         z = shifts.at(shiftDigitNum);
@@ -346,16 +349,26 @@ std::string getASCII(std::vector<int> shifts, int arraySize)
         n += z;
     }
     
+    // convert base 10 to base 2 and store as an array of bits
     while (n > 0) {
         z = n % 2;
         bits.push_back(z.template convert_to<int>());
         n = n / 2;
     }
     
-    //    std::cout << "bitsArray: ";
-    //    std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
-    //    std::cout << std::endl;
+    // add any trailing zeros that were lost in the conversion
+    unsigned long numMissingBits = bits.size() / 7;
+    while(numMissingBits > 0) {
+        bits.push_back(0);
+        numMissingBits--;
+    }
     
+//    // print the bits array
+//    std::cout << "bitsArray: ";
+//    std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
+//    std::cout << std::endl;
+    
+    // convert the array of bits to ASCII
     int char_count = 0, bit;
     unsigned char char_sum = 0;
     std::string messageStr;
@@ -373,7 +386,8 @@ std::string getASCII(std::vector<int> shifts, int arraySize)
         
     }
     
-    //    std::cout << "Message is: " << messageStr << std::endl;
+//    // print the output
+//    std::cout << "Message is: " << messageStr << std::endl;
     
     return messageStr;
     
