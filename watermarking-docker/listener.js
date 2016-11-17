@@ -27,9 +27,12 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
     // check if there has already been an attempt 
     if(newEntry.attempts > 0) {
       // log the problematic entry 
-      incompleteMarkingLogsRef.push(newEntry); 
+      console.log("A previous attempt was already made to mark the file "+newEntry.name);
+      console.log("Incomplete marking entry is being removed and logged.");
+      incompleteMarkingLogsRef.push(newEntry);
       // remove the problematic entry 
       markingRef.set(null);
+      return;
     }
     
     // increment the attempts 
@@ -84,6 +87,9 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
 
           // Pass out stdout for docker log 
           console.log('Uploaded marked image.\n'+stdout);
+          
+          // Create a new 'marked' entry 
+          
           // Update progress for webapp UI 
           markingRef.child(snapshot.key).child('markedPath').set("marked-images/" + snapshot.key + "/" + timestamp + "/" + newEntry.name + ".png");
 
@@ -106,13 +112,16 @@ detectionRef.on("child_added", function(snapshot, prevChildKey) {
     // check if there has already been an attempt 
     if(newEntry.attempts > 0) {
       // log the problematic entry 
+      console.log("A previous attempt was already made to detect a message in file "+newEntry.pathOriginal);
+      console.log("Incomplete detection entry is being removed and logged.");
       incompleteDetectingLogsRef.push(newEntry); 
       // remove the problematic entry 
       detectionRef.set(null);
+      return;
     }
     
     // increment the attempts 
-    markingRef.child(snapshot.key).child('attempts').set(newEntry.attempts+1); 
+    detectionRef.child(snapshot.key).child('attempts').set(newEntry.attempts+1); 
     
     detectionRef.child(snapshot.key).child('progress').set('Server has received request and is downloading images...');
 
