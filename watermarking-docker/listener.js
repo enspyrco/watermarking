@@ -21,33 +21,33 @@ console.log('Setting up listeners...');
 
 // Retrieve new 'marking' entries as they are added to our database 
 markingRef.on("child_added", function(snapshot, prevChildKey) {
-  var newEntry = snapshot.val();
-  if(newEntry.path !== null) {
+  var markingEntry = snapshot.val();
+  if(markingEntry.path !== null) {
 
     // check if there has already been an attempt 
-    if(newEntry.attempts > 0) {
+    if(markingEntry.attempts > 0) {
       // log the problematic entry 
-      console.log("A previous attempt was already made to mark the file "+newEntry.name);
+      console.log("A previous attempt was already made to mark the file "+markingEntry.name);
       console.log("Incomplete marking entry is being removed and logged.");
-      incompleteMarkingLogsRef.push(newEntry);
+      incompleteMarkingLogsRef.push(markingEntry);
       // remove the problematic entry 
       markingRef.set(null);
       return;
     }
     
     // increment the attempts 
-    markingRef.child(snapshot.key).child('attempts').set(newEntry.attempts+1); 
+    markingRef.child(snapshot.key).child('attempts').set(markingEntry.attempts+1); 
 
     markingRef.child(snapshot.key).child('progress').set('Server has received request and is downloading original image...');
 
     // create a timestamp so we can store the marked image with a unique path 
     var timestamp = String(Date.now());
-    var filePath = '/tmp/'+snapshot.key+'/'+newEntry.name;
+    var filePath = '/tmp/'+snapshot.key+'/'+markingEntry.name;
 
-    console.log("Saving file for marking, from gcs at location \'"+newEntry.path+"\', to \'"+filePath+"\'."); 
+    console.log("Saving file for marking, from gcs at location \'"+markingEntry.path+"\', to \'"+filePath+"\'."); 
 
     // execFile: executes a file with the specified arguments
-    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+newEntry.path, filePath], function(error, stdout, stderr){
+    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+markingEntry.path, filePath], function(error, stdout, stderr){
       
       if (error) { // update the db entry with the error 
         markingRef.child(snapshot.key).child('error').set('Error downloading original image: '+error);
@@ -60,9 +60,9 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
       // Update progress for webapp UI 
       markingRef.child(snapshot.key).child('progress').set('Server downloaded image, now marking...');
 
-      console.log("Marking image with message \'"+newEntry.message+"\' at strength "+newEntry.strength); 
+      console.log("Marking image with message \'"+markingEntry.message+"\' at strength "+markingEntry.strength); 
 
-      execFile('./mark-image', [filePath, newEntry.name, newEntry.message, newEntry.strength], function(error, stdout, stderr){
+      execFile('./mark-image', [filePath, markingEntry.name, markingEntry.message, markingEntry.strength], function(error, stdout, stderr){
       
         if (error) { // update the db entry with the error 
           markingRef.child(snapshot.key).child('error').set('Error marking image: '+error);
@@ -77,7 +77,7 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
 
         console.log("Uploading marked image...");
 
-        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/marked-images/'+snapshot.key+'/'+timestamp+'/'+newEntry.name+'.png'], function(error, stdout, stderr){
+        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png'], function(error, stdout, stderr){
       
           if (error) { // update the db entry with the error 
             markingRef.child(snapshot.key).child('error').set('Error uploading marked image: '+error);
@@ -89,9 +89,16 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
           console.log('Uploaded marked image.\n'+stdout);
           
           // Create a new 'marked' entry 
+          var markedImagesRef = db.ref("/marked-images/");
+          markedImagesRef.child(snapshot.key).push({
+            message: markingEntry.message,
+            name: markingEntry.name,
+            path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
+            strength: markingEntry.strength
+          });
           
-          // Update progress for webapp UI 
-          markingRef.child(snapshot.key).child('markedPath').set("marked-images/" + snapshot.key + "/" + timestamp + "/" + newEntry.name + ".png");
+          // Remove the 'marking' entry 
+          markingRef.set(null);
 
         });
 
@@ -102,39 +109,39 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
   }
 });
 
-var detectionRef = db.ref("detecting/incomplete");
+var detectingRef = db.ref("detecting/incomplete");
 var incompleteDetectingLogsRef = db.ref("logs/detecting/incomplete");
 // Retrieve new 'detect' entries as they are added to our database 
-detectionRef.on("child_added", function(snapshot, prevChildKey) {
-  var newEntry = snapshot.val();
-  if(newEntry.originalPath !== null) {
+detectingRef.on("child_added", function(snapshot, prevChildKey) {
+  var detectingEntry = snapshot.val();
+  if(detectingEntry.originalPath !== null) {
 
     // check if there has already been an attempt 
-    if(newEntry.attempts > 0) {
+    if(detectingEntry.attempts > 0) {
       // log the problematic entry 
-      console.log("A previous attempt was already made to detect a message in file "+newEntry.pathOriginal);
+      console.log("A previous attempt was already made to detect a message in file "+detectingEntry.pathOriginal);
       console.log("Incomplete detection entry is being removed and logged.");
-      incompleteDetectingLogsRef.push(newEntry); 
+      incompleteDetectingLogsRef.push(detectingEntry); 
       // remove the problematic entry 
-      detectionRef.set(null);
+      detectingRef.set(null);
       return;
     }
     
     // increment the attempts 
-    detectionRef.child(snapshot.key).child('attempts').set(newEntry.attempts+1); 
+    detectingRef.child(snapshot.key).child('attempts').set(detectingEntry.attempts+1); 
     
-    detectionRef.child(snapshot.key).child('progress').set('Server has received request and is downloading images...');
+    detectingRef.child(snapshot.key).child('progress').set('Server has received request and is downloading images...');
 
     var originalPath = '/tmp/'+snapshot.key+'/original';
     var markedPath = '/tmp/'+snapshot.key+'/marked';
 
-    console.log("Saving original image file for detection, from gcs at location \'"+newEntry.pathOriginal+"\', to \'"+originalPath+"\'."); 
+    console.log("Saving original image file for detection, from gcs at location \'"+detectingEntry.pathOriginal+"\', to \'"+originalPath+"\'."); 
 
     // execFile: executes a file with the specified arguments
-    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+newEntry.pathOriginal, originalPath], function(error, stdout, stderr){
+    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+detectingEntry.pathOriginal, originalPath], function(error, stdout, stderr){
       
       if (error) { // update the db entry with the error 
-        detectionRef.child(snapshot.key).child('error').set('Error downloading original image: '+error);
+        detectingRef.child(snapshot.key).child('error').set('Error downloading original image: '+error);
         console.log('Error downloading original image: '+error);
         return;
       }
@@ -142,14 +149,14 @@ detectionRef.on("child_added", function(snapshot, prevChildKey) {
       // Pass out stdout for docker log 
       console.log('Downloaded original image.\n'+stdout);
       // Update progress for webapp UI 
-      detectionRef.child(snapshot.key).child('progress').set('Server downloaded original image, now downloading marked image...');
+      detectingRef.child(snapshot.key).child('progress').set('Server downloaded original image, now downloading marked image...');
 
-      console.log("Saving marked image file for detection, from gcs at location \'"+newEntry.pathMarked+"\', to \'"+markedPath+"\'."); 
+      console.log("Saving marked image file for detection, from gcs at location \'"+detectingEntry.pathMarked+"\', to \'"+markedPath+"\'."); 
 
-      execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+newEntry.pathMarked, markedPath], function(error, stdout, stderr){
+      execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+detectingEntry.pathMarked, markedPath], function(error, stdout, stderr){
       
         if (error) { // update the db entry with the error 
-          detectionRef.child(snapshot.key).child('error').set('Error downloading marked image: '+error);
+          detectingRef.child(snapshot.key).child('error').set('Error downloading marked image: '+error);
           console.log('Error downloading marked image: '+error);
           return;
         }
@@ -157,14 +164,14 @@ detectionRef.on("child_added", function(snapshot, prevChildKey) {
         // Pass out stdout for docker log 
         console.log('Downloaded marked image.\n'+stdout);
         // Update progress for webapp UI 
-        detectionRef.child(snapshot.key).child('progress').set('Server downloaded images, detecting watermark...');
+        detectingRef.child(snapshot.key).child('progress').set('Server downloaded images, detecting watermark...');
 
         console.log('Detecting message...');
 
         execFile('./detect-wm', [snapshot.key, originalPath, markedPath], function(error, stdout, stderr){
     
           if (error) { // update the db entry with the error 
-            detectionRef.child(snapshot.key).child('error').set('Error detecting watermark: '+error);
+            detectingRef.child(snapshot.key).child('error').set('Error detecting watermark: '+error);
             console.log('Error detecting watermark: '+error);
             return;
           }
@@ -175,7 +182,7 @@ detectionRef.on("child_added", function(snapshot, prevChildKey) {
           // Pass out stdout for docker log 
           console.log('Detected watermark.\n'+stdout);
           // Update progress for webapp UI 
-          detectionRef.child(snapshot.key).child('results').set(resultsJson);
+          detectingRef.child(snapshot.key).child('results').set(resultsJson);
           
           console.log('Message detected and results saved to database.');
 

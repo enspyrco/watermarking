@@ -23,10 +23,10 @@ int main(int argc, const char * argv[]) {
         return -1;
     }
     
-    std::string entryUid = argv[argc-3];
+    std::string uid = argv[argc-3]; // the userid, used in the file path for saving results 
     std::string originalFilePath = argv[argc-2];
     std::string markedFilePath = argv[argc-1];
-    std::string outputFilePath = "/tmp/"+entryUid+".json";
+    std::string outputFilePath = "/tmp/"+uid+".json";
 
     int p, k, maxX, maxY, imgRows, imgCols;
     double ms, peak2rms, maxVal; 
