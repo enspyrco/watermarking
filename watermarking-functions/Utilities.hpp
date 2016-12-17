@@ -16,4 +16,6 @@ void saveImageToFile(std::string file_name, cv::Mat& imageMat);
 int largestPrimeFor(cv::Mat& imgMat);
 void findShiftAndPSNR(double* array, int array_len, double& peak2rms, int& shift);
 
+int outputResultsFile(std::string message, std::string filePath);
+
 #endif /* Utilities_hpp */
