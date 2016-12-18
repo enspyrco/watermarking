@@ -111,23 +111,10 @@ void findShiftAndPSNR(double* correlation_vals, int array_len, double& peak2rms,
 // write out a json file with the message to the specified path 
 int outputResultsFile(std::string message, std::string filePath) {
     
-//    // write the results out to a file
-//    std::ofstream out(filePath.c_str());
-//    out << "{\"message\" : \""+message+"\"}";
-//    
-//    out.close();
-//    
-//    return 0;
-    
     nlohmann::json j;
     j["message"] = message;
     
-//    // read a JSON file
-//    std::ifstream i("file.json");
-//    json j;
-//    i >> j;
-    
-    // write prettified JSON to another file
+    // write prettified JSON to file
     std::ofstream o(filePath);
     o << std::setw(4) << j << std::endl;
     
