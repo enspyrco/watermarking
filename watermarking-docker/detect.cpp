@@ -6,9 +6,6 @@
 //  Copyright © 2016 ENSPYR. All rights reserved.
 //
 
-#include <iostream>
-#include <fstream>
-
 #include <opencv2/opencv.hpp>
 
 #include "watermarking-functions/Utilities.hpp"
@@ -28,15 +25,19 @@ int main(int argc, const char * argv[]) {
     std::string markedFilePath = argv[argc-1];
     std::string outputFilePath = "/tmp/"+uid+".json";
 
+    std::cout << "user with id " << uid << ", detecting message in marked image at " << markedFilePath <<  std::endl;
+
     int p, k, maxX, maxY, imgRows, imgCols;
     double ms, peak2rms, maxVal; 
     std::vector<int> shifts; 
     std::vector<double> psnrs; 
     
     // read in images and convert to 3 channel BGR
-    
+
     cv::Mat original = cv::imread(originalFilePath, cv::IMREAD_COLOR);
     cv::Mat marked = cv::imread(markedFilePath, cv::IMREAD_COLOR);
+
+    std::cout << "images read in and converted to 3 channel BGR " << std::endl;
 
     // check original and marked images are of equal size 
     if(original.rows != marked.rows || original.cols != marked.cols) {
@@ -50,6 +51,7 @@ int main(int argc, const char * argv[]) {
     // calculate the largest prime for this image
     p = largestPrimeFor(original);
     
+    std::cout << "largest prime was found to be " << p << std::endl;
     
     // convert images to HSV
     
@@ -132,11 +134,7 @@ int main(int argc, const char * argv[]) {
         messageStr = getASCII(shifts, p*p); 
     }
 
-    // write the results out to a file 
-    std::ofstream out(outputFilePath.c_str());
-    out << "{\"message\" : \""+messageStr+"\"}";
-
-    out.close();
+    outputResultsFile(messageStr, outputFilePath);
 
     return 0;
 
