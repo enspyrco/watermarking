@@ -1,9 +1,14 @@
-var firebase = require("firebase");
+
+var https = require('https');
+
+var Queue = require('firebase-queue');
+var admin = require('firebase-admin');
 
 // Initialize the app with a service account, granting admin privileges
-firebase.initializeApp({
-  databaseURL: "https://watermarking-print-and-scan.firebaseio.com/",
-  serviceAccount: "/keys/WatermarkingPrintAndScan-8705059a4ba1.json" 
+var serviceAccount = require('/keys/WatermarkingPrintAndScan-8705059a4ba1.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://watermarking-print-and-scan.firebaseio.com"
 });
 
 // setup variables for running shell script and reading files 
@@ -13,9 +18,8 @@ var fs = require('fs');
 
 // Setup variables for db access 
 // As an admin, the app has access to read and write all data, regardless of Security Rules
-var db = firebase.database();
-var markingRef = db.ref("marking/incomplete");
-var incompleteMarkingLogsRef = db.ref("logs/marking/incomplete");
+var markingRef = admin.database().ref("marking/incomplete");
+var incompleteMarkingLogsRef = admin.database().ref("logs/marking/incomplete");
 
 console.log('Setting up listeners...');
 
@@ -89,8 +93,8 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
           console.log('Uploaded marked image.\n'+stdout);
           
           // Create a new 'marked' entry 
-          var markedImagesRef = db.ref("/marked-images/");
-          markedImagesRef.child(snapshot.key).push({
+          var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
+          markedImagesRef.push({
             message: markingEntry.message,
             name: markingEntry.name,
             path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
@@ -109,8 +113,8 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
   }
 });
 
-var detectingRef = db.ref("detecting/incomplete");
-var incompleteDetectingLogsRef = db.ref("logs/detecting/incomplete");
+var detectingRef = admin.database().ref("detecting/incomplete");
+var incompleteDetectingLogsRef = admin.database().ref("logs/detecting/incomplete");
 // Retrieve new 'detect' entries as they are added to our database 
 detectingRef.on("child_added", function(snapshot, prevChildKey) {
   var detectingEntry = snapshot.val();
@@ -195,4 +199,51 @@ detectingRef.on("child_added", function(snapshot, prevChildKey) {
   }
 });
 
+console.log('Listeners initialised. Setting up queue...');
+
+var queueRef = admin.database().ref('queue');
+var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
+  
+  // Get a reference to the image's db entry 
+  var originalImageRef = admin.database().ref("original-images/"+data.uid+"/"+data.imageKey);
+  
+  console.log("Task added to queue: "+data);
+
+  var options = {
+    host: 'watermarking-print-and-scan.appspot.com',
+    path: '/serving-url?path='+encodeURI(data.path),
+    headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
+  };
+
+  callback = function(response) {
+  
+    var str = '';
+
+    //another chunk of data has been recieved, so append it to `str`
+    response.on('data', function (chunk) {
+  
+      str += chunk;
+
+    });
+
+    //the whole response has been recieved, so we just print it out here
+    response.on('end', function () {
+      
+      console.log("Serving URL was obtained: "+str);
+
+      originalImageRef.update({
+        'servingUrl': str
+      });
+
+      resolve();
+
+    });
+  
+  };
+
+  https.request(options, callback).end();
+
+});
+
+console.log('Queue setup finished.');
 
