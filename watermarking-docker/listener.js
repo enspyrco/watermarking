@@ -4,6 +4,8 @@ var https = require('https');
 var Queue = require('firebase-queue');
 var admin = require('firebase-admin');
 
+var tools = require('./tools');
+
 // Initialize the app with a service account, granting admin privileges
 var serviceAccount = require('/keys/WatermarkingPrintAndScan-8705059a4ba1.json');
 admin.initializeApp({
@@ -92,6 +94,42 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
           // Pass out stdout for docker log 
           console.log('Uploaded marked image.\n'+stdout);
           
+
+          var options = {
+            host: 'watermarking-print-and-scan.appspot.com',
+            path: '/serving-url?path='+encodeURI(data.path),
+            headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
+          };
+
+          callback = function(response) {
+          
+            var str = '';
+
+            //another chunk of data has been recieved, so append it to `str`
+            response.on('data', function (chunk) {
+          
+              str += chunk;
+
+            });
+
+            //the whole response has been recieved, so we just print it out here
+            response.on('end', function () {
+              
+              console.log("Serving URL was obtained: "+str);
+
+              originalImageRef.update({
+                'servingUrl': str
+              });
+
+              resolve();
+
+            });
+          
+          };
+
+          https.request(options, callback).end();
+
+  
           // Create a new 'marked' entry 
           var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
           markedImagesRef.push({
