@@ -4,7 +4,7 @@ var https = require('https');
 var Queue = require('firebase-queue');
 var admin = require('firebase-admin');
 
-var tools = require('./tools');
+// var tools = require('./tools');
 
 // Initialize the app with a service account, granting admin privileges
 var serviceAccount = require('/keys/WatermarkingPrintAndScan-8705059a4ba1.json');
@@ -83,7 +83,9 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
 
         console.log("Uploading marked image...");
 
-        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png'], function(error, stdout, stderr){
+        var markedFileGCSPath = 'marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png';
+
+        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
       
           if (error) { // update the db entry with the error 
             markingRef.child(snapshot.key).child('error').set('Error uploading marked image: '+error);
@@ -97,7 +99,7 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
 
           var options = {
             host: 'watermarking-print-and-scan.appspot.com',
-            path: '/serving-url?path='+encodeURI(data.path),
+            path: '/serving-url?path='+encodeURI(markedFileGCSPath),
             headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
           };
 
@@ -117,30 +119,24 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
               
               console.log("Serving URL was obtained: "+str);
 
-              originalImageRef.update({
-                'servingUrl': str
+              // Create a new 'marked' entry 
+              var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
+              markedImagesRef.push({
+                message: markingEntry.message,
+                name: markingEntry.name,
+                path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
+                strength: markingEntry.strength, 
+                servingUrl: str
               });
-
-              resolve();
+              
+              // Remove the 'marking' entry 
+              markingRef.set(null);
 
             });
           
           };
 
           https.request(options, callback).end();
-
-  
-          // Create a new 'marked' entry 
-          var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
-          markedImagesRef.push({
-            message: markingEntry.message,
-            name: markingEntry.name,
-            path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
-            strength: markingEntry.strength
-          });
-          
-          // Remove the 'marking' entry 
-          markingRef.set(null);
 
         });
 
