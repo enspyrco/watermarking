@@ -119,6 +119,10 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
               
               console.log("Serving URL was obtained: "+str);
 
+              // change to https and remove newline 
+              str = str.replace('http:', 'https:');
+              str = str.replace(/\n$/, '');
+
               // Create a new 'marked' entry 
               var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
               markedImagesRef.push({
@@ -264,6 +268,10 @@ var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
     response.on('end', function () {
       
       console.log("Serving URL was obtained: "+str);
+
+      // change to https and remove newline 
+      str = str.replace('http:', 'https:');
+      str = str.replace(/\n$/, '');
 
       originalImageRef.update({
         'servingUrl': str
