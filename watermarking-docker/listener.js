@@ -287,5 +287,31 @@ var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
 
 });
 
+var verifyUsersQueueOptions = {
+  'specId': 'spec_1'
+};
+var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(data, progress, resolve, reject) {
+  
+  console.log('Verifying user with id: '+data.uid);
+
+  // Get a reference to the users section of the db 
+  var userRef = admin.database().ref("users").child(data.uid);
+
+  // create an entry to indicate user is verified 
+  userRef.set({
+    name: data.name,
+    email: data.email
+  });
+
+  // remove the request 
+  var requestRef = admin.database().ref("user-requests").child(data.uid);
+  requestRef.set(null);
+
+  console.log('Verifed.');
+
+  resolve();
+
+});
+
 console.log('Queue setup finished.');
 
