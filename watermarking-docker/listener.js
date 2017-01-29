@@ -1,10 +1,8 @@
 
-var https = require('https');
-
 var Queue = require('firebase-queue');
 var admin = require('firebase-admin');
 
-// var tools = require('./tools');
+var tools = require('./tools');
 
 // Initialize the app with a service account, granting admin privileges
 var serviceAccount = require('/keys/WatermarkingPrintAndScan-8705059a4ba1.json');
@@ -95,34 +93,8 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
 
           // Pass out stdout for docker log 
           console.log('Uploaded marked image.\n'+stdout);
-          
 
-          var options = {
-            host: 'watermarking-print-and-scan.appspot.com',
-            path: '/serving-url?path='+encodeURI(markedFileGCSPath),
-            headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
-          };
-
-          callback = function(response) {
-          
-            var str = '';
-
-            //another chunk of data has been recieved, so append it to `str`
-            response.on('data', function (chunk) {
-          
-              str += chunk;
-
-            });
-
-            //the whole response has been recieved, so we just print it out here
-            response.on('end', function () {
-              
-              console.log("Serving URL was obtained: "+str);
-
-              // change to https and remove newline 
-              str = str.replace('http:', 'https:');
-              str = str.replace(/\n$/, '');
-
+          var updateBDCallback = function(urlString) {
               // Create a new 'marked' entry 
               var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
               markedImagesRef.push({
@@ -130,17 +102,15 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
                 name: markingEntry.name,
                 path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
                 strength: markingEntry.strength, 
-                servingUrl: str
+                servingUrl: urlString
               });
               
               // Remove the 'marking' entry 
-              markingRef.set(null);
-
-            });
-          
+              markingRef.set(null); 
+              
           };
 
-          https.request(options, callback).end();
+          tools.getServingUrl(markedFileGCSPath, updateBDCallback);
 
         });
 
@@ -241,49 +211,23 @@ console.log('Listeners initialised. Setting up queue...');
 
 var queueRef = admin.database().ref('queue');
 var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
-  
-  // Get a reference to the image's db entry 
-  var originalImageRef = admin.database().ref("original-images/"+data.uid+"/"+data.imageKey);
-  
+
   console.log("Task added to queue: "+data);
 
-  var options = {
-    host: 'watermarking-print-and-scan.appspot.com',
-    path: '/serving-url?path='+encodeURI(data.path),
-    headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
-  };
+  var updateDBCallback = function(urlString) {
 
-  callback = function(response) {
-  
-    var str = '';
+    // Get a reference to the image's db entry 
+    var originalImageRef = admin.database().ref("original-images/"+data.uid+"/"+data.imageKey);
 
-    //another chunk of data has been recieved, so append it to `str`
-    response.on('data', function (chunk) {
-  
-      str += chunk;
-
+    originalImageRef.update({
+      'servingUrl': urlString
     });
 
-    //the whole response has been recieved, so we just print it out here
-    response.on('end', function () {
-      
-      console.log("Serving URL was obtained: "+str);
+    resolve();
 
-      // change to https and remove newline 
-      str = str.replace('http:', 'https:');
-      str = str.replace(/\n$/, '');
-
-      originalImageRef.update({
-        'servingUrl': str
-      });
-
-      resolve();
-
-    });
-  
   };
 
-  https.request(options, callback).end();
+  tools.getServingUrl(data.path, updateDBCallback);
 
 });
 

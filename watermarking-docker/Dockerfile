@@ -19,5 +19,6 @@ RUN g++ detect.cpp -std=c++11 watermarking-functions/WatermarkDetection.cpp wate
 
 # copy the listener node app 
 COPY listener.js /listener.js
+COPY tools.js /tools.js
 
 CMD ["nodejs", "listener.js"]
