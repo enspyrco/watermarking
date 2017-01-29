@@ -107,7 +107,7 @@ markingRef.on("child_added", function(snapshot, prevChildKey) {
               
               // Remove the 'marking' entry 
               markingRef.set(null); 
-              
+
           };
 
           tools.getServingUrl(markedFileGCSPath, updateBDCallback);
@@ -252,6 +252,30 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
   requestRef.set(null);
 
   console.log('Verifed.');
+
+  resolve();
+
+});
+
+var markingQueueOptions = {
+  'specId': 'markImageSpec'
+};
+var markingQueue = new Queue(queueRef, markingQueueOptions, function(data, progress, resolve, reject) {
+  
+  console.log('Marking image named: '+data.name+' at location: '+data.path);
+
+  // create a timestamp so we can store the marked image with a unique path 
+  var timestamp = String(Date.now());
+  var filePath = '/tmp/'+timestamp+'/'+data.name;
+
+  console.log('Saving file for marking to server at: '+filePath); 
+
+  // execFile: executes a file with the specified arguments
+  execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.path, filePath], function(error, stdout, stderr){
+
+    
+
+  });
 
   resolve();
 
