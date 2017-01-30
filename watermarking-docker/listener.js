@@ -1,128 +1,22 @@
 
+
+var firebaseAdminSingleton = require('./firebase-admin-singleton');
+var firebaseAdmin = firebaseAdminSingleton.getAdmin();
+
 var Queue = require('firebase-queue');
-var admin = require('firebase-admin');
+// var admin = require('firebase-admin');
 
 var tools = require('./tools');
+var markingQueues = require('./marking-queues');
 
-// Initialize the app with a service account, granting admin privileges
-var serviceAccount = require('/keys/WatermarkingPrintAndScan-8705059a4ba1.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://watermarking-print-and-scan.firebaseio.com"
-});
+markingQueues.setup(); 
 
 // setup variables for running shell script and reading files 
-var sys = require('util');
 var execFile = require('child_process').execFile;
 var fs = require('fs');
 
-// Setup variables for db access 
-// As an admin, the app has access to read and write all data, regardless of Security Rules
-var markingRef = admin.database().ref("marking/incomplete");
-var incompleteMarkingLogsRef = admin.database().ref("logs/marking/incomplete");
-
-console.log('Setting up listeners...');
-
-// Retrieve new 'marking' entries as they are added to our database 
-markingRef.on("child_added", function(snapshot, prevChildKey) {
-  var markingEntry = snapshot.val();
-  if(markingEntry.path !== null) {
-
-    // check if there has already been an attempt 
-    if(markingEntry.attempts > 0) {
-      // log the problematic entry 
-      console.log("A previous attempt was already made to mark the file "+markingEntry.name);
-      console.log("Incomplete marking entry is being removed and logged.");
-      incompleteMarkingLogsRef.push(markingEntry);
-      // remove the problematic entry 
-      markingRef.set(null);
-      return;
-    }
-    
-    // increment the attempts 
-    markingRef.child(snapshot.key).child('attempts').set(markingEntry.attempts+1); 
-
-    markingRef.child(snapshot.key).child('progress').set('Server has received request and is downloading original image...');
-
-    // create a timestamp so we can store the marked image with a unique path 
-    var timestamp = String(Date.now());
-    var filePath = '/tmp/'+snapshot.key+'/'+markingEntry.name;
-
-    console.log("Saving file for marking, from gcs at location \'"+markingEntry.path+"\', to \'"+filePath+"\'."); 
-
-    // execFile: executes a file with the specified arguments
-    execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+markingEntry.path, filePath], function(error, stdout, stderr){
-      
-      if (error) { // update the db entry with the error 
-        markingRef.child(snapshot.key).child('error').set('Error downloading original image: '+error);
-        console.log('Error downloading original image: '+error);
-        return;
-      }
-      
-      // Pass out stdout for docker log 
-      console.log('Downloaded image.\n'+stdout);
-      // Update progress for webapp UI 
-      markingRef.child(snapshot.key).child('progress').set('Server downloaded image, now marking...');
-
-      console.log("Marking image with message \'"+markingEntry.message+"\' at strength "+markingEntry.strength); 
-
-      execFile('./mark-image', [filePath, markingEntry.name, markingEntry.message, markingEntry.strength], function(error, stdout, stderr){
-      
-        if (error) { // update the db entry with the error 
-          markingRef.child(snapshot.key).child('error').set('Error marking image: '+error);
-          console.log('Error marking image: '+error);
-          return;
-        }
-
-        // Pass out stdout for docker log 
-        console.log('Marked image.\n'+stdout);
-        // Update progress for webapp UI 
-        markingRef.child(snapshot.key).child('progress').set('Server completed marking, uploading marked image...');
-
-        console.log("Uploading marked image...");
-
-        var markedFileGCSPath = 'marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png';
-
-        execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
-      
-          if (error) { // update the db entry with the error 
-            markingRef.child(snapshot.key).child('error').set('Error uploading marked image: '+error);
-            console.log('Error uploading marked image: '+error);
-            return;
-          }
-
-          // Pass out stdout for docker log 
-          console.log('Uploaded marked image.\n'+stdout);
-
-          var updateBDCallback = function(urlString) {
-              // Create a new 'marked' entry 
-              var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
-              markedImagesRef.push({
-                message: markingEntry.message,
-                name: markingEntry.name,
-                path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
-                strength: markingEntry.strength, 
-                servingUrl: urlString
-              });
-              
-              // Remove the 'marking' entry 
-              markingRef.set(null); 
-
-          };
-
-          tools.getServingUrl(markedFileGCSPath, updateBDCallback);
-
-        });
-
-      });
-
-    });
-
-  }
-});
-
-var detectingRef = admin.database().ref("detecting/incomplete");
-var incompleteDetectingLogsRef = admin.database().ref("logs/detecting/incomplete");
+var detectingRef = firebaseAdmin.database().ref("detecting/incomplete");
+var incompleteDetectingLogsRef = firebaseAdmin.database().ref("logs/detecting/incomplete");
 // Retrieve new 'detect' entries as they are added to our database 
 detectingRef.on("child_added", function(snapshot, prevChildKey) {
   var detectingEntry = snapshot.val();
@@ -209,7 +103,7 @@ detectingRef.on("child_added", function(snapshot, prevChildKey) {
 
 console.log('Listeners initialised. Setting up queue...');
 
-var queueRef = admin.database().ref('queue');
+var queueRef = firebaseAdmin.database().ref('queue');
 var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
 
   console.log("Task added to queue: "+data);
@@ -217,7 +111,7 @@ var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
   var updateDBCallback = function(urlString) {
 
     // Get a reference to the image's db entry 
-    var originalImageRef = admin.database().ref("original-images/"+data.uid+"/"+data.imageKey);
+    var originalImageRef = firebaseAdmin.database().ref("original-images/"+data.uid+"/"+data.imageKey);
 
     originalImageRef.update({
       'servingUrl': urlString
@@ -239,7 +133,7 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
   console.log('Verifying user with id: '+data.uid);
 
   // Get a reference to the users section of the db 
-  var userRef = admin.database().ref("users").child(data.uid);
+  var userRef = firebaseAdmin.database().ref("users").child(data.uid);
 
   // create an entry to indicate user is verified 
   userRef.set({
@@ -248,7 +142,7 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
   });
 
   // remove the request 
-  var requestRef = admin.database().ref("user-requests").child(data.uid);
+  var requestRef = firebaseAdmin.database().ref("user-requests").child(data.uid);
   requestRef.set(null);
 
   console.log('Verifed.');
@@ -257,90 +151,7 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
 
 });
 
-var downloadForMarkingQueueOptions = {
-  'specId': 'download_for_marking_spec'
-};
-var downloadForMarkingQueue = new Queue(queueRef, downloadForMarkingQueueOptions, function(data, progress, resolve, reject) {
-  
-  console.log('Downloading image named: '+data.name+' for marking, from gcs at location: '+data.path);
 
-  // create a timestamp so we can store the marked image with a unique path 
-  var timestamp = String(Date.now());
-  var filePath = '/tmp/'+timestamp+'/'+data.name;
-
-  console.log('Saving file for marking onto the server at location: '+filePath); 
-
-  // execFile: executes a file with the specified arguments
-  execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.path, filePath], function(error, stdout, stderr){
-
-    if (error) reject(error); 
-
-    data.filePath = filePath; 
-    data.timestamp = timestamp;
-    data._new_state = 'download_for_marking_spec_finished';
-    resolve(data);
-
-  });
-
-});
-
-var markImageQueueOptions = {
-  'specId': 'mark_image_spec'
-};
-var markImageQueue = new Queue(queueRef, markImageQueueOptions, function(data, progress, resolve, reject) {
-  
-  console.log('Marking image at location: '+data.filePath+' with message '+data.message+' at strength '+data.strength);
-
-  execFile('./mark-image', [data.filePath, data.name, data.message, data.strength], function(error, stdout, stderr){
-      
-    if (error) reject(error); 
-
-    // Pass out stdout for docker log 
-    console.log('Marked image.\n'+stdout);
-
-    data._new_state = 'mark_image_spec_finished';
-    resolve(data); 
-
-  });
-
-});
-
-var uploadMarkedImageQueueOptions = {
-  'specId': 'upload_marked_image_spec'
-};
-var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, function(data, progress, resolve, reject) {
-  
-  console.log("Uploading marked image...");
-
-  var markedFileGCSPath = 'marked-images/'+data.uid+'/'+data.timestamp+'/'+data.name+'.png';
-
-  execFile('gsutil', ['cp', data.filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
-      
-    if (error) reject(error); 
-
-    // Pass out stdout for docker log 
-    console.log('Uploaded marked image.\n'+stdout);
-
-    var updateBDCallback = function(urlString) {
-        // Create a new 'marked' entry 
-        var markedImageRef = admin.database().ref('/original-images/'+data.uid+'/'+data.imageSetKey+'/marked-images/'+data.markedImageKey);
-        markedImageRef.update({
-          message: data.message,
-          name: data.name,
-          path: markedFileGCSPath,
-          strength: data.strength, 
-          servingUrl: urlString
-        });
-        
-        resolve();
-
-    };
-
-    tools.getServingUrl(markedFileGCSPath, updateBDCallback);
-
-  });
-
-});
 
 console.log('Queue setup finished.');
 
