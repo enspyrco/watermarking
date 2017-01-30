@@ -276,6 +276,7 @@ var downloadForMarkingQueue = new Queue(queueRef, downloadForMarkingQueueOptions
     if (error) reject(error); 
 
     data.filePath = filePath; 
+    data.timestamp = timestamp;
     data._new_state = 'download_for_marking_spec_finished';
     resolve(data);
 
@@ -311,9 +312,9 @@ var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, 
   
   console.log("Uploading marked image...");
 
-  var markedFileGCSPath = 'marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png';
+  var markedFileGCSPath = 'marked-images/'+data.uid+'/'+data.timestamp+'/'+data.name+'.png';
 
-  execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
+  execFile('gsutil', ['cp', data.filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
       
     if (error) reject(error); 
 
@@ -322,12 +323,12 @@ var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, 
 
     var updateBDCallback = function(urlString) {
         // Create a new 'marked' entry 
-        var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
-        markedImagesRef.push({
-          message: markingEntry.message,
-          name: markingEntry.name,
-          path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
-          strength: markingEntry.strength, 
+        var markedImageRef = admin.database().ref('/original-images/'+data.uid+'/'+data.imageSetKey+'/marked-images/'+data.markedImageKey);
+        markedImageRef.update({
+          message: data.message,
+          name: data.name,
+          path: markedFileGCSPath,
+          strength: data.strength, 
           servingUrl: urlString
         });
         
