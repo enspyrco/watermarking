@@ -257,27 +257,87 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
 
 });
 
-var markingQueueOptions = {
-  'specId': 'markImageSpec'
+var downloadForMarkingQueueOptions = {
+  'specId': 'download_for_marking_spec'
 };
-var markingQueue = new Queue(queueRef, markingQueueOptions, function(data, progress, resolve, reject) {
+var downloadForMarkingQueue = new Queue(queueRef, downloadForMarkingQueueOptions, function(data, progress, resolve, reject) {
   
-  console.log('Marking image named: '+data.name+' at location: '+data.path);
+  console.log('Downloading image named: '+data.name+' for marking, from gcs at location: '+data.path);
 
   // create a timestamp so we can store the marked image with a unique path 
   var timestamp = String(Date.now());
   var filePath = '/tmp/'+timestamp+'/'+data.name;
 
-  console.log('Saving file for marking to server at: '+filePath); 
+  console.log('Saving file for marking onto the server at location: '+filePath); 
 
   // execFile: executes a file with the specified arguments
   execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.path, filePath], function(error, stdout, stderr){
 
-    
+    if (error) reject(error); 
+
+    data.filePath = filePath; 
+    data._new_state = 'download_for_marking_spec_finished';
+    resolve(data);
 
   });
 
-  resolve();
+});
+
+var markImageQueueOptions = {
+  'specId': 'mark_image_spec'
+};
+var markImageQueue = new Queue(queueRef, markImageQueueOptions, function(data, progress, resolve, reject) {
+  
+  console.log('Marking image at location: '+data.filePath+' with message '+data.message+' at strength '+data.strength);
+
+  execFile('./mark-image', [data.filePath, data.name, data.message, data.strength], function(error, stdout, stderr){
+      
+    if (error) reject(error); 
+
+    // Pass out stdout for docker log 
+    console.log('Marked image.\n'+stdout);
+
+    data._new_state = 'mark_image_spec_finished';
+    resolve(data); 
+
+  });
+
+});
+
+var uploadMarkedImageQueueOptions = {
+  'specId': 'upload_marked_image_spec'
+};
+var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, function(data, progress, resolve, reject) {
+  
+  console.log("Uploading marked image...");
+
+  var markedFileGCSPath = 'marked-images/'+snapshot.key+'/'+timestamp+'/'+markingEntry.name+'.png';
+
+  execFile('gsutil', ['cp', filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
+      
+    if (error) reject(error); 
+
+    // Pass out stdout for docker log 
+    console.log('Uploaded marked image.\n'+stdout);
+
+    var updateBDCallback = function(urlString) {
+        // Create a new 'marked' entry 
+        var markedImagesRef = admin.database().ref('/original-images/'+snapshot.key+'/'+markingEntry.imageSetKey+'/marked-images/');
+        markedImagesRef.push({
+          message: markingEntry.message,
+          name: markingEntry.name,
+          path: "marked-images/" + snapshot.key + "/" + timestamp + "/" + markingEntry.name + ".png",
+          strength: markingEntry.strength, 
+          servingUrl: urlString
+        });
+        
+        resolve();
+
+    };
+
+    tools.getServingUrl(markedFileGCSPath, updateBDCallback);
+
+  });
 
 });
 
