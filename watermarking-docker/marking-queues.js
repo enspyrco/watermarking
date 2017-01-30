@@ -18,6 +18,12 @@ module.exports = {
 
 		console.log('Setting up marking queues.');
 
+		/////////////////////////////////////////////////////
+		//
+		// first marking queue - downloads image 
+		// 
+		/////////////////////////////////////////////////////
+
 		var downloadForMarkingQueueOptions = {
 		  'specId': 'download_for_marking_spec'
 		};
@@ -45,6 +51,12 @@ module.exports = {
 
 		});
 
+		/////////////////////////////////////////////////////
+		//
+		// second marking queue - marks image 
+		// 
+		/////////////////////////////////////////////////////
+
 		var markImageQueueOptions = {
 		  'specId': 'mark_image_spec'
 		};
@@ -65,6 +77,12 @@ module.exports = {
 		  });
 
 		});
+
+		/////////////////////////////////////////////////////
+		//
+		// third marking queue - uploads marked image 
+		// 
+		/////////////////////////////////////////////////////
 
 		var uploadMarkedImageQueueOptions = {
 		  'specId': 'upload_marked_image_spec'
