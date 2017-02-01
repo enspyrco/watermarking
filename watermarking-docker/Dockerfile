@@ -21,6 +21,7 @@ RUN g++ detect.cpp -std=c++11 watermarking-functions/WatermarkDetection.cpp wate
 COPY listener.js /listener.js
 COPY tools.js /tools.js
 COPY marking-queues.js /marking-queues.js
+COPY detection-queues.js /detection-queues.js
 COPY firebase-admin-singleton.js /firebase-admin-singleton.js 
 
 CMD ["nodejs", "listener.js"]
