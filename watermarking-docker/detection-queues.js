@@ -115,6 +115,7 @@ module.exports = {
 	          
 	          	// Update progress for webapp UI 
 	          	detectingRef.child(data.uid).child('progress').set('Detection complete.');
+	          	detectingRef.child(data.uid).child('isDetecting').set(false);
 	          	detectingRef.child(data.uid).child('results').set(resultsJson);
 	          
 	          	console.log('Message detected and results saved to database.');
