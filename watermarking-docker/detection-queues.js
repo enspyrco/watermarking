@@ -108,19 +108,38 @@ module.exports = {
     
 	          	if (error) reject(error); 
 
-	          	// Read in the output.json file 
-	          	var resultsJson = JSON.parse(fs.readFileSync('/tmp/'+data.uid+'.json', 'utf8'));
+	       	}).on('exit', code => {
 
-	          	console.log('Detected watermark.');
-	          
-	          	// Update progress for webapp UI 
-	          	detectingRef.child(data.uid).child('progress').set('Detection complete.');
-	          	detectingRef.child(data.uid).child('isDetecting').set(false);
-	          	detectingRef.child(data.uid).child('results').set(resultsJson);
-	          
-	          	console.log('Message detected and results saved to database.');
+	       		console.log('final exit code is', code);
 
-	          	resolve();
+	       		if(code == 254) {
+
+	       			console.log('Error - the marked and original images were of different sizes.')
+	       			// Update progress for webapp UI 
+	          		detectingRef.child(data.uid).child('progress').set('Detection unsuccessful.');
+	          		detectingRef.child(data.uid).child('isDetecting').set(false);
+	          		detectingRef.child(data.uid).child('error').set('Different sizes for marked and original images');
+
+	       			reject('Error - different sizes for marked and original images.'); 
+	       		}
+	       		else if(code == 0) {
+
+	       			// Read in the output.json file 
+	          		var resultsJson = JSON.parse(fs.readFileSync('/tmp/'+data.uid+'.json', 'utf8'));
+
+	          		console.log('Detected watermark.');
+	          
+		          	// Update progress for webapp UI 
+		          	detectingRef.child(data.uid).child('progress').set('Detection complete.');
+		          	detectingRef.child(data.uid).child('isDetecting').set(false);
+		          	detectingRef.child(data.uid).child('results').set(resultsJson);
+		          
+		          	console.log('Message detected and results saved to database.');
+
+		          	resolve();
+
+	       		}
+	       		
 
 	       	});
 
