@@ -2,6 +2,10 @@
 // ========
 
 var https = require('https');
+var twilio = require('twilio');
+
+var twilioAccountSid = 'TWILIO_ACCOUNT_SID_REMOVED'; // Account SID from www.twilio.com/console
+var twilioAuthToken = 'TWILIO_AUTH_TOKEN_REMOVED';   // Auth Token from www.twilio.com/console
 
 module.exports = {
   
@@ -42,7 +46,31 @@ module.exports = {
   	https.request(options, callback).end();
     
   },
-  bar: function () {
-    // whatever
+
+  sendSMStoAndrew: function (smsMessage) {
+
+  	var client = new twilio.RestClient(twilioAccountSid, twilioAuthToken);
+
+	client.messages.create({
+    	body: smsMessage,
+    	to: '+61419373730',  // Text this number
+    	from: '+61437738868' // From a valid Twilio number
+	}, function(err, message) {
+    	console.log(message.sid);
+	});
   }
+
+  sendSMStoNick: function (smsMessage) {
+
+  	var client = new twilio.RestClient(twilioAccountSid, twilioAuthToken);
+
+	client.messages.create({
+    	body: smsMessage,
+    	to: '+61447591141',  // Text this number
+    	from: '+61437738868' // From a valid Twilio number
+	}, function(err, message) {
+    	console.log(message.sid);
+	});
+  }
+
 };

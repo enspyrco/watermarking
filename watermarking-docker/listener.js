@@ -53,7 +53,7 @@ var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
 // 
 /////////////////////////////////////////////////////
 var verifyUsersQueueOptions = {
-  'specId': 'spec_1'
+  'specId': 'verify_users_spec'
 };
 var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(data, progress, resolve, reject) {
   
@@ -75,6 +75,45 @@ var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(dat
   console.log('Verifed.');
 
   resolve();
+
+});
+
+/////////////////////////////////////////////////////
+//
+// notify admin queue - when user requests verification, notify admin via sms 
+// 
+/////////////////////////////////////////////////////
+var notifyAdminOfVerificationRequestOptions = {
+  'specId': 'notify_admin_of_verification_request_spec'
+};
+var notifyAdminOfVerificationRequest = new Queue(queueRef, notifyAdminOfVerificationRequestOptions, function(data, progress, resolve, reject) {
+  
+  console.log('Recevied request to verify user with id: '+data.uid);
+
+  // Get a reference to the users section of the db 
+  var requestRef = firebaseAdmin.database().ref("user-requests").child(data.uid);
+
+  // check if a notification has already been sent 
+  requestRef.once("value", function(requestData) {
+    
+    if(!requestData.notified) { // if none has been sent, send it 
+
+      // send the SMS 
+      tools.sendSMStoAndrew('Someone has requested access to the watermarking web app.');
+
+      // update the entry to indicate notifications has been sent 
+      requestRef.child('notified').update(true);
+
+      console.log('An SMS notification has been sent to Andrew.');
+
+    }
+    else {
+      console.log('A notification has already been sent.');
+    }
+
+    resolve();
+
+  });
 
 });
 
