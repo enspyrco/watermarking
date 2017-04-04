@@ -1,5 +1,8 @@
 FROM asia.gcr.io/watermarking-print-and-scan/wm2
 
+# this should be pulled out of here and added as a separate layer (note: previous layer also has an npm install, probably should pull that into separate layer as well, although that will mean rebuilding wm2)
+COPY package.json /package.json
+RUN npm install
 
 # marking and detection C++ programs 
 

@@ -58,7 +58,7 @@ module.exports = {
 	}, function(err, message) {
     	console.log(message.sid);
 	});
-  }
+  },
 
   sendSMStoNick: function (smsMessage) {
 

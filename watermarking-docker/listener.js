@@ -96,13 +96,15 @@ var notifyAdminOfVerificationRequest = new Queue(queueRef, notifyAdminOfVerifica
   // check if a notification has already been sent 
   requestRef.once("value", function(requestData) {
     
+    console.log('request data: '+ requestData);
+
     if(!requestData.notified) { // if none has been sent, send it 
 
       // send the SMS 
-      tools.sendSMStoAndrew('Someone has requested access to the watermarking web app.');
+      tools.sendSMStoNick('Someone has requested access to the watermarking web app.');
 
       // update the entry to indicate notifications has been sent 
-      requestRef.child('notified').update(true);
+      requestRef.update({notified: true});
 
       console.log('An SMS notification has been sent to Andrew.');
 
