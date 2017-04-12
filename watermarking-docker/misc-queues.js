@@ -23,9 +23,15 @@ module.exports = {
 		// 
 		/////////////////////////////////////////////////////
 		var getServingUrlQueueOptions = {
-		  'specId': 'get_serving_url_spec'
+		  'specId': 'get_serving_url_spec',
+		  'sanitize': false
 		};
-		var getServingUrlQueue = new Queue(queueRef, function(data, progress, resolve, reject) {
+		var getServingUrlQueue = new Queue(queueRef, getServingUrlQueueOptions, function(data, progress, resolve, reject) {
+
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in getServingUrlQueue.');
+		    reject();
+		  }
 
 		  console.log("Task added to queue: "+data);
 
@@ -52,10 +58,16 @@ module.exports = {
 		// 
 		/////////////////////////////////////////////////////
 		var verifyUsersQueueOptions = {
-		  'specId': 'verify_users_spec'
+		  'specId': 'verify_users_spec',
+		  'sanitize': false
 		};
 		var verifyUsersQueue = new Queue(queueRef, verifyUsersQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in verifyUsersQueue.');
+		    reject();
+		  }
+
 		  console.log('Verifying user with id: '+data.uid);
 
 		  // Get a reference to the users section of the db 
@@ -83,46 +95,44 @@ module.exports = {
 		// 
 		/////////////////////////////////////////////////////
 		var notifyAdminOfVerificationRequestOptions = {
-		  'specId': 'notify_admin_of_verification_request_spec'
+		  'specId': 'notify_admin_of_verification_request_spec',
+		  'sanitize': false
 		};
-		var notifyAdminOfVerificationRequest = new Queue(queueRef, notifyAdminOfVerificationRequestOptions, function(data, progress, resolve, reject) {
-		  
-		  if(data._error_details) {
-		    tools.sendSMStoNick('There was an error in notifyAdminOfVerificationRequest queue.');
+		var notifyAdminOfVerificationRequestQueue = new Queue(queueRef, notifyAdminOfVerificationRequestOptions, function(data, progress, resolve, reject) {
+
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in notifyAdminOfVerificationRequestQueue.');
 		    reject();
 		  }
 
-		  console.log('Recevied request to verify user with id: '+data.uid);
-
-		  return;
+		  console.log('Received request to verify user with id: '+data.uid);
 
 		  // Get a reference to the users section of the db 
 		  var requestRef = firebaseAdmin.database().ref("user-requests").child(data.uid);
 
 		  // check if a notification has already been sent 
-		  requestRef.once("value", function(snapshot) {
+		  requestRef.once("value", function(snapshot) {			
 
-		    if(!snapshot.val().notified) { // if none has been sent, send it 
+		  	if(!snapshot.val().notified) { // if none has been sent, send it 
 
-		      // send the SMS 
-		      tools.sendSMStoNick('Someone has requested access to the watermarking web app.');
+		  	  // send the SMS 
+			  tools.sendSMStoAndrew('Someone has requested access to the watermarking web app.');
 
-		      // update the entry to indicate notifications has been sent 
-		      requestRef.update({notified: true});
+			  // update the entry to indicate notifications has been sent 
+			  requestRef.update({notified: true});
 
-		      console.log('An SMS notification has been sent to Andrew.');
+			  console.log('An SMS notification has been sent to Andrew.');
 
-		    }
-		    else {
-		      console.log('A notification has already been sent.');
-		    }
+			}
+			else {
+			  console.log('A notification has already been sent.');
+			}
 
-		    resolve();
+			resolve();
 
 		  });
 
 		});
-		
 	}
 };
 

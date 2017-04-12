@@ -1,8 +1,4 @@
-FROM asia.gcr.io/watermarking-print-and-scan/wm2
-
-# this should be pulled out of here and added as a separate layer (note: previous layer also has an npm install, probably should pull that into separate layer as well, although that will mean rebuilding wm2)
-COPY package.json /package.json
-RUN npm install
+FROM asia.gcr.io/watermarking-print-and-scan/wm3
 
 # marking and detection C++ programs 
 
@@ -23,6 +19,7 @@ RUN g++ detect.cpp -std=c++11 watermarking-functions/WatermarkDetection.cpp wate
 # copy the listener node app 
 COPY listener.js /listener.js
 COPY tools.js /tools.js
+COPY misc-queues.js /misc-queues.js
 COPY marking-queues.js /marking-queues.js
 COPY detection-queues.js /detection-queues.js
 COPY firebase-admin-singleton.js /firebase-admin-singleton.js 

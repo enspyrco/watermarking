@@ -1,0 +1,7 @@
+FROM asia.gcr.io/watermarking-print-and-scan/wm2
+
+# this was taken out of the next layer's Dockerfile and added as a separate layer (note: previous layer also has an npm install, probably should pull that into this separate layer as well at some stage, although that will mean rebuilding wm2)
+
+# this will install twilio 
+COPY package.json /package.json
+RUN npm install

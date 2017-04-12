@@ -25,10 +25,16 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var downloadForMarkingQueueOptions = {
-		  'specId': 'download_for_marking_spec'
+		  'specId': 'download_for_marking_spec',
+		  'sanitize': false
 		};
 		var downloadForMarkingQueue = new Queue(queueRef, downloadForMarkingQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in downloadForMarkingQueue.');
+		    reject();
+		  }
+
 		  console.log('Downloading image named: '+data.name+' for marking, from gcs at location: '+data.path);
 
 		  // create a timestamp so we can store the marked image with a unique path 
@@ -58,10 +64,16 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var markImageQueueOptions = {
-		  'specId': 'mark_image_spec'
+		  'specId': 'mark_image_spec',
+		  'sanitize': false
 		};
 		var markImageQueue = new Queue(queueRef, markImageQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in markImageQueue.');
+		    reject();
+		  }
+
 		  console.log('Marking image at location: '+data.filePath+' with message '+data.message+' at strength '+data.strength);
 
 		  execFile('./mark-image', [data.filePath, data.name, data.message, data.strength], function(error, stdout, stderr){
@@ -85,9 +97,15 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var uploadMarkedImageQueueOptions = {
-		  'specId': 'upload_marked_image_spec'
+		  'specId': 'upload_marked_image_spec',
+		  'sanitize': false
 		};
 		var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, function(data, progress, resolve, reject) {
+		  
+		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    tools.sendSMStoNick('There was an error in uploadMarkedImageQueue.');
+		    reject();
+		  }
 		  
 		  console.log("Uploading marked image...");
 

@@ -28,10 +28,16 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var downloadOriginalQueueOptions = {
-		  'specId': 'download_original_spec'
+		  'specId': 'download_original_spec',
+		  'sanitize': false
 		};
 		var downloadOriginalQueue = new Queue(queueRef, downloadOriginalQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    	tools.sendSMStoNick('There was an error in downloadOriginalQueue.');
+		    	reject();
+		  	}
+
 			var originalPath = '/tmp/'+data.uid+'/original';
 
 			console.log('Downloading original image file for detection, from gcs at location '+data.pathOriginal+', to '+originalPath); 
@@ -65,10 +71,16 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var downloadMarkedQueueOptions = {
-		  'specId': 'download_marked_spec'
+		  'specId': 'download_marked_spec',
+		  'sanitize': false
 		};
 		var downloadMarkedQueue = new Queue(queueRef, downloadMarkedQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    	tools.sendSMStoNick('There was an error in downloadMarkedQueue.');
+		    	reject();
+		  	}
+
 			var markedPath = '/tmp/'+data.uid+'/marked';
 
 			console.log('Saving marked image file for detection, from gcs at location '+data.pathMarked+', to '+markedPath);
@@ -98,10 +110,16 @@ module.exports = {
 		/////////////////////////////////////////////////////
 
 		var performDetectionQueueOptions = {
-		  'specId': 'perform_detection_spec'
+		  'specId': 'perform_detection_spec',
+		  'sanitize': false
 		};
 		var performDetectionQueue = new Queue(queueRef, performDetectionQueueOptions, function(data, progress, resolve, reject) {
 		  
+		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
+		    	tools.sendSMStoNick('There was an error in performDetectionQueue.');
+		    	reject();
+		  	}
+
 		  	console.log('Detecting message...');
 
 		  	execFile('./detect-wm', [data.uid, data.originalPath, data.markedPath], function(error, stdout, stderr){
