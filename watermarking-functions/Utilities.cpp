@@ -108,6 +108,40 @@ void findShiftAndPSNR(double* correlation_vals, int array_len, double& peak2rms,
     
 }
 
+void scramble(double* array, int array_len, int key) {
+
+    srand(key);
+    double tmp; int index;
+    for (int i = array_len - 1; i > 0; i--) {
+        index = rand()%(i + 1);
+        double tmp = array[index];
+        array[index] = array[i];
+        array[i] = tmp;
+    }
+
+}
+
+void unscramble(double* array, int array_len, int key) {
+
+    // rebuild the random number sequence
+    srand(key);
+    int* randoms = new int[array_len-1];
+    int j = 0;
+    for (int i = array_len - 1; i > 0; i--) {
+        randoms[j++] = rand()%(i + 1);
+    }
+
+    // reverse the scramble - use the random values backwards 
+    double tmp; int index; 
+    for (int i = 1; i < array_len; i++) {
+        index = randoms[array_len - i - 1];
+        tmp = array[index];
+        array[index] = array[i];
+        array[i] = tmp;
+    }
+
+} 
+
 // write out a json file with the message to the specified path 
 int outputResultsFile(std::string message, std::string filePath) {
     
