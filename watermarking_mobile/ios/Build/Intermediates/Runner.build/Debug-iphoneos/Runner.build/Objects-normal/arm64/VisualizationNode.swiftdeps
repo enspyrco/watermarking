@@ -1,0 +1,529 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "VisualizationNode"
+- "VisualizationNodeDelegate"
+provides-nominal:
+- "6Runner17VisualizationNodeC"
+- "6Runner25VisualizationNodeDelegateP"
+provides-member:
+- ["6Runner17VisualizationNodeC", ""]
+- ["6Runner25VisualizationNodeDelegateP", ""]
+provides-dynamic-lookup:
+- "display"
+depends-top-level:
+- !private "-"
+- !private "/"
+- "AnyObject"
+- "AssignmentPrecedence"
+- "CGSize"
+- "CVPixelBuffer"
+- "FloatLiteralType"
+- !private "IntegerLiteralType"
+- "NSCoder"
+- "SCNNode"
+- !private "SCNTransaction"
+- !private "StringLiteralType"
+- !private "UIColor"
+- "VisualizationNode"
+- "VisualizationNodeDelegate"
+- !private "createPlaneNode"
+- !private "fatalError"
+depends-member:
+- !private ["s18AdditiveArithmeticP", "pi"]
+- !private ["SB", "pi"]
+- !private ["So11CVBufferRefa", "toCGImage"]
+- !private ["s7CVarArgP", "SCNTransaction"]
+- !private ["s7CVarArgP", "UIColor"]
+- ["s7CVarArgP", ""]
+- !private ["s7CVarArgP", "addChildNode"]
+- !private ["s7CVarArgP", "animationDuration"]
+- !private ["s7CVarArgP", "begin"]
+- !private ["s7CVarArgP", "clear"]
+- !private ["s7CVarArgP", "commit"]
+- !private ["s7CVarArgP", "completionBlock"]
+- !private ["s7CVarArgP", "contents"]
+- !private ["s7CVarArgP", "createPlaneNode"]
+- !private ["s7CVarArgP", "currentImage"]
+- !private ["s7CVarArgP", "delegate"]
+- !private ["s7CVarArgP", "diffuse"]
+- !private ["s7CVarArgP", "fadeDuration"]
+- !private ["s7CVarArgP", "fatalError"]
+- !private ["s7CVarArgP", "firstMaterial"]
+- !private ["s7CVarArgP", "geometry"]
+- !private ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "opacity"]
+- !private ["s7CVarArgP", "pi"]
+- !private ["s7CVarArgP", "previousImage"]
+- !private ["SL", "pi"]
+- !private ["s28CustomDebugStringConvertibleP", "SCNTransaction"]
+- !private ["s28CustomDebugStringConvertibleP", "UIColor"]
+- ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s28CustomDebugStringConvertibleP", "addChildNode"]
+- !private ["s28CustomDebugStringConvertibleP", "animationDuration"]
+- !private ["s28CustomDebugStringConvertibleP", "begin"]
+- !private ["s28CustomDebugStringConvertibleP", "clear"]
+- !private ["s28CustomDebugStringConvertibleP", "commit"]
+- !private ["s28CustomDebugStringConvertibleP", "completionBlock"]
+- !private ["s28CustomDebugStringConvertibleP", "contents"]
+- !private ["s28CustomDebugStringConvertibleP", "createPlaneNode"]
+- !private ["s28CustomDebugStringConvertibleP", "currentImage"]
+- !private ["s28CustomDebugStringConvertibleP", "delegate"]
+- !private ["s28CustomDebugStringConvertibleP", "diffuse"]
+- !private ["s28CustomDebugStringConvertibleP", "fadeDuration"]
+- !private ["s28CustomDebugStringConvertibleP", "fatalError"]
+- !private ["s28CustomDebugStringConvertibleP", "firstMaterial"]
+- !private ["s28CustomDebugStringConvertibleP", "geometry"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "opacity"]
+- !private ["s28CustomDebugStringConvertibleP", "pi"]
+- !private ["s28CustomDebugStringConvertibleP", "previousImage"]
+- !private ["s17CustomReflectableP", "pi"]
+- !private ["s23CustomStringConvertibleP", "SCNTransaction"]
+- !private ["s23CustomStringConvertibleP", "UIColor"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s23CustomStringConvertibleP", "addChildNode"]
+- !private ["s23CustomStringConvertibleP", "animationDuration"]
+- !private ["s23CustomStringConvertibleP", "begin"]
+- !private ["s23CustomStringConvertibleP", "clear"]
+- !private ["s23CustomStringConvertibleP", "commit"]
+- !private ["s23CustomStringConvertibleP", "completionBlock"]
+- !private ["s23CustomStringConvertibleP", "contents"]
+- !private ["s23CustomStringConvertibleP", "createPlaneNode"]
+- !private ["s23CustomStringConvertibleP", "currentImage"]
+- !private ["s23CustomStringConvertibleP", "delegate"]
+- !private ["s23CustomStringConvertibleP", "diffuse"]
+- !private ["s23CustomStringConvertibleP", "fadeDuration"]
+- !private ["s23CustomStringConvertibleP", "fatalError"]
+- !private ["s23CustomStringConvertibleP", "firstMaterial"]
+- !private ["s23CustomStringConvertibleP", "geometry"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "opacity"]
+- !private ["s23CustomStringConvertibleP", "pi"]
+- !private ["s23CustomStringConvertibleP", "previousImage"]
+- !private ["Se", "pi"]
+- !private ["Sd", "pi"]
+- !private ["SE", "pi"]
+- !private ["SQ", "SCNTransaction"]
+- !private ["SQ", "UIColor"]
+- ["SQ", ""]
+- !private ["SQ", "addChildNode"]
+- !private ["SQ", "animationDuration"]
+- !private ["SQ", "begin"]
+- !private ["SQ", "clear"]
+- !private ["SQ", "commit"]
+- !private ["SQ", "completionBlock"]
+- !private ["SQ", "contents"]
+- !private ["SQ", "createPlaneNode"]
+- !private ["SQ", "currentImage"]
+- !private ["SQ", "delegate"]
+- !private ["SQ", "diffuse"]
+- !private ["SQ", "fadeDuration"]
+- !private ["SQ", "fatalError"]
+- !private ["SQ", "firstMaterial"]
+- !private ["SQ", "geometry"]
+- !private ["SQ", "init"]
+- !private ["SQ", "opacity"]
+- !private ["SQ", "pi"]
+- !private ["SQ", "previousImage"]
+- !private ["SQ", "toCGImage"]
+- !private ["s25ExpressibleByFloatLiteralP", "pi"]
+- !private ["s27ExpressibleByIntegerLiteralP", "pi"]
+- !private ["Sf", "pi"]
+- !private ["SF", "pi"]
+- !private ["SH", "SCNTransaction"]
+- !private ["SH", "UIColor"]
+- ["SH", ""]
+- !private ["SH", "addChildNode"]
+- !private ["SH", "animationDuration"]
+- !private ["SH", "begin"]
+- !private ["SH", "clear"]
+- !private ["SH", "commit"]
+- !private ["SH", "completionBlock"]
+- !private ["SH", "contents"]
+- !private ["SH", "createPlaneNode"]
+- !private ["SH", "currentImage"]
+- !private ["SH", "delegate"]
+- !private ["SH", "diffuse"]
+- !private ["SH", "fadeDuration"]
+- !private ["SH", "fatalError"]
+- !private ["SH", "firstMaterial"]
+- !private ["SH", "geometry"]
+- !private ["SH", "init"]
+- !private ["SH", "opacity"]
+- !private ["SH", "pi"]
+- !private ["SH", "previousImage"]
+- !private ["SH", "toCGImage"]
+- !private ["s25LosslessStringConvertibleP", "pi"]
+- !private ["So8NSCodingP", "SCNTransaction"]
+- !private ["So8NSCodingP", "UIColor"]
+- ["So8NSCodingP", ""]
+- !private ["So8NSCodingP", "addChildNode"]
+- !private ["So8NSCodingP", "clear"]
+- !private ["So8NSCodingP", "contents"]
+- !private ["So8NSCodingP", "createPlaneNode"]
+- !private ["So8NSCodingP", "currentImage"]
+- !private ["So8NSCodingP", "delegate"]
+- !private ["So8NSCodingP", "diffuse"]
+- !private ["So8NSCodingP", "fadeDuration"]
+- !private ["So8NSCodingP", "fatalError"]
+- !private ["So8NSCodingP", "firstMaterial"]
+- !private ["So8NSCodingP", "geometry"]
+- !private ["So8NSCodingP", "init"]
+- !private ["So8NSCodingP", "opacity"]
+- !private ["So8NSCodingP", "previousImage"]
+- !private ["So9NSCopyingP", "SCNTransaction"]
+- !private ["So9NSCopyingP", "UIColor"]
+- ["So9NSCopyingP", ""]
+- !private ["So9NSCopyingP", "addChildNode"]
+- !private ["So9NSCopyingP", "clear"]
+- !private ["So9NSCopyingP", "createPlaneNode"]
+- !private ["So9NSCopyingP", "currentImage"]
+- !private ["So9NSCopyingP", "delegate"]
+- !private ["So9NSCopyingP", "diffuse"]
+- !private ["So9NSCopyingP", "fadeDuration"]
+- !private ["So9NSCopyingP", "fatalError"]
+- !private ["So9NSCopyingP", "firstMaterial"]
+- !private ["So9NSCopyingP", "geometry"]
+- !private ["So9NSCopyingP", "init"]
+- !private ["So9NSCopyingP", "opacity"]
+- !private ["So9NSCopyingP", "previousImage"]
+- !private ["So21NSItemProviderReadingP", "clear"]
+- !private ["So21NSItemProviderWritingP", "clear"]
+- ["So8NSObjectC", "CGSize"]
+- ["So8NSObjectC", "CVPixelBuffer"]
+- ["So8NSObjectC", "NSCoder"]
+- ["So8NSObjectC", "SCNNode"]
+- !private ["So8NSObjectC", "SCNTransaction"]
+- !private ["So8NSObjectC", "UIColor"]
+- ["So8NSObjectC", "VisualizationNodeDelegate"]
+- !private ["So8NSObjectC", "addChildNode"]
+- !private ["So8NSObjectC", "animationDuration"]
+- !private ["So8NSObjectC", "begin"]
+- !private ["So8NSObjectC", "clear"]
+- !private ["So8NSObjectC", "commit"]
+- !private ["So8NSObjectC", "completionBlock"]
+- !private ["So8NSObjectC", "contents"]
+- !private ["So8NSObjectC", "createPlaneNode"]
+- ["So8NSObjectC", "currentImage"]
+- ["So8NSObjectC", "delegate"]
+- !private ["So8NSObjectC", "diffuse"]
+- ["So8NSObjectC", "display"]
+- ["So8NSObjectC", "fadeDuration"]
+- !private ["So8NSObjectC", "fatalError"]
+- !private ["So8NSObjectC", "firstMaterial"]
+- !private ["So8NSObjectC", "geometry"]
+- ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "opacity"]
+- ["So8NSObjectC", "previousImage"]
+- !private ["So8NSObjectP", "SCNTransaction"]
+- !private ["So8NSObjectP", "UIColor"]
+- ["So8NSObjectP", ""]
+- !private ["So8NSObjectP", "addChildNode"]
+- !private ["So8NSObjectP", "animationDuration"]
+- !private ["So8NSObjectP", "begin"]
+- !private ["So8NSObjectP", "clear"]
+- !private ["So8NSObjectP", "commit"]
+- !private ["So8NSObjectP", "completionBlock"]
+- !private ["So8NSObjectP", "contents"]
+- !private ["So8NSObjectP", "createPlaneNode"]
+- !private ["So8NSObjectP", "currentImage"]
+- !private ["So8NSObjectP", "delegate"]
+- !private ["So8NSObjectP", "diffuse"]
+- !private ["So8NSObjectP", "fadeDuration"]
+- !private ["So8NSObjectP", "fatalError"]
+- !private ["So8NSObjectP", "firstMaterial"]
+- !private ["So8NSObjectP", "geometry"]
+- !private ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "opacity"]
+- !private ["So8NSObjectP", "previousImage"]
+- !private ["So14NSSecureCodingP", "SCNTransaction"]
+- !private ["So14NSSecureCodingP", "UIColor"]
+- ["So14NSSecureCodingP", ""]
+- !private ["So14NSSecureCodingP", "addChildNode"]
+- !private ["So14NSSecureCodingP", "clear"]
+- !private ["So14NSSecureCodingP", "contents"]
+- !private ["So14NSSecureCodingP", "createPlaneNode"]
+- !private ["So14NSSecureCodingP", "currentImage"]
+- !private ["So14NSSecureCodingP", "delegate"]
+- !private ["So14NSSecureCodingP", "diffuse"]
+- !private ["So14NSSecureCodingP", "fadeDuration"]
+- !private ["So14NSSecureCodingP", "fatalError"]
+- !private ["So14NSSecureCodingP", "firstMaterial"]
+- !private ["So14NSSecureCodingP", "geometry"]
+- !private ["So14NSSecureCodingP", "init"]
+- !private ["So14NSSecureCodingP", "opacity"]
+- !private ["So14NSSecureCodingP", "previousImage"]
+- !private ["Sj", "pi"]
+- !private ["So13SCNActionableP", "SCNTransaction"]
+- !private ["So13SCNActionableP", "UIColor"]
+- ["So13SCNActionableP", ""]
+- !private ["So13SCNActionableP", "addChildNode"]
+- !private ["So13SCNActionableP", "createPlaneNode"]
+- !private ["So13SCNActionableP", "currentImage"]
+- !private ["So13SCNActionableP", "delegate"]
+- !private ["So13SCNActionableP", "fadeDuration"]
+- !private ["So13SCNActionableP", "fatalError"]
+- !private ["So13SCNActionableP", "geometry"]
+- !private ["So13SCNActionableP", "init"]
+- !private ["So13SCNActionableP", "opacity"]
+- !private ["So13SCNActionableP", "previousImage"]
+- !private ["So13SCNAnimatableP", "SCNTransaction"]
+- !private ["So13SCNAnimatableP", "UIColor"]
+- ["So13SCNAnimatableP", ""]
+- !private ["So13SCNAnimatableP", "addChildNode"]
+- !private ["So13SCNAnimatableP", "contents"]
+- !private ["So13SCNAnimatableP", "createPlaneNode"]
+- !private ["So13SCNAnimatableP", "currentImage"]
+- !private ["So13SCNAnimatableP", "delegate"]
+- !private ["So13SCNAnimatableP", "diffuse"]
+- !private ["So13SCNAnimatableP", "fadeDuration"]
+- !private ["So13SCNAnimatableP", "fatalError"]
+- !private ["So13SCNAnimatableP", "firstMaterial"]
+- !private ["So13SCNAnimatableP", "geometry"]
+- !private ["So13SCNAnimatableP", "init"]
+- !private ["So13SCNAnimatableP", "opacity"]
+- !private ["So13SCNAnimatableP", "previousImage"]
+- !private ["So17SCNBoundingVolumeP", "SCNTransaction"]
+- !private ["So17SCNBoundingVolumeP", "UIColor"]
+- ["So17SCNBoundingVolumeP", ""]
+- !private ["So17SCNBoundingVolumeP", "addChildNode"]
+- !private ["So17SCNBoundingVolumeP", "createPlaneNode"]
+- !private ["So17SCNBoundingVolumeP", "currentImage"]
+- !private ["So17SCNBoundingVolumeP", "delegate"]
+- !private ["So17SCNBoundingVolumeP", "fadeDuration"]
+- !private ["So17SCNBoundingVolumeP", "fatalError"]
+- !private ["So17SCNBoundingVolumeP", "firstMaterial"]
+- !private ["So17SCNBoundingVolumeP", "geometry"]
+- !private ["So17SCNBoundingVolumeP", "init"]
+- !private ["So17SCNBoundingVolumeP", "opacity"]
+- !private ["So17SCNBoundingVolumeP", "previousImage"]
+- !private ["So11SCNGeometryC", "firstMaterial"]
+- !private ["So11SCNMaterialC", "diffuse"]
+- !private ["So19SCNMaterialPropertyC", "contents"]
+- ["So7SCNNodeC", "CGSize"]
+- ["So7SCNNodeC", "CVPixelBuffer"]
+- ["So7SCNNodeC", "NSCoder"]
+- ["So7SCNNodeC", "SCNNode"]
+- !private ["So7SCNNodeC", "SCNTransaction"]
+- !private ["So7SCNNodeC", "UIColor"]
+- ["So7SCNNodeC", "VisualizationNodeDelegate"]
+- ["So7SCNNodeC", ""]
+- !private ["So7SCNNodeC", "addChildNode"]
+- !private ["So7SCNNodeC", "createPlaneNode"]
+- ["So7SCNNodeC", "currentImage"]
+- ["So7SCNNodeC", "delegate"]
+- ["So7SCNNodeC", "display"]
+- ["So7SCNNodeC", "fadeDuration"]
+- !private ["So7SCNNodeC", "fatalError"]
+- !private ["So7SCNNodeC", "geometry"]
+- ["So7SCNNodeC", "init"]
+- !private ["So7SCNNodeC", "opacity"]
+- ["So7SCNNodeC", "previousImage"]
+- !private ["So11SCNShadableP", "diffuse"]
+- !private ["So11SCNShadableP", "firstMaterial"]
+- !private ["So14SCNTransactionC", "animationDuration"]
+- !private ["So14SCNTransactionC", "begin"]
+- !private ["So14SCNTransactionC", "commit"]
+- !private ["So14SCNTransactionC", "completionBlock"]
+- !private ["s10SIMDScalarP", "pi"]
+- !private ["s13SignedNumericP", "pi"]
+- !private ["Sx", "pi"]
+- !private ["s20TextOutputStreamableP", "pi"]
+- !private ["So7UIColorC", "clear"]
+- !private ["So18UIFocusEnvironmentP", "SCNTransaction"]
+- !private ["So18UIFocusEnvironmentP", "UIColor"]
+- ["So18UIFocusEnvironmentP", ""]
+- !private ["So18UIFocusEnvironmentP", "addChildNode"]
+- !private ["So18UIFocusEnvironmentP", "createPlaneNode"]
+- !private ["So18UIFocusEnvironmentP", "currentImage"]
+- !private ["So18UIFocusEnvironmentP", "delegate"]
+- !private ["So18UIFocusEnvironmentP", "fadeDuration"]
+- !private ["So18UIFocusEnvironmentP", "fatalError"]
+- !private ["So18UIFocusEnvironmentP", "geometry"]
+- !private ["So18UIFocusEnvironmentP", "init"]
+- !private ["So18UIFocusEnvironmentP", "opacity"]
+- !private ["So18UIFocusEnvironmentP", "previousImage"]
+- !private ["So11UIFocusItemP", "SCNTransaction"]
+- !private ["So11UIFocusItemP", "UIColor"]
+- ["So11UIFocusItemP", ""]
+- !private ["So11UIFocusItemP", "addChildNode"]
+- !private ["So11UIFocusItemP", "createPlaneNode"]
+- !private ["So11UIFocusItemP", "currentImage"]
+- !private ["So11UIFocusItemP", "delegate"]
+- !private ["So11UIFocusItemP", "fadeDuration"]
+- !private ["So11UIFocusItemP", "fatalError"]
+- !private ["So11UIFocusItemP", "geometry"]
+- !private ["So11UIFocusItemP", "init"]
+- !private ["So11UIFocusItemP", "opacity"]
+- !private ["So11UIFocusItemP", "previousImage"]
+- ["6Runner17VisualizationNodeC", "CGSize"]
+- ["6Runner17VisualizationNodeC", "CVPixelBuffer"]
+- ["6Runner17VisualizationNodeC", "NSCoder"]
+- ["6Runner17VisualizationNodeC", "SCNNode"]
+- !private ["6Runner17VisualizationNodeC", "SCNTransaction"]
+- !private ["6Runner17VisualizationNodeC", "UIColor"]
+- ["6Runner17VisualizationNodeC", "VisualizationNodeDelegate"]
+- !private ["6Runner17VisualizationNodeC", "addChildNode"]
+- !private ["6Runner17VisualizationNodeC", "createPlaneNode"]
+- !private ["6Runner17VisualizationNodeC", "currentImage"]
+- ["6Runner17VisualizationNodeC", "deinit"]
+- ["6Runner17VisualizationNodeC", "delegate"]
+- ["6Runner17VisualizationNodeC", "display"]
+- !private ["6Runner17VisualizationNodeC", "fadeDuration"]
+- !private ["6Runner17VisualizationNodeC", "fatalError"]
+- ["6Runner17VisualizationNodeC", "init"]
+- !private ["6Runner17VisualizationNodeC", "previousImage"]
+- ["6Runner25VisualizationNodeDelegateP", "VisualizationNode"]
+- ["6Runner25VisualizationNodeDelegateP", "visualizationNodeDidFinishFade"]
+- !private ["14CoreFoundation9_CFObjectP", "toCGImage"]
+- !private ["s15_CVarArgAlignedP", "pi"]
+- !private ["s22_CVarArgPassedAsDoubleP", "pi"]
+- !private ["s30_CustomPlaygroundQuickLookableP", "pi"]
+- !private ["s33_ExpressibleByBuiltinFloatLiteralP", "pi"]
+- !private ["s35_ExpressibleByBuiltinIntegerLiteralP", "pi"]
+- !private ["s26_ExpressibleByColorLiteralP", "clear"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "pi"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "SCNTransaction"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "UIColor"]
+- ["10Foundation27_KeyValueCodingAndObservingP", ""]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "addChildNode"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "animationDuration"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "begin"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "clear"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "commit"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "completionBlock"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "contents"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "createPlaneNode"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "currentImage"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "delegate"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "diffuse"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "fadeDuration"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "fatalError"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "firstMaterial"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "geometry"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "opacity"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "previousImage"]
+- !private ["s21_ObjectiveCBridgeableP", "pi"]
+depends-nominal:
+- !private "s18AdditiveArithmeticP"
+- !private "SB"
+- !private "So11CVBufferRefa"
+- "s7CVarArgP"
+- !private "SL"
+- "s28CustomDebugStringConvertibleP"
+- !private "s17CustomReflectableP"
+- "s23CustomStringConvertibleP"
+- !private "Se"
+- !private "Sd"
+- !private "SE"
+- "SQ"
+- !private "s25ExpressibleByFloatLiteralP"
+- !private "s27ExpressibleByIntegerLiteralP"
+- !private "Sf"
+- !private "SF"
+- "SH"
+- !private "s25LosslessStringConvertibleP"
+- "So8NSCodingP"
+- "So9NSCopyingP"
+- !private "So21NSItemProviderReadingP"
+- !private "So21NSItemProviderWritingP"
+- "So8NSObjectC"
+- "So8NSObjectP"
+- "So14NSSecureCodingP"
+- !private "Sj"
+- "So13SCNActionableP"
+- "So13SCNAnimatableP"
+- "So17SCNBoundingVolumeP"
+- !private "So11SCNGeometryC"
+- !private "So11SCNMaterialC"
+- !private "So19SCNMaterialPropertyC"
+- "So7SCNNodeC"
+- !private "So11SCNShadableP"
+- !private "So14SCNTransactionC"
+- !private "s10SIMDScalarP"
+- !private "s13SignedNumericP"
+- !private "Sx"
+- !private "s20TextOutputStreamableP"
+- !private "So7UIColorC"
+- "So18UIFocusEnvironmentP"
+- "So11UIFocusItemP"
+- "6Runner17VisualizationNodeC"
+- "6Runner25VisualizationNodeDelegateP"
+- !private "14CoreFoundation9_CFObjectP"
+- !private "s15_CVarArgAlignedP"
+- !private "s22_CVarArgPassedAsDoubleP"
+- !private "s30_CustomPlaygroundQuickLookableP"
+- !private "s33_ExpressibleByBuiltinFloatLiteralP"
+- !private "s35_ExpressibleByBuiltinIntegerLiteralP"
+- !private "s26_ExpressibleByColorLiteralP"
+- !private "s35_HasCustomAnyHashableRepresentationP"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- !private "s21_ObjectiveCBridgeableP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ModelIO.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreMedia.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/simd.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Metal.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Vision.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/AVFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreAudio.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Swift.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/GLKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ARKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SceneKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SpriteKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SwiftOnoneSupport.swiftmodule"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCallbackCache.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterEngine.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterTexture.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterAppDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlugin.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/Runner-Bridging-Header.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterBinaryMessenger.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterViewController.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterHeadlessDartRunner.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/Flutter.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCodecs.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterChannels.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterMacros.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlatformViews.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterDartProject.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/GeneratedPluginRegistrant.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Modules/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreML.framework/Headers/CoreML.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/ModelIO.framework/Headers/ModelIO.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/OpenGLES.framework/Headers/OpenGLES.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CoreMedia.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Vision.framework/Headers/Vision.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVFoundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UserNotifications.framework/Headers/UserNotifications.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/GLKit.framework/Headers/GLKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SceneKit.framework/Headers/SceneKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SpriteKit.framework/Headers/SpriteKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers/MediaToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/VideoToolbox.framework/Headers/VideoToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/AudioToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Security.framework/Headers/Security.apinotes"
+interface-hash: "68c13fe4ebc7464a6d9eba5fb5eb5165"

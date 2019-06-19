@@ -1,0 +1,656 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "RectangleDetector"
+- "RectangleDetectorDelegate"
+provides-nominal:
+- "6Runner17RectangleDetectorC"
+- "6Runner25RectangleDetectorDelegateP"
+provides-member:
+- ["6Runner17RectangleDetectorC", ""]
+- ["6Runner25RectangleDetectorDelegateP", ""]
+provides-dynamic-lookup:
+depends-top-level:
+- !private "!"
+- !private "*"
+- "AnyObject"
+- "AssignmentPrecedence"
+- "BooleanLiteralType"
+- !private "CGFloat"
+- !private "CGPoint"
+- !private "CIFilter"
+- "CIImage"
+- !private "CIVector"
+- "CVPixelBuffer"
+- !private "CVPixelBufferGetHeight"
+- !private "CVPixelBufferGetWidth"
+- "CastingPrecedence"
+- !private "DetectionViewController"
+- !private "DispatchQueue"
+- "Error"
+- "FloatLiteralType"
+- !private "IntegerLiteralType"
+- "RectangleDetector"
+- "RectangleDetectorDelegate"
+- "StringLiteralType"
+- "TimeInterval"
+- "Timer"
+- !private "VNDetectRectanglesRequest"
+- !private "VNImageRequestHandler"
+- !private "VNRectangleObservation"
+- "VNRequest"
+- !private "kCIInputImageKey"
+- !private "kCIOutputImageKey"
+- !private "print"
+depends-member:
+- !private ["So7ARFrameC", "capturedImage"]
+- !private ["So9ARSCNViewC", "session"]
+- !private ["So17ARSCNViewDelegateP", "instance"]
+- !private ["So17ARSCNViewDelegateP", "sceneView"]
+- !private ["So9ARSessionC", "currentFrame"]
+- !private ["So17ARSessionObserverP", "instance"]
+- !private ["So17ARSessionObserverP", "sceneView"]
+- !private ["s18AdditiveArithmeticP", "init"]
+- !private ["6Runner20AlteredImageDelegateP", "instance"]
+- !private ["6Runner20AlteredImageDelegateP", "sceneView"]
+- !private ["Sa", "first"]
+- !private ["SK", "first"]
+- !private ["SB", "init"]
+- !private ["So15CALayerDelegateP", "session"]
+- !private ["12CoreGraphics7CGFloatV", "init"]
+- !private ["So26CGImagePropertyOrientationV", "up"]
+- !private ["So7CGPointV", "init"]
+- !private ["So7CGPointV", "x"]
+- !private ["So7CGPointV", "y"]
+- !private ["So8CIFilterC", "init"]
+- !private ["So8CIFilterC", "setValue"]
+- !private ["So8CIFilterC", "value"]
+- !private ["So7CIImageC", "init"]
+- !private ["So7CIImageC", "oriented"]
+- !private ["So8CIVectorC", "init"]
+- !private ["s7CVarArgP", "async"]
+- !private ["s7CVarArgP", "bottomLeft"]
+- !private ["s7CVarArgP", "bottomRight"]
+- !private ["s7CVarArgP", "capturedImage"]
+- !private ["s7CVarArgP", "currentFrame"]
+- !private ["s7CVarArgP", "first"]
+- !private ["s7CVarArgP", "global"]
+- !private ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "instance"]
+- !private ["s7CVarArgP", "maximumObservations"]
+- !private ["s7CVarArgP", "minimumAspectRatio"]
+- !private ["s7CVarArgP", "minimumConfidence"]
+- !private ["s7CVarArgP", "minimumSize"]
+- !private ["s7CVarArgP", "oriented"]
+- !private ["s7CVarArgP", "perform"]
+- !private ["s7CVarArgP", "quadratureTolerance"]
+- !private ["s7CVarArgP", "results"]
+- !private ["s7CVarArgP", "sceneView"]
+- !private ["s7CVarArgP", "scheduledTimer"]
+- !private ["s7CVarArgP", "session"]
+- !private ["s7CVarArgP", "setValue"]
+- !private ["s7CVarArgP", "topLeft"]
+- !private ["s7CVarArgP", "topRight"]
+- !private ["s7CVarArgP", "usesCPUOnly"]
+- !private ["s7CVarArgP", "value"]
+- !private ["Sl", "first"]
+- !private ["SL", "init"]
+- !private ["10Foundation15ContiguousBytesP", "first"]
+- !private ["s28CustomDebugStringConvertibleP", "async"]
+- !private ["s28CustomDebugStringConvertibleP", "bottomLeft"]
+- !private ["s28CustomDebugStringConvertibleP", "bottomRight"]
+- !private ["s28CustomDebugStringConvertibleP", "capturedImage"]
+- !private ["s28CustomDebugStringConvertibleP", "currentFrame"]
+- !private ["s28CustomDebugStringConvertibleP", "first"]
+- !private ["s28CustomDebugStringConvertibleP", "global"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "instance"]
+- !private ["s28CustomDebugStringConvertibleP", "maximumObservations"]
+- !private ["s28CustomDebugStringConvertibleP", "minimumAspectRatio"]
+- !private ["s28CustomDebugStringConvertibleP", "minimumConfidence"]
+- !private ["s28CustomDebugStringConvertibleP", "minimumSize"]
+- !private ["s28CustomDebugStringConvertibleP", "oriented"]
+- !private ["s28CustomDebugStringConvertibleP", "perform"]
+- !private ["s28CustomDebugStringConvertibleP", "quadratureTolerance"]
+- !private ["s28CustomDebugStringConvertibleP", "results"]
+- !private ["s28CustomDebugStringConvertibleP", "sceneView"]
+- !private ["s28CustomDebugStringConvertibleP", "scheduledTimer"]
+- !private ["s28CustomDebugStringConvertibleP", "session"]
+- !private ["s28CustomDebugStringConvertibleP", "setValue"]
+- !private ["s28CustomDebugStringConvertibleP", "topLeft"]
+- !private ["s28CustomDebugStringConvertibleP", "topRight"]
+- !private ["s28CustomDebugStringConvertibleP", "usesCPUOnly"]
+- !private ["s28CustomDebugStringConvertibleP", "value"]
+- !private ["s28CustomDebugStringConvertibleP", "x"]
+- !private ["s28CustomDebugStringConvertibleP", "y"]
+- !private ["s17CustomReflectableP", "first"]
+- !private ["s17CustomReflectableP", "init"]
+- !private ["s17CustomReflectableP", "session"]
+- !private ["s17CustomReflectableP", "x"]
+- !private ["s17CustomReflectableP", "y"]
+- !private ["s23CustomStringConvertibleP", "appendInterpolation"]
+- !private ["s23CustomStringConvertibleP", "appendLiteral"]
+- !private ["s23CustomStringConvertibleP", "async"]
+- !private ["s23CustomStringConvertibleP", "bottomLeft"]
+- !private ["s23CustomStringConvertibleP", "bottomRight"]
+- !private ["s23CustomStringConvertibleP", "capturedImage"]
+- !private ["s23CustomStringConvertibleP", "currentFrame"]
+- !private ["s23CustomStringConvertibleP", "first"]
+- !private ["s23CustomStringConvertibleP", "global"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "instance"]
+- !private ["s23CustomStringConvertibleP", "maximumObservations"]
+- !private ["s23CustomStringConvertibleP", "minimumAspectRatio"]
+- !private ["s23CustomStringConvertibleP", "minimumConfidence"]
+- !private ["s23CustomStringConvertibleP", "minimumSize"]
+- !private ["s23CustomStringConvertibleP", "oriented"]
+- !private ["s23CustomStringConvertibleP", "perform"]
+- !private ["s23CustomStringConvertibleP", "quadratureTolerance"]
+- !private ["s23CustomStringConvertibleP", "results"]
+- !private ["s23CustomStringConvertibleP", "sceneView"]
+- !private ["s23CustomStringConvertibleP", "scheduledTimer"]
+- !private ["s23CustomStringConvertibleP", "session"]
+- !private ["s23CustomStringConvertibleP", "setValue"]
+- !private ["s23CustomStringConvertibleP", "topLeft"]
+- !private ["s23CustomStringConvertibleP", "topRight"]
+- !private ["s23CustomStringConvertibleP", "usesCPUOnly"]
+- !private ["s23CustomStringConvertibleP", "value"]
+- !private ["10Foundation12DataProtocolP", "first"]
+- !private ["Se", "first"]
+- !private ["Se", "init"]
+- !private ["Se", "session"]
+- !private ["Se", "x"]
+- !private ["Se", "y"]
+- !private ["s26DefaultStringInterpolationV", "appendInterpolation"]
+- !private ["s26DefaultStringInterpolationV", "appendLiteral"]
+- !private ["6Runner23DetectionViewControllerC", "instance"]
+- !private ["6Runner23DetectionViewControllerC", "sceneView"]
+- !private ["So18OS_dispatch_objectC", "async"]
+- !private ["So18OS_dispatch_objectC", "global"]
+- !private ["So17OS_dispatch_queueC", "async"]
+- !private ["So17OS_dispatch_queueC", "global"]
+- !private ["SE", "first"]
+- !private ["SE", "init"]
+- !private ["SE", "session"]
+- !private ["SE", "x"]
+- !private ["SE", "y"]
+- !private ["SQ", "async"]
+- !private ["SQ", "bottomLeft"]
+- !private ["SQ", "bottomRight"]
+- !private ["SQ", "capturedImage"]
+- !private ["SQ", "currentFrame"]
+- !private ["SQ", "first"]
+- !private ["SQ", "global"]
+- !private ["SQ", "init"]
+- !private ["SQ", "instance"]
+- !private ["SQ", "maximumObservations"]
+- !private ["SQ", "minimumAspectRatio"]
+- !private ["SQ", "minimumConfidence"]
+- !private ["SQ", "minimumSize"]
+- !private ["SQ", "oriented"]
+- !private ["SQ", "perform"]
+- !private ["SQ", "quadratureTolerance"]
+- !private ["SQ", "results"]
+- !private ["SQ", "sceneView"]
+- !private ["SQ", "scheduledTimer"]
+- !private ["SQ", "session"]
+- !private ["SQ", "setValue"]
+- !private ["SQ", "topLeft"]
+- !private ["SQ", "topRight"]
+- !private ["SQ", "up"]
+- !private ["SQ", "usesCPUOnly"]
+- !private ["SQ", "value"]
+- !private ["SQ", "x"]
+- !private ["SQ", "y"]
+- !private ["s5ErrorP", "localizedDescription"]
+- !private ["s25ExpressibleByArrayLiteralP", "first"]
+- !private ["s25ExpressibleByFloatLiteralP", "init"]
+- !private ["s27ExpressibleByIntegerLiteralP", "init"]
+- !private ["s23ExpressibleByNilLiteralP", "session"]
+- !private ["SF", "init"]
+- !private ["SH", "async"]
+- !private ["SH", "bottomLeft"]
+- !private ["SH", "bottomRight"]
+- !private ["SH", "capturedImage"]
+- !private ["SH", "currentFrame"]
+- !private ["SH", "first"]
+- !private ["SH", "global"]
+- !private ["SH", "init"]
+- !private ["SH", "instance"]
+- !private ["SH", "maximumObservations"]
+- !private ["SH", "minimumAspectRatio"]
+- !private ["SH", "minimumConfidence"]
+- !private ["SH", "minimumSize"]
+- !private ["SH", "oriented"]
+- !private ["SH", "perform"]
+- !private ["SH", "quadratureTolerance"]
+- !private ["SH", "results"]
+- !private ["SH", "sceneView"]
+- !private ["SH", "scheduledTimer"]
+- !private ["SH", "session"]
+- !private ["SH", "setValue"]
+- !private ["SH", "topLeft"]
+- !private ["SH", "topRight"]
+- !private ["SH", "up"]
+- !private ["SH", "usesCPUOnly"]
+- !private ["SH", "value"]
+- !private ["SM", "first"]
+- !private ["10Foundation19MutableDataProtocolP", "first"]
+- !private ["So8NSCodingP", "bottomLeft"]
+- !private ["So8NSCodingP", "bottomRight"]
+- !private ["So8NSCodingP", "init"]
+- !private ["So8NSCodingP", "instance"]
+- !private ["So8NSCodingP", "oriented"]
+- !private ["So8NSCodingP", "sceneView"]
+- !private ["So8NSCodingP", "session"]
+- !private ["So8NSCodingP", "setValue"]
+- !private ["So8NSCodingP", "topLeft"]
+- !private ["So8NSCodingP", "topRight"]
+- !private ["So8NSCodingP", "value"]
+- !private ["So9NSCopyingP", "bottomLeft"]
+- !private ["So9NSCopyingP", "bottomRight"]
+- !private ["So9NSCopyingP", "capturedImage"]
+- !private ["So9NSCopyingP", "init"]
+- !private ["So9NSCopyingP", "maximumObservations"]
+- !private ["So9NSCopyingP", "minimumAspectRatio"]
+- !private ["So9NSCopyingP", "minimumConfidence"]
+- !private ["So9NSCopyingP", "minimumSize"]
+- !private ["So9NSCopyingP", "oriented"]
+- !private ["So9NSCopyingP", "quadratureTolerance"]
+- !private ["So9NSCopyingP", "results"]
+- !private ["So9NSCopyingP", "setValue"]
+- !private ["So9NSCopyingP", "topLeft"]
+- !private ["So9NSCopyingP", "topRight"]
+- !private ["So9NSCopyingP", "usesCPUOnly"]
+- !private ["So9NSCopyingP", "value"]
+- !private ["So26NSExtensionRequestHandlingP", "instance"]
+- !private ["So26NSExtensionRequestHandlingP", "sceneView"]
+- !private ["So8NSObjectC", "async"]
+- !private ["So8NSObjectC", "bottomLeft"]
+- !private ["So8NSObjectC", "bottomRight"]
+- !private ["So8NSObjectC", "capturedImage"]
+- !private ["So8NSObjectC", "currentFrame"]
+- !private ["So8NSObjectC", "global"]
+- !private ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "instance"]
+- !private ["So8NSObjectC", "maximumObservations"]
+- !private ["So8NSObjectC", "minimumAspectRatio"]
+- !private ["So8NSObjectC", "minimumConfidence"]
+- !private ["So8NSObjectC", "minimumSize"]
+- !private ["So8NSObjectC", "oriented"]
+- !private ["So8NSObjectC", "perform"]
+- !private ["So8NSObjectC", "quadratureTolerance"]
+- !private ["So8NSObjectC", "results"]
+- !private ["So8NSObjectC", "sceneView"]
+- !private ["So8NSObjectC", "scheduledTimer"]
+- !private ["So8NSObjectC", "session"]
+- !private ["So8NSObjectC", "setValue"]
+- !private ["So8NSObjectC", "topLeft"]
+- !private ["So8NSObjectC", "topRight"]
+- !private ["So8NSObjectC", "usesCPUOnly"]
+- !private ["So8NSObjectC", "value"]
+- !private ["So8NSObjectP", "async"]
+- !private ["So8NSObjectP", "bottomLeft"]
+- !private ["So8NSObjectP", "bottomRight"]
+- !private ["So8NSObjectP", "capturedImage"]
+- !private ["So8NSObjectP", "currentFrame"]
+- !private ["So8NSObjectP", "global"]
+- !private ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "instance"]
+- !private ["So8NSObjectP", "maximumObservations"]
+- !private ["So8NSObjectP", "minimumAspectRatio"]
+- !private ["So8NSObjectP", "minimumConfidence"]
+- !private ["So8NSObjectP", "minimumSize"]
+- !private ["So8NSObjectP", "oriented"]
+- !private ["So8NSObjectP", "perform"]
+- !private ["So8NSObjectP", "quadratureTolerance"]
+- !private ["So8NSObjectP", "results"]
+- !private ["So8NSObjectP", "sceneView"]
+- !private ["So8NSObjectP", "scheduledTimer"]
+- !private ["So8NSObjectP", "session"]
+- !private ["So8NSObjectP", "setValue"]
+- !private ["So8NSObjectP", "topLeft"]
+- !private ["So8NSObjectP", "topRight"]
+- !private ["So8NSObjectP", "usesCPUOnly"]
+- !private ["So8NSObjectP", "value"]
+- !private ["So14NSSecureCodingP", "bottomLeft"]
+- !private ["So14NSSecureCodingP", "bottomRight"]
+- !private ["So14NSSecureCodingP", "init"]
+- !private ["So14NSSecureCodingP", "oriented"]
+- !private ["So14NSSecureCodingP", "setValue"]
+- !private ["So14NSSecureCodingP", "topLeft"]
+- !private ["So14NSSecureCodingP", "topRight"]
+- !private ["So14NSSecureCodingP", "value"]
+- !private ["Sj", "init"]
+- !private ["So9OS_objectC", "async"]
+- !private ["So9OS_objectC", "global"]
+- !private ["Sq", "session"]
+- !private ["Sk", "first"]
+- !private ["Sm", "first"]
+- !private ["SY", "up"]
+- !private ["6Runner17RectangleDetectorC", "CGFloat"]
+- !private ["6Runner17RectangleDetectorC", "CGPoint"]
+- !private ["6Runner17RectangleDetectorC", "CIFilter"]
+- !private ["6Runner17RectangleDetectorC", "CIImage"]
+- !private ["6Runner17RectangleDetectorC", "CIVector"]
+- ["6Runner17RectangleDetectorC", "CVPixelBuffer"]
+- !private ["6Runner17RectangleDetectorC", "CVPixelBufferGetHeight"]
+- !private ["6Runner17RectangleDetectorC", "CVPixelBufferGetWidth"]
+- !private ["6Runner17RectangleDetectorC", "DetectionViewController"]
+- !private ["6Runner17RectangleDetectorC", "DispatchQueue"]
+- ["6Runner17RectangleDetectorC", "Error"]
+- ["6Runner17RectangleDetectorC", "RectangleDetectorDelegate"]
+- ["6Runner17RectangleDetectorC", "TimeInterval"]
+- ["6Runner17RectangleDetectorC", "Timer"]
+- !private ["6Runner17RectangleDetectorC", "VNDetectRectanglesRequest"]
+- !private ["6Runner17RectangleDetectorC", "VNImageRequestHandler"]
+- !private ["6Runner17RectangleDetectorC", "VNRectangleObservation"]
+- ["6Runner17RectangleDetectorC", "VNRequest"]
+- !private ["6Runner17RectangleDetectorC", "completedVisionRequest"]
+- !private ["6Runner17RectangleDetectorC", "currentCameraImage"]
+- ["6Runner17RectangleDetectorC", "delegate"]
+- ["6Runner17RectangleDetectorC", "init"]
+- !private ["6Runner17RectangleDetectorC", "isBusy"]
+- !private ["6Runner17RectangleDetectorC", "kCIInputImageKey"]
+- !private ["6Runner17RectangleDetectorC", "kCIOutputImageKey"]
+- !private ["6Runner17RectangleDetectorC", "print"]
+- !private ["6Runner17RectangleDetectorC", "search"]
+- !private ["6Runner17RectangleDetectorC", "updateInterval"]
+- !private ["6Runner17RectangleDetectorC", "updateTimer"]
+- ["6Runner25RectangleDetectorDelegateP", "CIImage"]
+- !private ["6Runner25RectangleDetectorDelegateP", "instance"]
+- ["6Runner25RectangleDetectorDelegateP", "rectangleFound"]
+- !private ["6Runner25RectangleDetectorDelegateP", "sceneView"]
+- !private ["So16SCNSceneRendererP", "session"]
+- !private ["So24SCNSceneRendererDelegateP", "instance"]
+- !private ["So24SCNSceneRendererDelegateP", "sceneView"]
+- !private ["So19SCNTechniqueSupportP", "session"]
+- !private ["So7SCNViewC", "session"]
+- !private ["ST", "first"]
+- !private ["s13SignedNumericP", "init"]
+- !private ["Sx", "init"]
+- !private ["s27StringInterpolationProtocolP", "appendInterpolation"]
+- !private ["s27StringInterpolationProtocolP", "appendLiteral"]
+- !private ["s16TextOutputStreamP", "appendInterpolation"]
+- !private ["s16TextOutputStreamP", "appendLiteral"]
+- !private ["So7NSTimerC", "scheduledTimer"]
+- !private ["So29UIAccessibilityIdentificationP", "session"]
+- !private ["So12UIAppearanceP", "session"]
+- !private ["So21UIAppearanceContainerP", "instance"]
+- !private ["So21UIAppearanceContainerP", "sceneView"]
+- !private ["So21UIAppearanceContainerP", "session"]
+- !private ["So18UIContentContainerP", "instance"]
+- !private ["So18UIContentContainerP", "sceneView"]
+- !private ["So17UICoordinateSpaceP", "session"]
+- !private ["So13UIDynamicItemP", "session"]
+- !private ["So18UIFocusEnvironmentP", "instance"]
+- !private ["So18UIFocusEnvironmentP", "sceneView"]
+- !private ["So18UIFocusEnvironmentP", "session"]
+- !private ["So11UIFocusItemP", "session"]
+- !private ["So20UIFocusItemContainerP", "session"]
+- !private ["So30UIPasteConfigurationSupportingP", "instance"]
+- !private ["So30UIPasteConfigurationSupportingP", "sceneView"]
+- !private ["So30UIPasteConfigurationSupportingP", "session"]
+- !private ["So11UIResponderC", "instance"]
+- !private ["So11UIResponderC", "sceneView"]
+- !private ["So11UIResponderC", "session"]
+- !private ["So30UIResponderStandardEditActionsP", "instance"]
+- !private ["So30UIResponderStandardEditActionsP", "sceneView"]
+- !private ["So30UIResponderStandardEditActionsP", "session"]
+- !private ["So16UIStateRestoringP", "instance"]
+- !private ["So16UIStateRestoringP", "sceneView"]
+- !private ["So18UITraitEnvironmentP", "instance"]
+- !private ["So18UITraitEnvironmentP", "sceneView"]
+- !private ["So18UITraitEnvironmentP", "session"]
+- !private ["So23UIUserActivityRestoringP", "instance"]
+- !private ["So23UIUserActivityRestoringP", "sceneView"]
+- !private ["So23UIUserActivityRestoringP", "session"]
+- !private ["So6UIViewC", "session"]
+- !private ["So16UIViewControllerC", "instance"]
+- !private ["So16UIViewControllerC", "sceneView"]
+- !private ["So25VNDetectRectanglesRequestC", "init"]
+- !private ["So25VNDetectRectanglesRequestC", "maximumObservations"]
+- !private ["So25VNDetectRectanglesRequestC", "minimumAspectRatio"]
+- !private ["So25VNDetectRectanglesRequestC", "minimumConfidence"]
+- !private ["So25VNDetectRectanglesRequestC", "minimumSize"]
+- !private ["So25VNDetectRectanglesRequestC", "quadratureTolerance"]
+- !private ["So25VNDetectRectanglesRequestC", "usesCPUOnly"]
+- !private ["So27VNDetectedObjectObservationC", "bottomLeft"]
+- !private ["So27VNDetectedObjectObservationC", "bottomRight"]
+- !private ["So27VNDetectedObjectObservationC", "topLeft"]
+- !private ["So27VNDetectedObjectObservationC", "topRight"]
+- !private ["So19VNImageBasedRequestC", "init"]
+- !private ["So19VNImageBasedRequestC", "maximumObservations"]
+- !private ["So19VNImageBasedRequestC", "minimumAspectRatio"]
+- !private ["So19VNImageBasedRequestC", "minimumConfidence"]
+- !private ["So19VNImageBasedRequestC", "minimumSize"]
+- !private ["So19VNImageBasedRequestC", "quadratureTolerance"]
+- !private ["So19VNImageBasedRequestC", "usesCPUOnly"]
+- !private ["So21VNImageRequestHandlerC", "init"]
+- !private ["So21VNImageRequestHandlerC", "perform"]
+- !private ["So13VNObservationC", "bottomLeft"]
+- !private ["So13VNObservationC", "bottomRight"]
+- !private ["So13VNObservationC", "topLeft"]
+- !private ["So13VNObservationC", "topRight"]
+- !private ["So22VNRectangleObservationC", "bottomLeft"]
+- !private ["So22VNRectangleObservationC", "bottomRight"]
+- !private ["So22VNRectangleObservationC", "topLeft"]
+- !private ["So22VNRectangleObservationC", "topRight"]
+- !private ["So9VNRequestC", "init"]
+- !private ["So9VNRequestC", "maximumObservations"]
+- !private ["So9VNRequestC", "minimumAspectRatio"]
+- !private ["So9VNRequestC", "minimumConfidence"]
+- !private ["So9VNRequestC", "minimumSize"]
+- !private ["So9VNRequestC", "quadratureTolerance"]
+- !private ["So9VNRequestC", "results"]
+- !private ["So9VNRequestC", "usesCPUOnly"]
+- !private ["So26VNRequestRevisionProvidingP", "bottomLeft"]
+- !private ["So26VNRequestRevisionProvidingP", "bottomRight"]
+- !private ["So26VNRequestRevisionProvidingP", "topLeft"]
+- !private ["So26VNRequestRevisionProvidingP", "topRight"]
+- !private ["s14_ArrayProtocolP", "first"]
+- !private ["s15_CVarArgAlignedP", "init"]
+- !private ["s22_CVarArgPassedAsDoubleP", "init"]
+- !private ["s30_CustomPlaygroundQuickLookableP", "init"]
+- !private ["s30_CustomPlaygroundQuickLookableP", "x"]
+- !private ["s30_CustomPlaygroundQuickLookableP", "y"]
+- !private ["s24_DestructorSafeContainerP", "first"]
+- !private ["s19_HasContiguousBytesP", "first"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "first"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "async"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "bottomLeft"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "bottomRight"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "capturedImage"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "currentFrame"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "global"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "instance"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "maximumObservations"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "minimumAspectRatio"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "minimumConfidence"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "minimumSize"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "oriented"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "perform"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "quadratureTolerance"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "results"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "sceneView"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "scheduledTimer"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "session"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "setValue"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "topLeft"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "topRight"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "usesCPUOnly"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "value"]
+- !private ["s21_ObjectiveCBridgeableP", "first"]
+- !private ["s21_ObjectiveCBridgeableP", "init"]
+- !private ["s21_ObjectiveCBridgeableP", "session"]
+- !private ["s21_ObjectiveCBridgeableP", "x"]
+- !private ["s21_ObjectiveCBridgeableP", "y"]
+- !private ["s38__DefaultCustomPlaygroundQuickLookableP", "session"]
+depends-nominal:
+- !private "So7ARFrameC"
+- !private "So9ARSCNViewC"
+- !private "So17ARSCNViewDelegateP"
+- !private "So9ARSessionC"
+- !private "So17ARSessionObserverP"
+- !private "s18AdditiveArithmeticP"
+- !private "6Runner20AlteredImageDelegateP"
+- !private "Sa"
+- !private "SK"
+- !private "SB"
+- !private "So15CALayerDelegateP"
+- !private "12CoreGraphics7CGFloatV"
+- !private "So26CGImagePropertyOrientationV"
+- !private "So7CGPointV"
+- !private "So8CIFilterC"
+- !private "So7CIImageC"
+- !private "So8CIVectorC"
+- !private "s7CVarArgP"
+- !private "Sl"
+- !private "SL"
+- !private "10Foundation15ContiguousBytesP"
+- !private "s28CustomDebugStringConvertibleP"
+- !private "s17CustomReflectableP"
+- !private "s23CustomStringConvertibleP"
+- !private "10Foundation12DataProtocolP"
+- !private "Se"
+- !private "s26DefaultStringInterpolationV"
+- !private "6Runner23DetectionViewControllerC"
+- !private "So18OS_dispatch_objectC"
+- !private "So17OS_dispatch_queueC"
+- !private "SE"
+- !private "SQ"
+- !private "s5ErrorP"
+- !private "s25ExpressibleByArrayLiteralP"
+- !private "s25ExpressibleByFloatLiteralP"
+- !private "s27ExpressibleByIntegerLiteralP"
+- !private "s23ExpressibleByNilLiteralP"
+- !private "SF"
+- !private "SH"
+- !private "SM"
+- !private "10Foundation19MutableDataProtocolP"
+- !private "So8NSCodingP"
+- !private "So9NSCopyingP"
+- !private "So26NSExtensionRequestHandlingP"
+- !private "So8NSObjectC"
+- !private "So8NSObjectP"
+- !private "So14NSSecureCodingP"
+- !private "Sj"
+- !private "So9OS_objectC"
+- !private "Sq"
+- !private "Sk"
+- !private "Sm"
+- !private "SY"
+- "6Runner17RectangleDetectorC"
+- "6Runner25RectangleDetectorDelegateP"
+- !private "So16SCNSceneRendererP"
+- !private "So24SCNSceneRendererDelegateP"
+- !private "So19SCNTechniqueSupportP"
+- !private "So7SCNViewC"
+- !private "ST"
+- !private "s13SignedNumericP"
+- !private "Sx"
+- !private "s27StringInterpolationProtocolP"
+- !private "s16TextOutputStreamP"
+- !private "So7NSTimerC"
+- !private "So29UIAccessibilityIdentificationP"
+- !private "So12UIAppearanceP"
+- !private "So21UIAppearanceContainerP"
+- !private "So18UIContentContainerP"
+- !private "So17UICoordinateSpaceP"
+- !private "So13UIDynamicItemP"
+- !private "So18UIFocusEnvironmentP"
+- !private "So11UIFocusItemP"
+- !private "So20UIFocusItemContainerP"
+- !private "So30UIPasteConfigurationSupportingP"
+- !private "So11UIResponderC"
+- !private "So30UIResponderStandardEditActionsP"
+- !private "So16UIStateRestoringP"
+- !private "So18UITraitEnvironmentP"
+- !private "So23UIUserActivityRestoringP"
+- !private "So6UIViewC"
+- !private "So16UIViewControllerC"
+- !private "So25VNDetectRectanglesRequestC"
+- !private "So27VNDetectedObjectObservationC"
+- !private "So19VNImageBasedRequestC"
+- !private "So21VNImageRequestHandlerC"
+- !private "So13VNObservationC"
+- !private "So22VNRectangleObservationC"
+- !private "So9VNRequestC"
+- !private "So26VNRequestRevisionProvidingP"
+- !private "s14_ArrayProtocolP"
+- !private "s15_CVarArgAlignedP"
+- !private "s22_CVarArgPassedAsDoubleP"
+- !private "s30_CustomPlaygroundQuickLookableP"
+- !private "s24_DestructorSafeContainerP"
+- !private "s19_HasContiguousBytesP"
+- !private "s35_HasCustomAnyHashableRepresentationP"
+- !private "10Foundation27_KeyValueCodingAndObservingP"
+- !private "s21_ObjectiveCBridgeableP"
+- !private "s38__DefaultCustomPlaygroundQuickLookableP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ModelIO.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreMedia.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/simd.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Metal.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Vision.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/AVFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreAudio.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Swift.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/GLKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ARKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SceneKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SpriteKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SwiftOnoneSupport.swiftmodule"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCallbackCache.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterEngine.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterTexture.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterAppDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlugin.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/Runner-Bridging-Header.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterBinaryMessenger.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterViewController.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterHeadlessDartRunner.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/Flutter.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCodecs.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterChannels.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterMacros.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlatformViews.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterDartProject.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/GeneratedPluginRegistrant.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Modules/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreML.framework/Headers/CoreML.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/ModelIO.framework/Headers/ModelIO.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/OpenGLES.framework/Headers/OpenGLES.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CoreMedia.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Vision.framework/Headers/Vision.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVFoundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UserNotifications.framework/Headers/UserNotifications.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/GLKit.framework/Headers/GLKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SceneKit.framework/Headers/SceneKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SpriteKit.framework/Headers/SpriteKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers/MediaToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/VideoToolbox.framework/Headers/VideoToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/AudioToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Security.framework/Headers/Security.apinotes"
+interface-hash: "77cf8c0dec2e71fa482766c8ecb1ae4c"

@@ -1,0 +1,712 @@
+{
+  "layer_shapes" : {
+    "transformer_residualblock4_instancenorm0__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm1__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm3_embedding0" : {
+      "k" : 64,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4_conv1_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer__mulscalar0_output_constant_in_scale" : {
+      "k" : 1,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_conv4_fwd" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock0_instancenorm0__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_activation0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm0_embedding0" : {
+      "k" : 32,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm2__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_conv2_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "index" : {
+      "k" : 8,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm3_embedding1" : {
+      "k" : 64,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm3__fwd_bn_" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock2_instancenorm0__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm0__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_activation0" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm0__fwd" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_conv0_fwd" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm2__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm1__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm0_embedding1" : {
+      "k" : 32,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock0_conv0_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm4__fwd" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm1__fwd_mult_gamma" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock3_conv1_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm0__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_activation5" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm0__fwd_mult_gamma" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock3_activation0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm0__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock4_conv0_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm4__fwd_bn_" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm5__fwd_bn_" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm2__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_upsampling1" : {
+      "k" : 64,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock4_instancenorm1__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock4_instancenorm1_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4_instancenorm1__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock4_instancenorm0_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4_instancenorm1_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock0_instancenorm0__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm0__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_activation3" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock2_conv1_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock4_instancenorm0_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4__plus0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm3__fwd_mult_gamma" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_instancenorm4__fwd_mult_gamma" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm5_embedding0" : {
+      "k" : 3,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock3_instancenorm1_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock3_conv0_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm2_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock3__plus0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm0_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock3_instancenorm1_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm5_embedding1" : {
+      "k" : 3,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm5__fwd_mult_gamma" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock2_instancenorm1__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm0_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock3_instancenorm1__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_conv5_fwd" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock2_instancenorm1_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock2__plus0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock0_activation0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm2_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_activation1" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock2_instancenorm0_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock2_instancenorm1_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4_instancenorm0__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_conv3_fwd" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_instancenorm1__fwd" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock1__plus0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock2_instancenorm0_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock4_instancenorm0__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock4_instancenorm1__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm1_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_conv1_fwd" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock3_instancenorm1__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm0_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock1_instancenorm1_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock2_conv0_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm1__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock2_instancenorm1__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock0__plus0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm0_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock0_instancenorm1_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm4_embedding0" : {
+      "k" : 32,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "stylizedImage" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "image" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock0_instancenorm0_embedding1" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock0_instancenorm1_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock2_activation0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_conv1_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock3_instancenorm0__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock0_instancenorm0_embedding0" : {
+      "k" : 128,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_instancenorm3__fwd" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_instancenorm5__fwd" : {
+      "k" : 3,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_instancenorm1_embedding0" : {
+      "k" : 64,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock0_instancenorm1__fwd_bn_" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock2_instancenorm0__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock2_instancenorm1__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm4_embedding1" : {
+      "k" : 32,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock1_instancenorm0__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock0_instancenorm1__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_instancenorm1__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_activation4" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock0_instancenorm1__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm1_embedding1" : {
+      "k" : 64,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "transformer_residualblock2_instancenorm0__fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_instancenorm0__fwd_bn_" : {
+      "k" : 32,
+      "w" : 600,
+      "n" : 1,
+      "h" : 600
+    },
+    "transformer_residualblock4_activation0" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_upsampling0" : {
+      "k" : 128,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_instancenorm1__fwd_bn_" : {
+      "k" : 64,
+      "w" : 300,
+      "n" : 1,
+      "h" : 300
+    },
+    "transformer_residualblock0_conv1_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_activation2" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock0_instancenorm0__fwd_mult_gamma" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    },
+    "transformer_residualblock1_conv0_fwd" : {
+      "k" : 128,
+      "w" : 150,
+      "n" : 1,
+      "h" : 150
+    }
+  }
+}

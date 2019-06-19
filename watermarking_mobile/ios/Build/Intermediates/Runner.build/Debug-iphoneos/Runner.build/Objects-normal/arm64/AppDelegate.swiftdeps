@@ -1,0 +1,452 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "ChannelName"
+- "AppDelegate"
+provides-nominal:
+- "6Runner11ChannelNameO"
+- "6Runner11AppDelegateC"
+provides-member:
+- ["6Runner11ChannelNameO", ""]
+- ["6Runner11AppDelegateC", ""]
+provides-dynamic-lookup:
+- "application"
+depends-top-level:
+- !private "=="
+- "AppDelegate"
+- "Bool"
+- "BooleanLiteralType"
+- "CastingPrecedence"
+- "ChannelName"
+- !private "DetectionViewController"
+- !private "FloatLiteralType"
+- "FlutterAppDelegate"
+- !private "FlutterMethodCall"
+- !private "FlutterMethodChannel"
+- !private "FlutterMethodNotImplemented"
+- !private "FlutterResult"
+- !private "FlutterViewController"
+- !private "GeneratedPluginRegistrant"
+- !private "IntegerLiteralType"
+- "StringLiteralType"
+- "UIApplication"
+- "UIApplicationLaunchOptionsKey"
+- !private "UIStoryboard"
+- !private "Void"
+- !private "fatalError"
+depends-member:
+- ["6Runner11AppDelegateC", "Bool"]
+- !private ["6Runner11AppDelegateC", "ChannelName"]
+- !private ["6Runner11AppDelegateC", "DetectionViewController"]
+- !private ["6Runner11AppDelegateC", "FlutterMethodCall"]
+- !private ["6Runner11AppDelegateC", "FlutterMethodChannel"]
+- !private ["6Runner11AppDelegateC", "FlutterMethodNotImplemented"]
+- !private ["6Runner11AppDelegateC", "FlutterResult"]
+- !private ["6Runner11AppDelegateC", "FlutterViewController"]
+- !private ["6Runner11AppDelegateC", "GeneratedPluginRegistrant"]
+- ["6Runner11AppDelegateC", "UIApplication"]
+- ["6Runner11AppDelegateC", "UIApplicationLaunchOptionsKey"]
+- !private ["6Runner11AppDelegateC", "UIStoryboard"]
+- !private ["6Runner11AppDelegateC", "Void"]
+- ["6Runner11AppDelegateC", "application"]
+- ["6Runner11AppDelegateC", "deinit"]
+- !private ["6Runner11AppDelegateC", "fatalError"]
+- ["6Runner11AppDelegateC", "init"]
+- !private ["6Runner11AppDelegateC", "window"]
+- !private ["So15CALayerDelegateP", "rootViewController"]
+- !private ["s7CVarArgP", "ChannelName"]
+- !private ["s7CVarArgP", "FlutterMethodChannel"]
+- !private ["s7CVarArgP", "FlutterMethodNotImplemented"]
+- !private ["s7CVarArgP", "GeneratedPluginRegistrant"]
+- !private ["s7CVarArgP", "UIStoryboard"]
+- ["s7CVarArgP", ""]
+- !private ["s7CVarArgP", "application"]
+- !private ["s7CVarArgP", "fatalError"]
+- !private ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "instantiateViewController"]
+- !private ["s7CVarArgP", "method"]
+- !private ["s7CVarArgP", "present"]
+- !private ["s7CVarArgP", "register"]
+- !private ["s7CVarArgP", "rootViewController"]
+- !private ["s7CVarArgP", "setMethodCallHandler"]
+- !private ["s7CVarArgP", "window"]
+- ["6Runner11ChannelNameO", "detect"]
+- !private ["s28CustomDebugStringConvertibleP", "ChannelName"]
+- !private ["s28CustomDebugStringConvertibleP", "FlutterMethodChannel"]
+- !private ["s28CustomDebugStringConvertibleP", "FlutterMethodNotImplemented"]
+- !private ["s28CustomDebugStringConvertibleP", "GeneratedPluginRegistrant"]
+- !private ["s28CustomDebugStringConvertibleP", "UIStoryboard"]
+- ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s28CustomDebugStringConvertibleP", "application"]
+- !private ["s28CustomDebugStringConvertibleP", "fatalError"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "instantiateViewController"]
+- !private ["s28CustomDebugStringConvertibleP", "method"]
+- !private ["s28CustomDebugStringConvertibleP", "present"]
+- !private ["s28CustomDebugStringConvertibleP", "register"]
+- !private ["s28CustomDebugStringConvertibleP", "rootViewController"]
+- !private ["s28CustomDebugStringConvertibleP", "setMethodCallHandler"]
+- !private ["s28CustomDebugStringConvertibleP", "window"]
+- !private ["s23CustomStringConvertibleP", "ChannelName"]
+- !private ["s23CustomStringConvertibleP", "FlutterMethodChannel"]
+- !private ["s23CustomStringConvertibleP", "FlutterMethodNotImplemented"]
+- !private ["s23CustomStringConvertibleP", "GeneratedPluginRegistrant"]
+- !private ["s23CustomStringConvertibleP", "UIStoryboard"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s23CustomStringConvertibleP", "application"]
+- !private ["s23CustomStringConvertibleP", "fatalError"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "instantiateViewController"]
+- !private ["s23CustomStringConvertibleP", "method"]
+- !private ["s23CustomStringConvertibleP", "present"]
+- !private ["s23CustomStringConvertibleP", "register"]
+- !private ["s23CustomStringConvertibleP", "rootViewController"]
+- !private ["s23CustomStringConvertibleP", "setMethodCallHandler"]
+- !private ["s23CustomStringConvertibleP", "window"]
+- !private ["SQ", "ChannelName"]
+- !private ["SQ", "FlutterMethodChannel"]
+- !private ["SQ", "FlutterMethodNotImplemented"]
+- !private ["SQ", "GeneratedPluginRegistrant"]
+- !private ["SQ", "UIStoryboard"]
+- ["SQ", ""]
+- !private ["SQ", "application"]
+- !private ["SQ", "fatalError"]
+- !private ["SQ", "init"]
+- !private ["SQ", "init"]
+- !private ["SQ", "instantiateViewController"]
+- !private ["SQ", "method"]
+- !private ["SQ", "present"]
+- !private ["SQ", "register"]
+- !private ["SQ", "rootViewController"]
+- !private ["SQ", "setMethodCallHandler"]
+- !private ["SQ", "window"]
+- ["So18FlutterAppDelegateC", "Bool"]
+- !private ["So18FlutterAppDelegateC", "ChannelName"]
+- !private ["So18FlutterAppDelegateC", "DetectionViewController"]
+- !private ["So18FlutterAppDelegateC", "FlutterMethodCall"]
+- !private ["So18FlutterAppDelegateC", "FlutterMethodChannel"]
+- !private ["So18FlutterAppDelegateC", "FlutterMethodNotImplemented"]
+- !private ["So18FlutterAppDelegateC", "FlutterResult"]
+- !private ["So18FlutterAppDelegateC", "FlutterViewController"]
+- !private ["So18FlutterAppDelegateC", "GeneratedPluginRegistrant"]
+- ["So18FlutterAppDelegateC", "UIApplication"]
+- ["So18FlutterAppDelegateC", "UIApplicationLaunchOptionsKey"]
+- !private ["So18FlutterAppDelegateC", "UIStoryboard"]
+- !private ["So18FlutterAppDelegateC", "Void"]
+- ["So18FlutterAppDelegateC", ""]
+- ["So18FlutterAppDelegateC", "application"]
+- !private ["So18FlutterAppDelegateC", "fatalError"]
+- ["So18FlutterAppDelegateC", "init"]
+- !private ["So18FlutterAppDelegateC", "init"]
+- !private ["So18FlutterAppDelegateC", "window"]
+- !private ["So27FlutterAppLifeCycleProviderP", "ChannelName"]
+- !private ["So27FlutterAppLifeCycleProviderP", "FlutterMethodChannel"]
+- !private ["So27FlutterAppLifeCycleProviderP", "FlutterMethodNotImplemented"]
+- !private ["So27FlutterAppLifeCycleProviderP", "GeneratedPluginRegistrant"]
+- !private ["So27FlutterAppLifeCycleProviderP", "UIStoryboard"]
+- ["So27FlutterAppLifeCycleProviderP", ""]
+- !private ["So27FlutterAppLifeCycleProviderP", "application"]
+- !private ["So27FlutterAppLifeCycleProviderP", "fatalError"]
+- !private ["So27FlutterAppLifeCycleProviderP", "init"]
+- !private ["So27FlutterAppLifeCycleProviderP", "init"]
+- !private ["So27FlutterAppLifeCycleProviderP", "window"]
+- !private ["So22FlutterBinaryMessengerP", "present"]
+- !private ["So17FlutterMethodCallC", "method"]
+- !private ["So20FlutterMethodChannelC", "init"]
+- !private ["So20FlutterMethodChannelC", "setMethodCallHandler"]
+- !private ["So21FlutterPluginRegistryP", "ChannelName"]
+- !private ["So21FlutterPluginRegistryP", "FlutterMethodChannel"]
+- !private ["So21FlutterPluginRegistryP", "FlutterMethodNotImplemented"]
+- !private ["So21FlutterPluginRegistryP", "GeneratedPluginRegistrant"]
+- !private ["So21FlutterPluginRegistryP", "UIStoryboard"]
+- ["So21FlutterPluginRegistryP", ""]
+- !private ["So21FlutterPluginRegistryP", "application"]
+- !private ["So21FlutterPluginRegistryP", "fatalError"]
+- !private ["So21FlutterPluginRegistryP", "init"]
+- !private ["So21FlutterPluginRegistryP", "init"]
+- !private ["So21FlutterPluginRegistryP", "present"]
+- !private ["So21FlutterPluginRegistryP", "window"]
+- !private ["So22FlutterTextureRegistryP", "present"]
+- !private ["So21FlutterViewControllerC", "present"]
+- !private ["So25GeneratedPluginRegistrantC", "register"]
+- !private ["SH", "ChannelName"]
+- !private ["SH", "FlutterMethodChannel"]
+- !private ["SH", "FlutterMethodNotImplemented"]
+- !private ["SH", "GeneratedPluginRegistrant"]
+- !private ["SH", "UIStoryboard"]
+- ["SH", ""]
+- !private ["SH", "application"]
+- !private ["SH", "fatalError"]
+- !private ["SH", "init"]
+- !private ["SH", "init"]
+- !private ["SH", "instantiateViewController"]
+- !private ["SH", "method"]
+- !private ["SH", "present"]
+- !private ["SH", "register"]
+- !private ["SH", "rootViewController"]
+- !private ["SH", "setMethodCallHandler"]
+- !private ["SH", "window"]
+- !private ["So8NSCodingP", "present"]
+- !private ["So8NSCodingP", "rootViewController"]
+- !private ["So26NSExtensionRequestHandlingP", "present"]
+- ["So8NSObjectC", "Bool"]
+- !private ["So8NSObjectC", "ChannelName"]
+- !private ["So8NSObjectC", "DetectionViewController"]
+- !private ["So8NSObjectC", "FlutterMethodCall"]
+- !private ["So8NSObjectC", "FlutterMethodChannel"]
+- !private ["So8NSObjectC", "FlutterMethodNotImplemented"]
+- !private ["So8NSObjectC", "FlutterResult"]
+- !private ["So8NSObjectC", "FlutterViewController"]
+- !private ["So8NSObjectC", "GeneratedPluginRegistrant"]
+- ["So8NSObjectC", "UIApplication"]
+- ["So8NSObjectC", "UIApplicationLaunchOptionsKey"]
+- !private ["So8NSObjectC", "UIStoryboard"]
+- !private ["So8NSObjectC", "Void"]
+- ["So8NSObjectC", "application"]
+- !private ["So8NSObjectC", "fatalError"]
+- ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "instantiateViewController"]
+- !private ["So8NSObjectC", "method"]
+- !private ["So8NSObjectC", "present"]
+- !private ["So8NSObjectC", "register"]
+- !private ["So8NSObjectC", "rootViewController"]
+- !private ["So8NSObjectC", "setMethodCallHandler"]
+- !private ["So8NSObjectC", "window"]
+- !private ["So8NSObjectP", "ChannelName"]
+- !private ["So8NSObjectP", "FlutterMethodChannel"]
+- !private ["So8NSObjectP", "FlutterMethodNotImplemented"]
+- !private ["So8NSObjectP", "GeneratedPluginRegistrant"]
+- !private ["So8NSObjectP", "UIStoryboard"]
+- ["So8NSObjectP", ""]
+- !private ["So8NSObjectP", "application"]
+- !private ["So8NSObjectP", "fatalError"]
+- !private ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "instantiateViewController"]
+- !private ["So8NSObjectP", "method"]
+- !private ["So8NSObjectP", "present"]
+- !private ["So8NSObjectP", "register"]
+- !private ["So8NSObjectP", "rootViewController"]
+- !private ["So8NSObjectP", "setMethodCallHandler"]
+- !private ["So8NSObjectP", "window"]
+- !private ["So29UIAccessibilityIdentificationP", "rootViewController"]
+- !private ["So12UIAppearanceP", "rootViewController"]
+- !private ["So21UIAppearanceContainerP", "present"]
+- !private ["So21UIAppearanceContainerP", "rootViewController"]
+- !private ["So21UIApplicationDelegateP", "ChannelName"]
+- !private ["So21UIApplicationDelegateP", "FlutterMethodChannel"]
+- !private ["So21UIApplicationDelegateP", "FlutterMethodNotImplemented"]
+- !private ["So21UIApplicationDelegateP", "GeneratedPluginRegistrant"]
+- !private ["So21UIApplicationDelegateP", "UIStoryboard"]
+- ["So21UIApplicationDelegateP", ""]
+- !private ["So21UIApplicationDelegateP", "application"]
+- !private ["So21UIApplicationDelegateP", "fatalError"]
+- !private ["So21UIApplicationDelegateP", "init"]
+- !private ["So21UIApplicationDelegateP", "init"]
+- !private ["So21UIApplicationDelegateP", "window"]
+- !private ["So18UIContentContainerP", "present"]
+- !private ["So17UICoordinateSpaceP", "rootViewController"]
+- !private ["So13UIDynamicItemP", "rootViewController"]
+- !private ["So18UIFocusEnvironmentP", "present"]
+- !private ["So18UIFocusEnvironmentP", "rootViewController"]
+- !private ["So11UIFocusItemP", "rootViewController"]
+- !private ["So20UIFocusItemContainerP", "rootViewController"]
+- !private ["So30UIPasteConfigurationSupportingP", "ChannelName"]
+- !private ["So30UIPasteConfigurationSupportingP", "FlutterMethodChannel"]
+- !private ["So30UIPasteConfigurationSupportingP", "FlutterMethodNotImplemented"]
+- !private ["So30UIPasteConfigurationSupportingP", "GeneratedPluginRegistrant"]
+- !private ["So30UIPasteConfigurationSupportingP", "UIStoryboard"]
+- ["So30UIPasteConfigurationSupportingP", ""]
+- !private ["So30UIPasteConfigurationSupportingP", "application"]
+- !private ["So30UIPasteConfigurationSupportingP", "fatalError"]
+- !private ["So30UIPasteConfigurationSupportingP", "init"]
+- !private ["So30UIPasteConfigurationSupportingP", "init"]
+- !private ["So30UIPasteConfigurationSupportingP", "present"]
+- !private ["So30UIPasteConfigurationSupportingP", "rootViewController"]
+- !private ["So30UIPasteConfigurationSupportingP", "window"]
+- ["So11UIResponderC", "Bool"]
+- !private ["So11UIResponderC", "ChannelName"]
+- !private ["So11UIResponderC", "DetectionViewController"]
+- !private ["So11UIResponderC", "FlutterMethodCall"]
+- !private ["So11UIResponderC", "FlutterMethodChannel"]
+- !private ["So11UIResponderC", "FlutterMethodNotImplemented"]
+- !private ["So11UIResponderC", "FlutterResult"]
+- !private ["So11UIResponderC", "FlutterViewController"]
+- !private ["So11UIResponderC", "GeneratedPluginRegistrant"]
+- ["So11UIResponderC", "UIApplication"]
+- ["So11UIResponderC", "UIApplicationLaunchOptionsKey"]
+- !private ["So11UIResponderC", "UIStoryboard"]
+- !private ["So11UIResponderC", "Void"]
+- ["So11UIResponderC", "application"]
+- !private ["So11UIResponderC", "fatalError"]
+- ["So11UIResponderC", "init"]
+- !private ["So11UIResponderC", "init"]
+- !private ["So11UIResponderC", "present"]
+- !private ["So11UIResponderC", "rootViewController"]
+- !private ["So11UIResponderC", "window"]
+- !private ["So30UIResponderStandardEditActionsP", "ChannelName"]
+- !private ["So30UIResponderStandardEditActionsP", "FlutterMethodChannel"]
+- !private ["So30UIResponderStandardEditActionsP", "FlutterMethodNotImplemented"]
+- !private ["So30UIResponderStandardEditActionsP", "GeneratedPluginRegistrant"]
+- !private ["So30UIResponderStandardEditActionsP", "UIStoryboard"]
+- ["So30UIResponderStandardEditActionsP", ""]
+- !private ["So30UIResponderStandardEditActionsP", "application"]
+- !private ["So30UIResponderStandardEditActionsP", "fatalError"]
+- !private ["So30UIResponderStandardEditActionsP", "init"]
+- !private ["So30UIResponderStandardEditActionsP", "init"]
+- !private ["So30UIResponderStandardEditActionsP", "present"]
+- !private ["So30UIResponderStandardEditActionsP", "rootViewController"]
+- !private ["So30UIResponderStandardEditActionsP", "window"]
+- !private ["So16UIStateRestoringP", "present"]
+- !private ["So12UIStoryboardC", "init"]
+- !private ["So12UIStoryboardC", "instantiateViewController"]
+- !private ["So18UITraitEnvironmentP", "present"]
+- !private ["So18UITraitEnvironmentP", "rootViewController"]
+- !private ["So23UIUserActivityRestoringP", "ChannelName"]
+- !private ["So23UIUserActivityRestoringP", "FlutterMethodChannel"]
+- !private ["So23UIUserActivityRestoringP", "FlutterMethodNotImplemented"]
+- !private ["So23UIUserActivityRestoringP", "GeneratedPluginRegistrant"]
+- !private ["So23UIUserActivityRestoringP", "UIStoryboard"]
+- ["So23UIUserActivityRestoringP", ""]
+- !private ["So23UIUserActivityRestoringP", "application"]
+- !private ["So23UIUserActivityRestoringP", "fatalError"]
+- !private ["So23UIUserActivityRestoringP", "init"]
+- !private ["So23UIUserActivityRestoringP", "init"]
+- !private ["So23UIUserActivityRestoringP", "present"]
+- !private ["So23UIUserActivityRestoringP", "rootViewController"]
+- !private ["So23UIUserActivityRestoringP", "window"]
+- !private ["So6UIViewC", "rootViewController"]
+- !private ["So16UIViewControllerC", "present"]
+- !private ["So8UIWindowC", "rootViewController"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "ChannelName"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "FlutterMethodChannel"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "FlutterMethodNotImplemented"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "GeneratedPluginRegistrant"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "UIStoryboard"]
+- ["10Foundation27_KeyValueCodingAndObservingP", ""]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "application"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "fatalError"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "instantiateViewController"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "method"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "present"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "register"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "rootViewController"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "setMethodCallHandler"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "window"]
+- !private ["s38__DefaultCustomPlaygroundQuickLookableP", "rootViewController"]
+depends-nominal:
+- "6Runner11AppDelegateC"
+- !private "So15CALayerDelegateP"
+- "s7CVarArgP"
+- "6Runner11ChannelNameO"
+- "s28CustomDebugStringConvertibleP"
+- "s23CustomStringConvertibleP"
+- "SQ"
+- "So18FlutterAppDelegateC"
+- "So27FlutterAppLifeCycleProviderP"
+- !private "So22FlutterBinaryMessengerP"
+- !private "So17FlutterMethodCallC"
+- !private "So20FlutterMethodChannelC"
+- "So21FlutterPluginRegistryP"
+- !private "So22FlutterTextureRegistryP"
+- !private "So21FlutterViewControllerC"
+- !private "So25GeneratedPluginRegistrantC"
+- "SH"
+- !private "So8NSCodingP"
+- !private "So26NSExtensionRequestHandlingP"
+- "So8NSObjectC"
+- "So8NSObjectP"
+- !private "So29UIAccessibilityIdentificationP"
+- !private "So12UIAppearanceP"
+- !private "So21UIAppearanceContainerP"
+- "So21UIApplicationDelegateP"
+- !private "So18UIContentContainerP"
+- !private "So17UICoordinateSpaceP"
+- !private "So13UIDynamicItemP"
+- !private "So18UIFocusEnvironmentP"
+- !private "So11UIFocusItemP"
+- !private "So20UIFocusItemContainerP"
+- "So30UIPasteConfigurationSupportingP"
+- "So11UIResponderC"
+- "So30UIResponderStandardEditActionsP"
+- !private "So16UIStateRestoringP"
+- !private "So12UIStoryboardC"
+- !private "So18UITraitEnvironmentP"
+- "So23UIUserActivityRestoringP"
+- !private "So6UIViewC"
+- !private "So16UIViewControllerC"
+- !private "So8UIWindowC"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- !private "s38__DefaultCustomPlaygroundQuickLookableP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ModelIO.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreMedia.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/simd.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Metal.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Vision.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/AVFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreAudio.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Swift.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/GLKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ARKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SceneKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SpriteKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SwiftOnoneSupport.swiftmodule"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCallbackCache.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterEngine.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterTexture.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterAppDelegate.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlugin.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/Runner-Bridging-Header.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterBinaryMessenger.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterViewController.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterHeadlessDartRunner.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/Flutter.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterCodecs.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterChannels.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterMacros.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterPlatformViews.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Headers/FlutterDartProject.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Runner/GeneratedPluginRegistrant.h"
+- "/Users/nick/git/watermarking/watermarking_mobile/ios/Flutter/Flutter.framework/Modules/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreML.framework/Headers/CoreML.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/ModelIO.framework/Headers/ModelIO.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/OpenGLES.framework/Headers/OpenGLES.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreMedia.framework/Headers/CoreMedia.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Vision.framework/Headers/Vision.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AVFoundation.framework/Headers/AVFoundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UserNotifications.framework/Headers/UserNotifications.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/GLKit.framework/Headers/GLKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SceneKit.framework/Headers/SceneKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/SpriteKit.framework/Headers/SpriteKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers/MediaToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/VideoToolbox.framework/Headers/VideoToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/AudioToolbox.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Security.framework/Headers/Security.apinotes"
+interface-hash: "e2fc06fc0cdfa6ee6b0217a191cdb820"
