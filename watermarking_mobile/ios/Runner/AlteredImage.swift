@@ -179,11 +179,6 @@ class AlteredImage {
         guard visualizationNode.parent != nil else { return }
         
         fadeBetweenStyles.toggle()
-        if fadeBetweenStyles {
-            DetectionViewController.instance?.showMessage("Resume fading between styles.")
-        } else {
-            DetectionViewController.instance?.showMessage("Pause fading between styles.")
-        }
         visualizationNodeDidFinishFade(visualizationNode)
     }
     
