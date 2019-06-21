@@ -13,13 +13,12 @@ import UIKit
 class DetectionViewController: UIViewController {
 
     @IBOutlet var sceneView: ARSCNView!
-    @IBOutlet weak var messagePanel: UIView!
-    @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var detectedImage: UIImageView!
 
     static var instance: DetectionViewController?
     
     var averagedImage: CIImage = CIImage.init(color: CIColor.black)
+    let filter: CIFilter = CIFilter(name: "WeightedCombine")!
     
     /// An object that detects rectangular shapes in the user's environment.
     let rectangleDetector = RectangleDetector()
@@ -119,36 +118,15 @@ extension DetectionViewController: RectangleDetectorDelegate {
     /// Called when the app recognized a rectangular shape in the user's envirnment.
     /// - Tag: NewAlteredImage
     func rectangleFound(rectangleContent: CIImage) {
+        
         DispatchQueue.global(qos: .utility).async {
-            [weak self] in
-//            print("This is run on the background queue")
-            guard let self = self else { return }
-//            self.averagedImage = self.averagedImage.composited(over: rectangleContent)
-            self.averagedImage = self.averagedImage. rectangleContent
+            self.filter.setValue(rectangleContent, forKey: kCIInputImageKey)
+            self.averagedImage = self.filter.outputImage!
             DispatchQueue.main.async {
-//                print("This is run on the main queue, after the previous code in outer block")
                 self.detectedImage.image = UIImage.init(ciImage: self.averagedImage)
-                
             }
         }
-//        DispatchQueue.main.async {
-//
-//            self.averagedImage = self.averagedImage.composited(over: rectangleContent)
-//            self.detectedImage.image = UIImage.init(ciImage: rectangleContent)
-            
-//            // Ignore detected rectangles if the app is currently tracking an image.
-//            guard self.alteredImage == nil else {
-//                return
-//            }
-//
-//            // Try tracking the image that lies within the rectangle the app just detected.
-//            guard let newAlteredImage = AlteredImage(rectangleContent) else { return }
-//            newAlteredImage.delegate = self
-//            self.alteredImage = newAlteredImage
-//
-//            // Start the session with the newly recognized image.
-//            self.runImageTrackingSession(with: [newAlteredImage.referenceImage])
-//        }
+        
     }
 }
 

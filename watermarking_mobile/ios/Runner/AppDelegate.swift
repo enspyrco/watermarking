@@ -14,6 +14,8 @@ enum ChannelName {
     
     GeneratedPluginRegistrant.register(with: self)
     
+    CIFilter.registerName("WeightedCombine", constructor: CustomFiltersVendor(), classAttributes: [kCIAttributeFilterCategories: [kCICategoryVideo, kCICategoryStillImage]])
+    
     guard let controller = window?.rootViewController as? FlutterViewController else {
         fatalError("rootViewController is not type FlutterViewController")
     }
@@ -26,7 +28,7 @@ enum ChannelName {
             return
         }
         
-//        controller.performSegue(withIdentifier: "DetectionSegue", sender: nil)
+        // navigate to DetectionViewController
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: "DetectionVC") as! DetectionViewController
         controller.present(viewController, animated: true, completion: nil)

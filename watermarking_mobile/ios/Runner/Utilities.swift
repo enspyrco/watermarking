@@ -76,3 +76,46 @@ func createPlaneNode(size: CGSize, rotation: Float, contents: Any?) -> SCNNode {
     planeNode.eulerAngles.x = rotation
     return planeNode
 }
+
+class WeightedCombineFilter : CIFilter {
+    @objc dynamic var inputImage: CIImage?
+    var inputNumCombined: Int = 0
+    
+    override var name: String {
+        get { return "WeightedCombine"}
+        set {}
+    }
+    
+    override func setDefaults() {
+        super.setDefaults()
+         inputNumCombined = 0
+    }
+    
+    var combineKernel = CIColorKernel(source:
+        "kernel vec4 color(__sample pixel)" +
+        "{ return vec4(pixel.r, pixel.g, 1.0, 1.0); }"
+    )
+    
+    override var outputImage: CIImage? {
+        if let inputImage = inputImage, let combineKernel = combineKernel
+        {
+            let extent = inputImage.extent
+            let arguments = [inputImage]
+            
+            return combineKernel.apply(extent: extent, arguments: arguments)
+        }
+        return nil
+    }
+    
+}
+
+class CustomFiltersVendor: NSObject, CIFilterConstructor {
+    func filter(withName name: String) -> CIFilter? {
+        switch name {
+        case "WeightedCombine":
+            return WeightedCombineFilter()
+        default:
+            return nil
+        }
+    }
+}
