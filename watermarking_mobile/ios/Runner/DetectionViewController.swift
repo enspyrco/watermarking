@@ -17,7 +17,7 @@ class DetectionViewController: UIViewController {
 
     static var instance: DetectionViewController?
     
-    var averagedImage: CIImage = CIImage.init(color: CIColor.black)
+    var averagedImage: CIImage? = nil
     let filter: CIFilter = CIFilter(name: "WeightedCombine")!
     
     /// An object that detects rectangular shapes in the user's environment.
@@ -115,16 +115,19 @@ extension DetectionViewController: ARSCNViewDelegate {
 }
 
 extension DetectionViewController: RectangleDetectorDelegate {
-    /// Called when the app recognized a rectangular shape in the user's envirnment.
+    /// Called when the app recognized a rectangular shape in the user's environment.
     /// - Tag: NewAlteredImage
     func rectangleFound(rectangleContent: CIImage) {
+        if self.averagedImage == nil {
+            self.averagedImage = rectangleContent.copy() as? CIImage
+        }
+        self.filter.setValue(rectangleContent, forKey: kCIInputImageKey)
+        self.filter.setValue(self.averagedImage, forKey: kCIInputBackgroundImageKey)
         
-        DispatchQueue.global(qos: .utility).async {
-            self.filter.setValue(rectangleContent, forKey: kCIInputImageKey)
-            self.averagedImage = self.filter.outputImage!
-            DispatchQueue.main.async {
-                self.detectedImage.image = UIImage.init(ciImage: self.averagedImage)
-            }
+        self.averagedImage = self.filter.outputImage!
+        
+        DispatchQueue.main.async {
+            self.detectedImage.image = UIImage.init(ciImage: self.averagedImage!)
         }
         
     }

@@ -79,7 +79,8 @@ func createPlaneNode(size: CGSize, rotation: Float, contents: Any?) -> SCNNode {
 
 class WeightedCombineFilter : CIFilter {
     @objc dynamic var inputImage: CIImage?
-    var inputNumCombined: Int = 0
+    @objc dynamic var inputBackgroundImage: CIImage?
+    @objc dynamic var inputNumCombined: Int = 0
     
     override var name: String {
         get { return "WeightedCombine"}
@@ -88,21 +89,18 @@ class WeightedCombineFilter : CIFilter {
     
     override func setDefaults() {
         super.setDefaults()
-         inputNumCombined = 0
+        inputNumCombined = 0
     }
     
-    var combineKernel = CIColorKernel(source:
-        "kernel vec4 color(__sample pixel)" +
-        "{ return vec4(pixel.r, pixel.g, 1.0, 1.0); }"
+    var blendKernel = CIBlendKernel(source:
+        "kernel vec4 blend(__sample foreground, __sample background)" +
+        "{ return (foreground + background) / 2.0; }"
     )
     
     override var outputImage: CIImage? {
-        if let inputImage = inputImage, let combineKernel = combineKernel
+        if let inputImage = inputImage, let inputBackgroundImage = inputBackgroundImage, let blendKernel = blendKernel
         {
-            let extent = inputImage.extent
-            let arguments = [inputImage]
-            
-            return combineKernel.apply(extent: extent, arguments: arguments)
+            return blendKernel.apply(foreground: inputImage, background: inputBackgroundImage)
         }
         return nil
     }
