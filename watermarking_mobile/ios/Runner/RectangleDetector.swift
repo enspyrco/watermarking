@@ -18,7 +18,7 @@ class RectangleDetector {
     
     /// The number of times per second to check for rectangles.
     /// - Tag: UpdateInterval
-    private var updateInterval: TimeInterval = 0.3
+    private var updateInterval: TimeInterval = 0.1
     
     /// - Tag: IsBusy
     private var isBusy = false

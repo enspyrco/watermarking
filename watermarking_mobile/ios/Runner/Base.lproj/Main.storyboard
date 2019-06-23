@@ -62,7 +62,7 @@
                         </connections>
                     </view>
                     <connections>
-                        <outlet property="detectedImage" destination="aFd-1g-S42" id="KtN-4q-pU5"/>
+                        <outlet property="imageView" destination="aFd-1g-S42" id="oiB-14-whS"/>
                         <outlet property="sceneView" destination="mKE-B3-ddC" id="3vx-62-Irz"/>
                     </connections>
                 </viewController>
