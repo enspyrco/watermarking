@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0126A5D622C0F84C00ECD70A /* Kernels.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0126A5D522C0F84C00ECD70A /* Kernels.metal */; };
 		01DCFB9822B8F9CA00836D6D /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DCFB9322B8F9CA00836D6D /* Utilities.swift */; };
 		01DCFB9A22B8F9CA00836D6D /* DetectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DCFB9522B8F9CA00836D6D /* DetectionViewController.swift */; };
 		01DCFB9B22B8F9CA00836D6D /* RectangleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DCFB9622B8F9CA00836D6D /* RectangleDetector.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0126A5D522C0F84C00ECD70A /* Kernels.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Kernels.metal; sourceTree = "<group>"; };
 		01DCFB9322B8F9CA00836D6D /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		01DCFB9522B8F9CA00836D6D /* DetectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetectionViewController.swift; sourceTree = "<group>"; };
 		01DCFB9622B8F9CA00836D6D /* RectangleDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RectangleDetector.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				01DCFB9622B8F9CA00836D6D /* RectangleDetector.swift */,
 				01DCFB9322B8F9CA00836D6D /* Utilities.swift */,
 				01DCFB9522B8F9CA00836D6D /* DetectionViewController.swift */,
+				0126A5D522C0F84C00ECD70A /* Kernels.metal */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				01DCFB9A22B8F9CA00836D6D /* DetectionViewController.swift in Sources */,
 				01DCFB9822B8F9CA00836D6D /* Utilities.swift in Sources */,
 				01DCFB9B22B8F9CA00836D6D /* RectangleDetector.swift in Sources */,
+				0126A5D622C0F84C00ECD70A /* Kernels.metal in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
@@ -334,6 +338,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = co.enspyr.watermarkingMobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -465,6 +471,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = co.enspyr.watermarkingMobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -495,6 +503,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = co.enspyr.watermarkingMobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

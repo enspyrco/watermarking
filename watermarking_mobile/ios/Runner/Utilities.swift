@@ -80,7 +80,22 @@ func createPlaneNode(size: CGSize, rotation: Float, contents: Any?) -> SCNNode {
 class WeightedCombineFilter : CIFilter {
     @objc dynamic var inputImage: CIImage?
     @objc dynamic var inputBackgroundImage: CIImage?
-    @objc dynamic var inputScale: NSNumber?
+    @objc dynamic var inputScale: NSNumber = 0
+    
+    private let weightingKernel: CIColorKernel
+    private let blendKernel: CIBlendKernel
+    
+    override init() {
+        let url = Bundle.main.url(forResource: "default", withExtension: "metallib")!
+        let data = try! Data(contentsOf: url)
+        weightingKernel = try! CIColorKernel(functionName: "weightColor", fromMetalLibraryData: data)
+        blendKernel = try! CIBlendKernel(functionName: "blendWeighted", fromMetalLibraryData: data)
+        super.init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override var name: String {
         get { return "WeightedCombine"}
@@ -91,15 +106,15 @@ class WeightedCombineFilter : CIFilter {
         super.setDefaults()
     }
     
-    var blendKernel = CIBlendKernel(source:
-        "kernel vec4 blend(__sample foreground, __sample background)" +
-        "{ return (foreground + background) / 2.0; }"
-    )
-    
     override var outputImage: CIImage? {
-        if let inputImage = inputImage, let inputBackgroundImage = inputBackgroundImage, let inputScale = inputScale, let blendKernel = blendKernel
+        if let foregroundImage = inputImage, let backgroundImage = inputBackgroundImage
         {
-            return blendKernel.apply(foreground: inputImage, background: inputBackgroundImage)
+            let v = inputScale.floatValue
+            let backgroundWeight = v/(v+1)
+            let foregroundWeight = 1.0/(v+1)
+            let weightedBackground = weightingKernel.apply(extent: backgroundImage.extent, arguments: [backgroundImage, backgroundWeight])
+            let weightedForeground = weightingKernel.apply(extent: foregroundImage.extent, arguments: [foregroundImage, foregroundWeight])
+            return blendKernel.apply(foreground: weightedForeground!, background: weightedBackground!)
         }
         return nil
     }
