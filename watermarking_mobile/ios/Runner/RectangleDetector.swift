@@ -118,7 +118,15 @@ class RectangleDetector {
             print("Error: Rectangle detection failed - perspective correction filter has no output image.")
             return
         }
-        delegate?.rectangleFound(rectangleContent: perspectiveImage)
+        
+        guard let scaleFilter = CIFilter(name: "CILanczosScaleTransform") else {
+            print("Error: Rectangle detection failed - Could not create scale filter.")
+            return
+        }
+        scaleFilter.setValue(perspectiveImage.oriented(.right), forKey: kCIInputImageKey)
+        scaleFilter.setValue(512.0/perspectiveImage.extent.width, forKey: kCIInputScaleKey)
+        
+        delegate?.rectangleFound(rectangleContent: scaleFilter.outputImage!)
     }
 }
 

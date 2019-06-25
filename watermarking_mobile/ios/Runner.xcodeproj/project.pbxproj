@@ -123,9 +123,9 @@
 		97C146F11CF9000F007C117D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				01DCFB9522B8F9CA00836D6D /* DetectionViewController.swift */,
 				01DCFB9622B8F9CA00836D6D /* RectangleDetector.swift */,
 				01DCFB9322B8F9CA00836D6D /* Utilities.swift */,
-				01DCFB9522B8F9CA00836D6D /* DetectionViewController.swift */,
 				0126A5D522C0F84C00ECD70A /* Kernels.metal */,
 			);
 			name = "Supporting Files";

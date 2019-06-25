@@ -21,7 +21,7 @@ class DetectionViewController: UIViewController {
     var foreground: CIImage? = nil
     var background: CIImage? = nil
     var numCombined: Int = 0
-    let accumulator: CIImageAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 640, height: 640), format: kCIFormatARGB8)!
+    let accumulator: CIImageAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 512, height: 512), format: kCIFormatARGB8)!
     
     /// An object that detects rectangular shapes in the user's environment.
     let rectangleDetector = RectangleDetector()
