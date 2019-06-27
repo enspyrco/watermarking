@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: any
+  firebase_database: any
   firebase_storage: any
   firebase_auth: any
   google_sign_in: any

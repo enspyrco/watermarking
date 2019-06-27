@@ -1,65 +1,40 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:watermarking_mobile/models/image_file.dart';
+import 'package:watermarking_mobile/models/problem.dart';
+import 'package:watermarking_mobile/redux/actions.dart';
+
 class DatabaseService {
   DatabaseService();
 
   String userId;
-  StreamSubscription<dynamic> profilePicUrlSubscription;
-  StreamSubscription<dynamic> profilePicsSubscription;
+  StreamSubscription<dynamic> imagesSubscription;
 
-  // create a document id that will be added as metadata to the upload
-  // for use in a cloud function
-  String getProfilePicEntryId() => Firestore.instance
-      .collection('users/$userId/profilePics')
-      .document()
-      .documentID;
-
-  Stream<dynamic> connectToProfilePicUrl() {
-    return Firestore.instance
-        .document('users/$userId')
-        .snapshots()
-        .map<dynamic>((DocumentSnapshot snapshot) =>
-            ActionSetProfilePicUrl(url: snapshot.data['photoURL']))
-        .handleError((dynamic error) => ActionAddProblem(
-            problem: Problem(
-                type: ProblemType.profilePicUrl, message: error.toString())));
-  }
-
-  Future<dynamic> cancelProfilePicUrlSubscription() {
-    if (profilePicUrlSubscription == null) {
-      return Future<dynamic>.value(null);
-    }
-    return profilePicUrlSubscription.cancel();
-  }
-
-  Stream<dynamic> connectToProfilePics() {
-    return Firestore.instance
-        .collection('users/$userId/profilePics')
-        .snapshots()
-        .map<dynamic>((QuerySnapshot snapshot) => ActionSetProfilePics(
-            pics: snapshot.documents
-                .map<ProfilePic>((DocumentSnapshot document) => ProfilePic(
-                    id: document.documentID,
-                    url: document.data['servingUrl'],
-                    deleting: document.data['delete']))
-                .toList()))
+  Stream<dynamic> connectToImages() {
+    return FirebaseDatabase.instance
+        .reference()
+        .child('original-images/$userId')
+        .onValue
+        .map<dynamic>(
+            (Event event) => ActionSetImages(images: event.snapshot.value))
         .handleError((dynamic error) => ActionAddProblem(
             problem: Problem(
                 type: ProblemType.profilePics, message: error.toString())));
   }
 
-  Future<dynamic> cancelProfilePicsSubscription() {
-    if (profilePicsSubscription == null) {
-      return Future<dynamic>.value(null);
-    }
-    return profilePicsSubscription.cancel();
+  Future<dynamic> cancelImagesSubscription() {
+    return (imagesSubscription == null)
+        ? Future<dynamic>.value(null)
+        : imagesSubscription.cancel();
   }
 
-  /// Adds a flag to the profilePic entry that will be picked up by a cloud
+  /// Adds a flag to the images entry that will be picked up by a cloud
   /// function and go through the deletion sequence (remove file, stop serving)
   Future<void> requestProfilePicDelete(String entryId) {
-    return Firestore.instance
-        .document('users/$userId/profilePics/$entryId')
-        .updateData(<String, dynamic>{'delete': true});
+    return FirebaseDatabase.instance
+        .reference()
+        .child('original-images/$userId/$entryId')
+        .update(<String, dynamic>{'delete': true});
   }
 }

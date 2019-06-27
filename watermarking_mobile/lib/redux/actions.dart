@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:watermarking_mobile/models/image_file.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 
 class ActionSignin {
@@ -28,12 +29,27 @@ class ActionSetProfilePicUrl {
   final String url;
 }
 
+class ActionSetImages {
+  const ActionSetImages({@required this.images});
+  final List<ImageFile> images;
+}
+
 class ActionStartImageUpload {
   const ActionStartImageUpload(
       {@required this.id, @required this.filePath, this.totalBytes});
   final String id;
   final String filePath;
   final int totalBytes;
+}
+
+class ActionSetImageUploadPaused {
+  const ActionSetImageUploadPaused({@required this.id});
+  final String id;
+}
+
+class ActionSetImageUploadResumed {
+  const ActionSetImageUploadResumed({@required this.id});
+  final String id;
 }
 
 // this action will also trigger middleware to create a db entry

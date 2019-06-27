@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:meta/meta.dart';
-
-import 'package:crowdleague_mobile/models/problem.dart';
-import 'package:crowdleague_mobile/redux/actions.dart';
+import 'package:watermarking_mobile/models/problem.dart';
+import 'package:watermarking_mobile/redux/actions.dart';
 
 class StorageService {
   StorageService();
@@ -64,7 +63,7 @@ class StorageService {
           event.snapshot.storageMetadata.customMetadata['docId'];
       switch (event.type) {
         case StorageTaskEventType.success:
-          return ActionSetProfilePicUploadSuccess(id: itemId);
+          return ActionSetImageUploadSuccess(id: itemId);
         case StorageTaskEventType.failure:
           return ActionAddProblem(
               problem: Problem(
@@ -75,12 +74,12 @@ class StorageService {
                 'itemId': itemId
               }));
         case StorageTaskEventType.progress:
-          return ActionSetProfilePicUploadProgress(
+          return ActionSetImageUploadProgress(
               bytes: event.snapshot.bytesTransferred, id: itemId);
         case StorageTaskEventType.pause:
-          return ActionSetProfilePicUploadPaused(id: itemId);
+          return ActionSetImageUploadPaused(id: itemId);
         case StorageTaskEventType.resume:
-          return ActionSetProfilePicUploadResumed(id: itemId);
+          return ActionSetImageUploadResumed(id: itemId);
       }
     });
   }
