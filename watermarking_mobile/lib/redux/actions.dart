@@ -1,0 +1,60 @@
+import 'package:meta/meta.dart';
+import 'package:watermarking_mobile/models/problem.dart';
+
+class ActionSignin {
+  const ActionSignin();
+}
+
+class ActionSignout {
+  const ActionSignout();
+}
+
+class ActionAddProblem {
+  const ActionAddProblem({@required this.problem});
+  final Problem problem;
+}
+
+class ActionObserveAuthState {
+  const ActionObserveAuthState();
+}
+
+class ActionSetAuthState {
+  const ActionSetAuthState({@required this.userId});
+  final String userId;
+}
+
+class ActionSetProfilePicUrl {
+  const ActionSetProfilePicUrl({@required this.url});
+  final String url;
+}
+
+class ActionStartImageUpload {
+  const ActionStartImageUpload(
+      {@required this.id, @required this.filePath, this.totalBytes});
+  final String id;
+  final String filePath;
+  final int totalBytes;
+}
+
+// this action will also trigger middleware to create a db entry
+// to indicate status (file uploaded, waiting for result)
+class ActionSetImageUploadSuccess {
+  const ActionSetImageUploadSuccess({@required this.id});
+  final String id;
+}
+
+class ActionSetImageUploadProgress {
+  const ActionSetImageUploadProgress({@required this.id, @required this.bytes});
+  final String id;
+  final int bytes;
+}
+
+class ActionRemoveUploadItem {
+  const ActionRemoveUploadItem({@required this.id});
+  final String id;
+}
+
+class ActionCancelUpload {
+  const ActionCancelUpload({@required this.id});
+  final String id;
+}

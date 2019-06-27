@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:watermarking_mobile/services/auth_service.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  final AuthService authService = AuthService();
+  final DatabaseService databaseService = DatabaseService();
+  final StorageService storageService = StorageService();
+  final DeviceService deviceService = DeviceService();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

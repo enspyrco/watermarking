@@ -9,10 +9,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  path_provider: any
+  firebase_storage: any
+  firebase_auth: any
+  google_sign_in: any
+  rxdart: any
+  flutter_redux: any
+  redux_epics: any
+  redux_remote_devtools: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
+  mockito: any
 
 flutter:
 
