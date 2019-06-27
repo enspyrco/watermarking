@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:watermarking_mobile/services/auth_service.dart';
+import 'package:watermarking_mobile/services/database_service.dart';
+import 'package:watermarking_mobile/services/device_service.dart';
+import 'package:watermarking_mobile/services/storage_service.dart';
 
 void main() {
   final AuthService authService = AuthService();
