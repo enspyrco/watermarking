@@ -1,0 +1,45 @@
+import 'package:redux_epics/redux_epics.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_mobile/redux/actions.dart';
+import 'package:watermarking_mobile/services/auth_service.dart';
+import 'package:watermarking_mobile/services/database_service.dart';
+import 'package:watermarking_mobile/services/storage_service.dart';
+
+EpicMiddleware<AppState> createEpicMiddleware(AuthService authService,
+    DatabaseService databaseService, StorageService uploadService) {
+  final Epic<AppState> epic = combineEpics<AppState>(<Epic<AppState>>[
+    createAuthEpic(authService),
+    createUploadEpic(databaseService, uploadService),
+  ]);
+
+  return EpicMiddleware<AppState>(epic);
+}
+
+Epic<AppState> createUploadEpic(
+    DatabaseService databaseService, StorageService service) {
+  return (Stream<dynamic> actions, EpicStore<AppState> store) {
+    return actions
+        .where((dynamic action) => action is ActionStartImageUpload)
+        .cast<ActionStartImageUpload>()
+        .transform<dynamic>(
+            FlatMapStreamTransformer<ActionStartImageUpload, dynamic>(
+                (ActionStartImageUpload action) {
+      return service.startUpload(
+          entryId: action.id, photoPath: action.filePath);
+    }));
+  };
+}
+
+Epic<AppState> createAuthEpic(AuthService service) {
+  return (Stream<dynamic> actions, EpicStore<AppState> store) {
+    return actions
+        .where((dynamic action) => action is ActionObserveAuthState)
+        .cast<ActionObserveAuthState>()
+        .transform<dynamic>(
+            FlatMapStreamTransformer<ActionObserveAuthState, dynamic>(
+                (ActionObserveAuthState action) {
+      return service.listenToAuthState();
+    }));
+  };
+}

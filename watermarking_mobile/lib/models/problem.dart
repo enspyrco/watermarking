@@ -1,0 +1,30 @@
+import 'package:meta/meta.dart';
+
+enum ProblemType {
+  signout,
+  profile,
+  images,
+  deleteImage,
+  imageUpload,
+}
+
+// Note: copyWith and state based equality are intentionally not implemented
+// as problems should never change and should have identity based equality
+class Problem {
+  const Problem({@required this.type, @required this.message, this.info});
+
+  final ProblemType type;
+  final String message;
+  final Map<String, dynamic> info;
+
+  @override
+  String toString() {
+    return 'Problem{type: $type, message: $message, info: $info}';
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'type': type,
+        'message': message,
+        'info': info,
+      };
+}
