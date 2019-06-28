@@ -4,7 +4,9 @@ Watermark Detection App
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project a Flutter application.
+
+Run `pod update` from <project_dir>/ios 
 
 A few resources to get you started if this is your first Flutter project:
 
