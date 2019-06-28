@@ -67,7 +67,7 @@ class StorageService {
         case StorageTaskEventType.failure:
           return ActionAddProblem(
               problem: Problem(
-                  type: ProblemType.profilePicUpload,
+                  type: ProblemType.imageUpload,
                   message: errorCodeStrings[event.snapshot.error],
                   info: <String, dynamic>{
                 'errorCode': event.snapshot.error,

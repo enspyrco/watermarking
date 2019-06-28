@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:watermarking_mobile/models/image_file.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
@@ -10,6 +9,7 @@ class DatabaseService {
 
   String userId;
   StreamSubscription<dynamic> imagesSubscription;
+  StreamSubscription<dynamic> profileSubscription;
 
   Stream<dynamic> connectToImages() {
     return FirebaseDatabase.instance
@@ -19,14 +19,33 @@ class DatabaseService {
         .map<dynamic>(
             (Event event) => ActionSetImages(images: event.snapshot.value))
         .handleError((dynamic error) => ActionAddProblem(
-            problem: Problem(
-                type: ProblemType.profilePics, message: error.toString())));
+            problem:
+                Problem(type: ProblemType.images, message: error.toString())));
   }
 
   Future<dynamic> cancelImagesSubscription() {
     return (imagesSubscription == null)
         ? Future<dynamic>.value(null)
         : imagesSubscription.cancel();
+  }
+
+  Stream<dynamic> connectToProfile() {
+    return FirebaseDatabase.instance
+        .reference()
+        .child('users/$userId')
+        .onValue
+        .map<dynamic>((Event event) => ActionSetProfile(
+            name: event.snapshot.value['name'],
+            email: event.snapshot.value['email']))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.profile, message: error.toString())));
+  }
+
+  Future<dynamic> cancelProfileSubscription() {
+    return (profileSubscription == null)
+        ? Future<dynamic>.value(null)
+        : profileSubscription.cancel();
   }
 
   /// Adds a flag to the images entry that will be picked up by a cloud

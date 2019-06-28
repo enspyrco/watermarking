@@ -2,13 +2,10 @@ import 'package:meta/meta.dart';
 
 enum ProblemType {
   signout,
-  profilePicUrl,
-  profilePics,
-  deleteProfilePic,
-  profilePicUpload,
-  selectFromGallery,
-  selectFromCamera,
-  createWaitingProfilePicEntry,
+  profile,
+  images,
+  deleteImage,
+  imageUpload,
 }
 
 // Note: copyWith and state based equality are intentionally not implemented

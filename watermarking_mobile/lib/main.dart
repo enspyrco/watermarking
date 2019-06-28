@@ -1,64 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:redux/redux.dart';
+import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_mobile/redux/epics.dart';
+import 'package:watermarking_mobile/redux/middleware.dart';
+import 'package:watermarking_mobile/redux/reducers.dart';
 import 'package:watermarking_mobile/services/auth_service.dart';
 import 'package:watermarking_mobile/services/database_service.dart';
 import 'package:watermarking_mobile/services/device_service.dart';
 import 'package:watermarking_mobile/services/storage_service.dart';
+import 'package:watermarking_mobile/views/app.dart';
 
 void main() {
   final AuthService authService = AuthService();
   final DatabaseService databaseService = DatabaseService();
   final StorageService storageService = StorageService();
   final DeviceService deviceService = DeviceService();
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+  final Store<AppState> store = Store<AppState>(appReducer,
+      middleware: <Middleware<AppState>>[
+        ...createMiddlewares(
+            authService, databaseService, deviceService, storageService),
+        createEpicMiddleware(authService, databaseService, storageService),
+      ],
+      initialState: AppState.intialState());
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  static const platform = const MethodChannel('watermarking.enspyr.co/detect');
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => platform.invokeMethod('startDetection'),
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-    );
-  }
+  runApp(MyApp(store));
 }

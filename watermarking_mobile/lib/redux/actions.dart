@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:watermarking_mobile/models/image_file.dart';
+import 'package:watermarking_mobile/models/image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 
 class ActionSignin {
@@ -29,9 +29,15 @@ class ActionSetProfilePicUrl {
   final String url;
 }
 
+class ActionSetProfile {
+  const ActionSetProfile({@required this.name, @required this.email});
+  final String name;
+  final String email;
+}
+
 class ActionSetImages {
   const ActionSetImages({@required this.images});
-  final List<ImageFile> images;
+  final List<ImageReference> images;
 }
 
 class ActionStartImageUpload {
