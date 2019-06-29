@@ -4,11 +4,11 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/views/account_button.dart';
 import 'package:watermarking_mobile/views/home_page.dart';
+import 'package:watermarking_mobile/views/problems_observer.dart';
 import 'package:watermarking_mobile/views/signin_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -59,19 +59,7 @@ class _AppWidgetState extends State<AppWidget> {
         ),
         actions: <Widget>[
           AccountButton(key: const Key('AccountButton')),
-          StoreConnector<AppState, List<Problem>>(
-            distinct: true,
-            converter: (Store<AppState> store) => store.state.problems,
-            builder: (BuildContext context, List<Problem> problems) {
-              final int numProblems = problems.length;
-              return (numProblems == 0)
-                  ? Container(width: 0.0, height: 0.0)
-                  : MaterialButton(
-                      child: Text(numProblems.toString()),
-                      onPressed: () => _display(context, problems.last.message),
-                    );
-            },
-          )
+          ProblemsObserver(),
         ],
       ),
       body: const HomePage(),
@@ -80,34 +68,6 @@ class _AppWidgetState extends State<AppWidget> {
         tooltip: 'Scan',
         child: Icon(Icons.search),
       ),
-    );
-  }
-
-  Future<void> _display(BuildContext context, String errorMessage) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Whoops!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                const Text('There was a problem.'),
-                Text(errorMessage),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

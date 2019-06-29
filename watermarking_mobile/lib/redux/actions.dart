@@ -15,6 +15,11 @@ class ActionAddProblem {
   final Problem problem;
 }
 
+class ActionRemoveProblem {
+  const ActionRemoveProblem({@required this.problem});
+  final Problem problem;
+}
+
 class ActionObserveAuthState {
   const ActionObserveAuthState();
 }

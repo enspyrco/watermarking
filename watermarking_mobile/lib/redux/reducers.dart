@@ -19,6 +19,7 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetImageUploadSuccess>(_setImageUploadSucceeded),
   TypedReducer<AppState, ActionRemoveUploadItem>(_removeUploadItem),
   TypedReducer<AppState, ActionAddProblem>(_addProblem),
+  TypedReducer<AppState, ActionRemoveProblem>(_removeProblem),
 ]);
 
 // the uid is added by the firebase auth listener in the authStateChanged StreamBuilder
@@ -117,4 +118,14 @@ AppState _addProblem(AppState state, ActionAddProblem action) {
     // otherwise just return the new state
     return state.copyWith(problems: newProblems);
   }
+}
+
+AppState _removeProblem(AppState state, ActionRemoveProblem action) {
+  // remove the uploading item this action refers to
+  final List<Problem> nextProblems = state.problems
+      .where((Problem problem) => problem != action.problem)
+      .toList();
+
+  // return the new state
+  return state.copyWith(problems: nextProblems);
 }
