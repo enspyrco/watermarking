@@ -1,5 +1,6 @@
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_mobile/models/image_reference.dart';
 import 'package:watermarking_mobile/models/images_view_model.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/models/upload_item.dart';
@@ -35,8 +36,10 @@ AppState _setProfilePicUrl(AppState state, ActionSetProfilePicUrl action) {
 // any change to the profile pics list pushes the whole new list down the stream
 AppState _setImages(AppState state, ActionSetImages action) {
   // set the UploadItem to processed if it refers to one of the images
-  UploadItem newUpload =
-      state.upload.copyWith(latestEvent: UploadingEvent.processed);
+  UploadItem newUpload;
+  action.images?.forEach((ImageReference ref) => (ref.id == state.upload.id)
+      ? newUpload = state.upload.copyWith(latestEvent: UploadingEvent.processed)
+      : newUpload = null);
 
   // create the viewmodel for the images
   ImagesViewModel newImages = ImagesViewModel(images: action.images);
@@ -97,6 +100,9 @@ AppState _removeUploadItem(AppState state, ActionRemoveUploadItem action) {
 }
 
 AppState _addProblem(AppState state, ActionAddProblem action) {
+  // TODO(nickm): remove in production
+  print(action.problem);
+
   // add to the list of problems
   final List<Problem> newProblems =
       List<Problem>.unmodifiable(state.problems + <Problem>[action.problem]);

@@ -3,13 +3,16 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
+import 'package:watermarking_mobile/redux/actions.dart';
 
 class AccountButton extends StatelessWidget {
   AccountButton({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        StoreProvider.of<AppState>(context).dispatch(ActionSignout());
+      },
       child: Center(
         child: StoreConnector<AppState, UserModel>(
             distinct: true,
@@ -23,7 +26,7 @@ class AccountButton extends StatelessWidget {
               return Container(
                 width: 40.0,
                 height: 40.0,
-                margin: const EdgeInsets.only(right: 10.0),
+                margin: const EdgeInsets.only(right: 15.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(

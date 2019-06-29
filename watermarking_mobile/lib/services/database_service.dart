@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:watermarking_mobile/models/problem.dart';
+import 'package:watermarking_mobile/models/image_reference.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
+/// Note: Errors in streams are intentionally passed on and handled in middleware
 class DatabaseService {
   DatabaseService();
 
@@ -16,11 +18,21 @@ class DatabaseService {
         .reference()
         .child('original-images/$userId')
         .onValue
-        .map<dynamic>(
-            (Event event) => ActionSetImages(images: event.snapshot.value))
-        .handleError((dynamic error) => ActionAddProblem(
-            problem:
-                Problem(type: ProblemType.images, message: error.toString())));
+        .map<dynamic>((Event event) {
+      // convert to a usable map
+      // the unconverted type is '_InternalLinkedHashMap<dynamic, dynamic>'
+      // TODO(nickm): determine if using Map.from is the best approach
+      Map<String, dynamic> imagesMap =
+          Map<String, dynamic>.from(event.snapshot.value);
+      // use each key to access the data in the corresponding record
+      List<ImageReference> imagesList = imagesMap.keys
+          .map<ImageReference>((String key) => ImageReference(
+              id: key,
+              name: imagesMap[key]["name"],
+              url: imagesMap[key]["servingUrl"]))
+          .toList();
+      return ActionSetImages(images: imagesList);
+    });
   }
 
   Future<dynamic> cancelImagesSubscription() {
@@ -36,10 +48,7 @@ class DatabaseService {
         .onValue
         .map<dynamic>((Event event) => ActionSetProfile(
             name: event.snapshot.value['name'],
-            email: event.snapshot.value['email']))
-        .handleError((dynamic error) => ActionAddProblem(
-            problem:
-                Problem(type: ProblemType.profile, message: error.toString())));
+            email: event.snapshot.value['email']));
   }
 
   Future<dynamic> cancelProfileSubscription() {
@@ -50,7 +59,7 @@ class DatabaseService {
 
   /// Adds a flag to the images entry that will be picked up by a cloud
   /// function and go through the deletion sequence (remove file, stop serving)
-  Future<void> requestProfilePicDelete(String entryId) {
+  Future<void> requestImageDelete(String entryId) {
     return FirebaseDatabase.instance
         .reference()
         .child('original-images/$userId/$entryId')

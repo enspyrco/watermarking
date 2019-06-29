@@ -20,7 +20,7 @@ class AppState {
 
   static AppState intialState() => AppState(
       user: UserModel(waiting: true),
-      upload: null,
+      upload: UploadItem(latestEvent: UploadingEvent.processed),
       images: ImagesViewModel(images: <ImageReference>[]),
       problems: <Problem>[]);
 
