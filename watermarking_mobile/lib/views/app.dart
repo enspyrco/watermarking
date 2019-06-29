@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
 import 'package:watermarking_mobile/models/problem.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
                         textDirection: TextDirection.ltr);
                   }
                   if (user.id != null) {
-                    return const AppWidget(title: 'CrowdLeague');
+                    return const AppWidget();
                   }
                   return SigninPage();
                 })));
@@ -37,9 +38,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({Key key, this.title}) : super(key: key);
-
-  final String title;
+  const AppWidget({Key key}) : super(key: key);
 
   @override
   _AppWidgetState createState() => _AppWidgetState();
@@ -52,7 +51,12 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: SvgPicture.asset(
+          'assets/dw_logo_white.svg',
+          height: 100.0,
+          fit: BoxFit.cover,
+          allowDrawingOutsideViewBox: true,
+        ),
         actions: <Widget>[
           AccountButton(key: const Key('AccountButton')),
           StoreConnector<AppState, List<Problem>>(
