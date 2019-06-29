@@ -20,8 +20,9 @@ class ActionObserveAuthState {
 }
 
 class ActionSetAuthState {
-  const ActionSetAuthState({@required this.userId});
+  const ActionSetAuthState({@required this.userId, @required this.photoUrl});
   final String userId;
+  final String photoUrl;
 }
 
 class ActionSetProfilePicUrl {

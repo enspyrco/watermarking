@@ -8,7 +8,7 @@ import 'package:watermarking_mobile/redux/actions.dart';
 
 /// Reducer
 final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
-  TypedReducer<AppState, ActionSetAuthState>(_setUserId),
+  TypedReducer<AppState, ActionSetAuthState>(_setAuthState),
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
   TypedReducer<AppState, ActionSetImages>(_setImages),
   TypedReducer<AppState, ActionStartImageUpload>(_beginImageUpload),
@@ -21,8 +21,11 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
 ]);
 
 // the uid is added by the firebase auth listener in the authStateChanged StreamBuilder
-AppState _setUserId(AppState state, ActionSetAuthState action) =>
-    state.copyWith(user: UserModel(id: action.userId, waiting: false));
+AppState _setAuthState(
+        AppState state, ActionSetAuthState action) =>
+    state.copyWith(
+        user: UserModel(
+            id: action.userId, photoUrl: action.photoUrl, waiting: false));
 
 AppState _setProfilePicUrl(AppState state, ActionSetProfilePicUrl action) {
   final UserModel newUserModel = state.user.copyWith(photoUrl: action.url);

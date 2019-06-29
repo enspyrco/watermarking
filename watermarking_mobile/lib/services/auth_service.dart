@@ -7,8 +7,8 @@ class AuthService {
   /// Receives [FirebaseUser] each time the user signIn or signOut
   Stream<ActionSetAuthState> listenToAuthState() {
     return FirebaseAuth.instance.onAuthStateChanged.map(
-        (FirebaseUser firebaseUser) =>
-            ActionSetAuthState(userId: firebaseUser?.uid));
+        (FirebaseUser firebaseUser) => ActionSetAuthState(
+            userId: firebaseUser?.uid, photoUrl: firebaseUser?.photoUrl));
   }
 
   Future<void> signOut() {
