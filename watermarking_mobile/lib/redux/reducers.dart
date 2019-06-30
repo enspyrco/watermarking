@@ -12,6 +12,7 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetAuthState>(_setAuthState),
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
   TypedReducer<AppState, ActionSetImages>(_setImages),
+  TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
   TypedReducer<AppState, ActionStartImageUpload>(_beginImageUpload),
   TypedReducer<AppState, ActionSetImageUploadProgress>(_setImageUploadProgress),
   // TypedReducer<AppState, ImageUploadPauseAction>(_pauseImageUpload),
@@ -46,6 +47,13 @@ AppState _setImages(AppState state, ActionSetImages action) {
   ImagesViewModel newImages = ImagesViewModel(images: action.images);
 
   return state.copyWith(images: newImages, upload: newUpload);
+}
+
+// any change to the profile pics list pushes the whole new list down the stream
+AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
+  // create the next viewmodel for the images
+  return state.copyWith(
+      images: state.images.copyWith(selectedImage: action.image));
 }
 
 // When the detected image file is ready, the ActionStartImageUpload is dispatched

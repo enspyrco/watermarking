@@ -46,6 +46,11 @@ class ActionSetImages {
   final List<ImageReference> images;
 }
 
+class ActionSetSelectedImage {
+  const ActionSetSelectedImage({@required this.image});
+  final ImageReference image;
+}
+
 class ActionStartImageUpload {
   const ActionStartImageUpload(
       {@required this.id, @required this.filePath, this.totalBytes});
