@@ -52,8 +52,13 @@ AppState _setImages(AppState state, ActionSetImages action) {
 // any change to the profile pics list pushes the whole new list down the stream
 AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
   // create the next viewmodel for the images
+  // TODO(nickm): when the image reference contains the size,
+  // just use the selected image
   return state.copyWith(
-      images: state.images.copyWith(selectedImage: action.image));
+      images: state.images.copyWith(
+          selectedImage: action.image,
+          selectedWidth: action.width,
+          selectedHeight: action.height));
 }
 
 // When the detected image file is ready, the ActionStartImageUpload is dispatched

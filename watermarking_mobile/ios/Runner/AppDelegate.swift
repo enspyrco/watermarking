@@ -28,6 +28,12 @@ enum ChannelName {
             return
         }
         
+        let arguments = call.arguments as! NSDictionary
+        let width = arguments["width"] as! Int;
+        let height = arguments["height"] as! Int;
+        
+        print("\nwidth: \(width), height: \(height)\n")
+        
         // navigate to DetectionViewController
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: "DetectionVC") as! DetectionViewController
