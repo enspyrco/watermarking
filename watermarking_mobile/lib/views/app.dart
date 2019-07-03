@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_mobile/models/images_view_model.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/views/account_button.dart';
@@ -37,14 +38,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AppWidget extends StatefulWidget {
+class AppWidget extends StatelessWidget {
   const AppWidget({Key key}) : super(key: key);
 
-  @override
-  _AppWidgetState createState() => _AppWidgetState();
-}
-
-class _AppWidgetState extends State<AppWidget> {
   static const platform = const MethodChannel('watermarking.enspyr.co/detect');
 
   @override
@@ -63,10 +59,24 @@ class _AppWidgetState extends State<AppWidget> {
         ],
       ),
       body: const HomePage(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => platform.invokeMethod('startDetection'),
-        tooltip: 'Scan',
-        child: Icon(Icons.search),
+      // TODO(nickm): when the image reference contains the size,
+      // just watch the selected image
+      floatingActionButton: StoreConnector<AppState, ImagesViewModel>(
+        converter: (Store<AppState> store) => store.state.images,
+        builder: (BuildContext context, ImagesViewModel viewModel) {
+          return FloatingActionButton(
+            onPressed: () {
+              if (viewModel.selectedImage != null) {
+                platform.invokeMethod('startDetection', {
+                  'width': viewModel.selectedWidth,
+                  'height': viewModel.selectedHeight
+                });
+              }
+            },
+            tooltip: 'Scan',
+            child: Icon(Icons.search),
+          );
+        },
       ),
     );
   }

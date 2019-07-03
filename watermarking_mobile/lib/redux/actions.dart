@@ -46,9 +46,14 @@ class ActionSetImages {
   final List<ImageReference> images;
 }
 
+// TODO(nickm): when the image reference contains the size,
+// just send the image reference
 class ActionSetSelectedImage {
-  const ActionSetSelectedImage({@required this.image});
+  const ActionSetSelectedImage(
+      {@required this.image, @required this.height, @required this.width});
   final ImageReference image;
+  final int height;
+  final int width;
 }
 
 class ActionStartImageUpload {
