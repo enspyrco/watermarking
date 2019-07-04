@@ -56,6 +56,11 @@ class ActionSetSelectedImage {
   final int width;
 }
 
+class ActionSetDetectedImage {
+  const ActionSetDetectedImage({@required this.filePath});
+  final String filePath;
+}
+
 class ActionStartImageUpload {
   const ActionStartImageUpload(
       {@required this.id, @required this.filePath, this.totalBytes});

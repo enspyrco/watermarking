@@ -21,7 +21,12 @@ enum ChannelName {
     }
     let detectChannel = FlutterMethodChannel(name: ChannelName.detect, binaryMessenger: controller)
     detectChannel.setMethodCallHandler({
-        [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
+        [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+        
+        if call.method == "dismiss" {
+            self?.window?.rootViewController?.dismiss(animated: false, completion: nil)
+            return
+        }
         
         guard call.method == "startDetection" else {
             result(FlutterMethodNotImplemented)
@@ -37,6 +42,7 @@ enum ChannelName {
         // navigate to DetectionViewController
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: "DetectionVC") as! DetectionViewController
+        viewController.result = result
         controller.present(viewController, animated: true, completion: nil)
         
     })

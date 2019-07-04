@@ -13,6 +13,7 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
   TypedReducer<AppState, ActionSetImages>(_setImages),
   TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
+  TypedReducer<AppState, ActionSetDetectedImage>(_setDetectedImage),
   TypedReducer<AppState, ActionStartImageUpload>(_beginImageUpload),
   TypedReducer<AppState, ActionSetImageUploadProgress>(_setImageUploadProgress),
   // TypedReducer<AppState, ImageUploadPauseAction>(_pauseImageUpload),
@@ -61,6 +62,13 @@ AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
           selectedHeight: action.height));
 }
 
+// any change to the profile pics list pushes the whole new list down the stream
+AppState _setDetectedImage(AppState state, ActionSetDetectedImage action) {
+  // update the viewmodel with the detected image path
+  return state.copyWith(
+      images: state.images.copyWith(detectedImagePath: action.filePath));
+}
+
 // When the detected image file is ready, the ActionStartImageUpload is dispatched
 // with the file path and size. The file size is added to the UploadingState of the
 // store while the path is added to the
@@ -74,7 +82,9 @@ AppState _beginImageUpload(AppState state, ActionStartImageUpload action) {
       totalBytes: action.totalBytes,
       started: DateTime.now());
 
-  return state.copyWith(upload: newUpload);
+  AppState nextState = state.copyWith(upload: newUpload);
+
+  return nextState;
 }
 
 AppState _setImageUploadProgress(

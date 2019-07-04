@@ -2,20 +2,24 @@ import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 import 'package:watermarking_mobile/utilities/string_utilities.dart';
 
 class ImageReference {
-  ImageReference({this.id, this.name, this.url});
+  ImageReference({this.id, this.name, this.filePath, this.url});
 
   String id;
   String name;
+  String filePath;
   String url;
 
   ImageReference copyWith(
-      {final String id, final String name, final String url}) {
+      {final String id, final String name, String filePath, final String url}) {
     return ImageReference(
-        id: id ?? this.id, name: name ?? this.name, url: url ?? this.url);
+        id: id ?? this.id,
+        name: name ?? this.name,
+        filePath: filePath ?? this.filePath,
+        url: url ?? this.url);
   }
 
   @override
-  int get hashCode => hash3(id, name, url);
+  int get hashCode => hash4(id, name, filePath, url);
 
   @override
   bool operator ==(dynamic other) =>
@@ -23,14 +27,19 @@ class ImageReference {
       runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
+          filePath == other.filePath &&
           url == other.url;
 
   @override
   String toString() {
     final String trimmedUrl = trimToLast(15, url);
-    return 'ImageReference{uid: $id, name: $name, url: $trimmedUrl}';
+    return 'ImageReference{uid: $id, name: $name, filePath: $filePath, url: $trimmedUrl}';
   }
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'id': id, 'name': name, 'url': url};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'filePath': filePath,
+        'url': url
+      };
 }

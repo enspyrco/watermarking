@@ -42,10 +42,12 @@ class StorageService {
     final File picFile = File(photoPath);
 
     // setup an upload task and initiate the upload
-    final FirebaseStorage storage =
-        FirebaseStorage(storageBucket: 'gs://enspyr-crowdleague-profile-pics');
-    final StorageReference ref =
-        storage.ref().child('$userId').child('$entryId');
+    final FirebaseStorage storage = FirebaseStorage();
+    final StorageReference ref = storage
+        .ref()
+        .child('detecting-images')
+        .child('$userId')
+        .child('$entryId');
     final StorageUploadTask uploadTask = ref.putFile(
       picFile,
       StorageMetadata(

@@ -33,6 +33,12 @@ List<Middleware<AppState>> createMiddlewares(
     TypedMiddleware<AppState, ActionSetAuthState>(
       _saveAuthStateAndObserveProfile(databaseService, storageService),
     ),
+    TypedMiddleware<AppState, ActionSetDetectedImage>(
+      _startUpload(databaseService),
+    ),
+    TypedMiddleware<AppState, ActionSetImageUploadSuccess>(
+      _startWatermarkDetection(databaseService),
+    ),
     TypedMiddleware<AppState, ActionCancelUpload>(
       _cancelUpload(databaseService, storageService),
     ),
@@ -95,6 +101,44 @@ void Function(
                   problem: Problem(
                       type: ProblemType.images, message: error.toString()))),
               cancelOnError: true);
+    }
+  };
+}
+
+/// Intercept [ActionSetDetectedImage] and use [DatabaseService] to generate a
+/// unique id then dispatch [ActionStartUpload]
+void Function(Store<AppState> store, ActionSetDetectedImage action,
+    NextDispatcher next) _startUpload(
+  DatabaseService databaseService,
+) {
+  return (Store<AppState> store, ActionSetDetectedImage action,
+      NextDispatcher next) {
+    next(action);
+
+    store.dispatch(ActionStartImageUpload(
+        id: databaseService.getDetectedImageEntryId(),
+        filePath: action.filePath,
+        totalBytes: null));
+  };
+}
+
+/// Intercept [ActionSetImageUploadSuccess] and use [DatabaseService] to add
+/// an entry in the database that the server observe
+void Function(Store<AppState> store, ActionSetImageUploadSuccess action,
+    NextDispatcher next) _startWatermarkDetection(
+  DatabaseService databaseService,
+) {
+  return (Store<AppState> store, ActionSetImageUploadSuccess action,
+      NextDispatcher next) {
+    next(action);
+    try {
+      databaseService.addWatermarkDetectionEntry(
+          store.state.images.selectedImage.filePath,
+          // TODO(nickm): the marked image remote path should not be built from
+          // the store state, maybe carried with the action?
+          'detecting-images/${store.state.user.id}/${store.state.upload.id}');
+    } catch (exception) {
+      print(exception);
     }
   };
 }

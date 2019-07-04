@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:watermarking_mobile/models/image_reference.dart';
@@ -12,6 +11,14 @@ class DatabaseService {
   String userId;
   StreamSubscription<dynamic> imagesSubscription;
   StreamSubscription<dynamic> profileSubscription;
+
+  // create a document id that will be added as metadata to the upload
+  // for use in a cloud function
+  String getDetectedImageEntryId() => FirebaseDatabase.instance
+      .reference()
+      .child('detected-images/$userId')
+      .push()
+      .key;
 
   Stream<dynamic> connectToImages() {
     return FirebaseDatabase.instance
@@ -29,6 +36,7 @@ class DatabaseService {
           .map<ImageReference>((String key) => ImageReference(
               id: key,
               name: imagesMap[key]["name"],
+              filePath: imagesMap[key]["path"],
               url: imagesMap[key]["servingUrl"]))
           .toList();
       return ActionSetImages(images: imagesList);
@@ -64,5 +72,25 @@ class DatabaseService {
         .reference()
         .child('original-images/$userId/$entryId')
         .update(<String, dynamic>{'delete': true});
+  }
+
+  Future<void> addWatermarkDetectionEntry(
+      String originalPath, String markedPath) {
+    FirebaseDatabase.instance.reference()
+      ..child('detecting/incomplete/$userId').set({
+        'progress': 'Adding a detection task to the queue...',
+        'isDetecting': true,
+        'pathOriginal': originalPath,
+        'pathMarked': markedPath,
+        'attempts': 0
+      })
+      ..child('queue/tasks').push().set({
+        '_state': 'download_original_spec_start',
+        'uid': userId,
+        'pathOriginal': originalPath,
+        'pathMarked': markedPath,
+      });
+
+    return Future.value();
   }
 }

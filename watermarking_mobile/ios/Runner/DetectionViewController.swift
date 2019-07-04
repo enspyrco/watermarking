@@ -17,6 +17,8 @@ class DetectionViewController: UIViewController {
 
     static var instance: DetectionViewController?
     
+    var result: FlutterResult?
+    
     let filter: CIFilter = CIFilter(name: "WeightedCombine")!
     var foreground: CIImage? = nil
     var background: CIImage? = nil
@@ -31,6 +33,10 @@ class DetectionViewController: UIViewController {
 
         rectangleDetector.delegate = self
         sceneView.delegate = self
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapDetected))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tapRecognizer)
     }
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -95,6 +101,34 @@ extension DetectionViewController: ARSCNViewDelegate {
             self.present(alertController, animated: true, completion: nil)
         }
     }
+    
+    //Action
+    @objc func tapDetected() {
+        
+        let originalImage = imageView.image!
+        UIGraphicsBeginImageContext(originalImage.size)
+        originalImage.draw(in: CGRect(x: 0, y: 0, width: originalImage.size.width, height: originalImage.size.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        let fileName = "image.png"
+        
+        guard let data = UIImagePNGRepresentation(newImage) else {
+            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to create UIImagePNGRepresentation", details: nil))
+            return
+        }
+        guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
+            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to create directory", details: nil))
+            return
+        }
+        do {
+            try data.write(to: directory.appendingPathComponent(fileName)!)
+            let filePath = URL(fileURLWithPath: directory.absoluteString!).appendingPathComponent(fileName).path
+            result!(filePath)
+        } catch {
+            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to write image data", details: error.localizedDescription))
+        }
+    }
 }
 
 extension DetectionViewController: RectangleDetectorDelegate {
@@ -125,3 +159,34 @@ extension DetectionViewController: RectangleDetectorDelegate {
     }
 }
 
+// placeholder extension for editing later 
+// TODO(nickm(: take the code from tapDetected() and turn into an extension 
+extension UIImage {
+    
+    /**
+     Creates the UIImageJPEGRepresentation out of an UIImage
+     @return Data
+     */
+    
+    func generateJPEGRepresentation() -> Data {
+        
+        let newImage = self.copyOriginalImage()
+        let newData = UIImageJPEGRepresentation(newImage, 0.75)
+        
+        return newData!
+    }
+    
+    /**
+     Copies Original Image which fixes the crash for extracting Data from UIImage
+     @return UIImage
+     */
+    
+    private func copyOriginalImage() -> UIImage {
+        UIGraphicsBeginImageContext(self.size);
+        self.draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext();
+        
+        return newImage!
+    }
+}

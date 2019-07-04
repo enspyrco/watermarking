@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -39,7 +40,17 @@ class HomePage extends StatelessWidget {
                     child: Image.network(viewModel.selectedImage.url),
                   )
               ],
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (viewModel.detectedImagePath != null)
+                  Container(
+                    height: 200,
+                    child: Image.file(File(viewModel.detectedImagePath)),
+                  )
+              ],
+            ),
           ],
         );
       },
