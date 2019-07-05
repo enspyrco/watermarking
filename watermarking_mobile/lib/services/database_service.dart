@@ -11,6 +11,7 @@ class DatabaseService {
   String userId;
   StreamSubscription<dynamic> imagesSubscription;
   StreamSubscription<dynamic> profileSubscription;
+  StreamSubscription<dynamic> watermarkDetectionProgressSubscription;
 
   // create a document id that will be added as metadata to the upload
   // for use in a cloud function
@@ -92,5 +93,29 @@ class DatabaseService {
       });
 
     return Future.value();
+  }
+
+  Stream<dynamic> connectToWatermarkDetectionProgress() {
+    return FirebaseDatabase.instance
+        .reference()
+        .child('detecting/incomplete/$userId/')
+        .onValue
+        .map<dynamic>((Event event) {
+      Map<String, dynamic> resultsMap;
+      (event.snapshot.value["results"] == null)
+          ? resultsMap = {'message': 'nullo'}
+          : resultsMap =
+              Map<String, dynamic>.from(event.snapshot.value["results"]);
+
+      return ActionSetWatermarkDetectionProgress(
+          progress: event.snapshot.value["progress"] ?? "null",
+          result: resultsMap['message']);
+    });
+  }
+
+  Future<dynamic> cancelWatermarkDetectionProgressSubscription() {
+    return (watermarkDetectionProgressSubscription == null)
+        ? Future<dynamic>.value(null)
+        : watermarkDetectionProgressSubscription.cancel();
   }
 }

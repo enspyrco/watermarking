@@ -101,3 +101,10 @@ class ActionCancelUpload {
   const ActionCancelUpload({@required this.id});
   final String id;
 }
+
+class ActionSetWatermarkDetectionProgress {
+  const ActionSetWatermarkDetectionProgress(
+      {@required this.progress, @required this.result});
+  final String progress;
+  final String result;
+}

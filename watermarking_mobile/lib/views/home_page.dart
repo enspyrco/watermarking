@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_mobile/models/detected_image_view_model.dart';
 import 'package:watermarking_mobile/models/images_view_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
@@ -41,16 +42,23 @@ class HomePage extends StatelessWidget {
                   )
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                if (viewModel.detectedImagePath != null)
-                  Container(
-                    height: 200,
-                    child: Image.file(File(viewModel.detectedImagePath)),
-                  )
-              ],
-            ),
+            StoreConnector<AppState, DetectedImageViewModel>(
+                converter: (Store<AppState> store) => store.state.detectedImage,
+                builder:
+                    (BuildContext context, DetectedImageViewModel viewModel) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (viewModel.detectedImagePath != null)
+                        Container(
+                          height: 200,
+                          child: Image.file(File(viewModel.detectedImagePath)),
+                        ),
+                      Text(viewModel.watermarkDetectionProgress),
+                      Text(viewModel.watermarkDetectionResult),
+                    ],
+                  );
+                }),
           ],
         );
       },

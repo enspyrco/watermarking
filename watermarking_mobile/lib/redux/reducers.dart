@@ -20,6 +20,8 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   // TypedReducer<AppState, ImageUploadResumeAction>(_resumeImageUpload),
   TypedReducer<AppState, ActionSetImageUploadSuccess>(_setImageUploadSucceeded),
   TypedReducer<AppState, ActionRemoveUploadItem>(_removeUploadItem),
+  TypedReducer<AppState, ActionSetWatermarkDetectionProgress>(
+      _setWatermarkDetectionProgress),
   TypedReducer<AppState, ActionAddProblem>(_addProblem),
   TypedReducer<AppState, ActionRemoveProblem>(_removeProblem),
 ]);
@@ -66,7 +68,8 @@ AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
 AppState _setDetectedImage(AppState state, ActionSetDetectedImage action) {
   // update the viewmodel with the detected image path
   return state.copyWith(
-      images: state.images.copyWith(detectedImagePath: action.filePath));
+      detectedImage:
+          state.detectedImage.copyWith(detectedImagePath: action.filePath));
 }
 
 // When the detected image file is ready, the ActionStartImageUpload is dispatched
@@ -121,6 +124,16 @@ AppState _removeUploadItem(AppState state, ActionRemoveUploadItem action) {
   // remove the uploading item this action refers to return the new state
   return state.copyWith(
       upload: state.upload.copyWith(latestEvent: UploadingEvent.processed));
+}
+
+// when we receive a success event, change the relevant latestEvent property to success
+AppState _setWatermarkDetectionProgress(
+    AppState state, ActionSetWatermarkDetectionProgress action) {
+  // return the new state
+  return state.copyWith(
+      detectedImage: state.detectedImage.copyWith(
+          watermarkDetectionProgress: action.progress,
+          watermarkDetectionResult: action.result));
 }
 
 AppState _addProblem(AppState state, ActionAddProblem action) {

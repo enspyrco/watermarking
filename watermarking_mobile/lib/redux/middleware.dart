@@ -81,27 +81,34 @@ void Function(
     // cancel any previous subscription
     databaseService.profileSubscription?.cancel();
     databaseService.imagesSubscription?.cancel();
+    databaseService.watermarkDetectionProgressSubscription?.cancel();
 
-    if (action.userId != null) {
-      databaseService.profileSubscription = databaseService
-          .connectToProfile()
-          .listen((dynamic action) => store.dispatch(action),
-              onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                  problem: Problem(
-                      type: ProblemType.profile, message: error.toString()))),
-              cancelOnError: true);
-    }
+    if (action.userId == null) return;
 
-    if (action.userId != null) {
-      databaseService.imagesSubscription = databaseService
-          .connectToImages()
-          .listen(
-              (dynamic action) => store.dispatch(action),
-              onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                  problem: Problem(
-                      type: ProblemType.images, message: error.toString()))),
-              cancelOnError: true);
-    }
+    databaseService.profileSubscription = databaseService
+        .connectToProfile()
+        .listen(
+            (dynamic action) => store.dispatch(action),
+            onError: (dynamic error) => store.dispatch(ActionAddProblem(
+                problem: Problem(
+                    type: ProblemType.profile, message: error.toString()))),
+            cancelOnError: true);
+
+    databaseService.imagesSubscription = databaseService
+        .connectToImages()
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error) => store.dispatch(ActionAddProblem(
+                problem: Problem(
+                    type: ProblemType.images, message: error.toString()))),
+            cancelOnError: true);
+
+    databaseService.watermarkDetectionProgressSubscription = databaseService
+        .connectToWatermarkDetectionProgress()
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error) => store.dispatch(ActionAddProblem(
+                problem: Problem(
+                    type: ProblemType.images, message: error.toString()))),
+            cancelOnError: true);
   };
 }
 

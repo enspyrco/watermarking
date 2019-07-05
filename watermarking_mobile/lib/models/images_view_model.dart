@@ -9,34 +9,30 @@ class ImagesViewModel {
     this.selectedImage,
     this.selectedWidth,
     this.selectedHeight,
-    this.detectedImagePath,
   });
 
   final List<ImageReference> images;
   final ImageReference selectedImage;
   final int selectedWidth;
   final int selectedHeight;
-  final String detectedImagePath;
 
   ImagesViewModel copyWith({
     final List<ImageReference> images,
     final ImageReference selectedImage,
     final int selectedWidth,
     final int selectedHeight,
-    final String detectedImagePath,
   }) {
     return ImagesViewModel(
       images: images ?? this.images,
       selectedImage: selectedImage ?? this.selectedImage,
       selectedWidth: selectedWidth ?? this.selectedWidth,
       selectedHeight: selectedHeight ?? this.selectedHeight,
-      detectedImagePath: detectedImagePath ?? this.detectedImagePath,
     );
   }
 
   @override
-  int get hashCode => hash5(hashObjects(images), selectedImage, selectedWidth,
-      selectedHeight, detectedImagePath);
+  int get hashCode =>
+      hash4(hashObjects(images), selectedImage, selectedWidth, selectedHeight);
 
   @override
   bool operator ==(dynamic other) =>
@@ -45,12 +41,11 @@ class ImagesViewModel {
           images == other.images &&
           selectedImage == other.selectedImage &&
           selectedWidth == other.selectedWidth &&
-          selectedHeight == other.selectedHeight &&
-          detectedImagePath == other.detectedImagePath;
+          selectedHeight == other.selectedHeight;
 
   @override
   String toString() {
-    return 'ImagesViewModel{images: $images, selectedImage: $selectedImage, selectedWidth: $selectedWidth, selectedHeight: $selectedHeight, detectedImagePath: $detectedImagePath}';
+    return 'ImagesViewModel{images: $images, selectedImage: $selectedImage, selectedWidth: $selectedWidth, selectedHeight: $selectedHeight}';
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -58,6 +53,5 @@ class ImagesViewModel {
         'selectedImage': selectedImage,
         'selectedWidth': selectedWidth,
         'selectedHeight': selectedHeight,
-        'detectedImagePath': detectedImagePath,
       };
 }
