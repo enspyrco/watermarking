@@ -12,6 +12,8 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetAuthState>(_setAuthState),
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
   TypedReducer<AppState, ActionSetImages>(_setImages),
+  TypedReducer<AppState, ActionSetBottomNav>(_setBottomNav),
+  TypedReducer<AppState, ActionShowBottomSheet>(_setBottomSheet),
   TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
   TypedReducer<AppState, ActionSetDetectedImage>(_setDetectedImage),
   TypedReducer<AppState, ActionStartImageUpload>(_beginImageUpload),
@@ -52,6 +54,16 @@ AppState _setImages(AppState state, ActionSetImages action) {
   return state.copyWith(images: newImages, upload: newUpload);
 }
 
+AppState _setBottomNav(AppState state, ActionSetBottomNav action) {
+  return state.copyWith(
+      bottomNav: state.bottomNav.copyWith(index: action.index));
+}
+
+AppState _setBottomSheet(AppState state, ActionShowBottomSheet action) {
+  return state.copyWith(
+      bottomNav: state.bottomNav.copyWith(shouldShowBottomSheet: action.show));
+}
+
 // any change to the profile pics list pushes the whole new list down the stream
 AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
   // create the next viewmodel for the images
@@ -61,7 +73,8 @@ AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
       images: state.images.copyWith(
           selectedImage: action.image,
           selectedWidth: action.width,
-          selectedHeight: action.height));
+          selectedHeight: action.height),
+      bottomNav: state.bottomNav.copyWith(shouldShowBottomSheet: false));
 }
 
 // any change to the profile pics list pushes the whole new list down the stream
