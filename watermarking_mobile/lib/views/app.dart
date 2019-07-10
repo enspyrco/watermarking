@@ -109,17 +109,21 @@ class AppWidget extends StatelessWidget {
       floatingActionButton: StoreConnector<AppState, ImagesViewModel>(
         converter: (Store<AppState> store) => store.state.images,
         builder: (BuildContext context, ImagesViewModel viewModel) {
+          if (viewModel.selectedImage == null) {
+            return Container(
+              height: 0,
+              width: 0,
+            );
+          }
           return FloatingActionButton(
             onPressed: () async {
-              if (viewModel.selectedImage != null) {
-                String path = await platform.invokeMethod('startDetection', {
-                  'width': viewModel.selectedWidth,
-                  'height': viewModel.selectedHeight
-                });
-                platform.invokeMethod('dismiss');
-                StoreProvider.of<AppState>(context)
-                    .dispatch(ActionSetDetectedImage(filePath: path));
-              }
+              String path = await platform.invokeMethod('startDetection', {
+                'width': viewModel.selectedWidth,
+                'height': viewModel.selectedHeight
+              });
+              platform.invokeMethod('dismiss');
+              StoreProvider.of<AppState>(context)
+                  .dispatch(ActionSetDetectedImage(filePath: path));
             },
             tooltip: 'Scan',
             child: Icon(Icons.search),
