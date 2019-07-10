@@ -46,6 +46,16 @@ class ActionSetImages {
   final List<ImageReference> images;
 }
 
+class ActionSetBottomNav {
+  const ActionSetBottomNav({@required this.index});
+  final int index;
+}
+
+class ActionShowBottomSheet {
+  const ActionShowBottomSheet({@required this.show});
+  final bool show;
+}
+
 // TODO(nickm): when the image reference contains the size,
 // just send the image reference
 class ActionSetSelectedImage {
