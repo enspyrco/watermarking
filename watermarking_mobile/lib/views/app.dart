@@ -4,8 +4,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
-import 'package:watermarking_mobile/models/images_view_model.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
+import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/views/account_button.dart';
@@ -29,14 +29,11 @@ class MyApp extends StatelessWidget {
             home: StoreConnector<AppState, UserModel>(
                 converter: (Store<AppState> store) => store.state.user,
                 builder: (BuildContext context, UserModel user) {
-                  if (user.waiting) {
-                    return const Text('Waiting',
-                        textDirection: TextDirection.ltr);
-                  }
-                  if (user.id != null) {
-                    return const AppWidget();
-                  }
-                  return SigninPage();
+                  return (user.waiting)
+                      ? const Text('Waiting', textDirection: TextDirection.ltr)
+                      : (user.id == null)
+                          ? const SigninPage()
+                          : const AppWidget();
                 })));
   }
 }
@@ -87,10 +84,11 @@ class AppWidget extends StatelessWidget {
                   title: Text('Home'),
                 ),
                 BottomNavigationBarItem(
-                  icon: StoreConnector<AppState, ImageReference>(
+                  icon: StoreConnector<AppState, OriginalImageReference>(
                       converter: (Store<AppState> store) =>
-                          store.state.images.selectedImage,
-                      builder: (BuildContext context, ImageReference imageRef) {
+                          store.state.originals.selectedImage,
+                      builder: (BuildContext context,
+                          OriginalImageReference imageRef) {
                         return Container(
                           width: 50,
                           height: 50,
@@ -106,9 +104,9 @@ class AppWidget extends StatelessWidget {
               ],
             );
           }),
-      floatingActionButton: StoreConnector<AppState, ImagesViewModel>(
-        converter: (Store<AppState> store) => store.state.images,
-        builder: (BuildContext context, ImagesViewModel viewModel) {
+      floatingActionButton: StoreConnector<AppState, OriginalImagesViewModel>(
+        converter: (Store<AppState> store) => store.state.originals,
+        builder: (BuildContext context, OriginalImagesViewModel viewModel) {
           if (viewModel.selectedImage == null) {
             return Container(
               height: 0,
@@ -123,7 +121,7 @@ class AppWidget extends StatelessWidget {
               });
               platform.invokeMethod('dismiss');
               StoreProvider.of<AppState>(context)
-                  .dispatch(ActionSetDetectedImage(filePath: path));
+                  .dispatch(ActionProcessExtractedImage(filePath: path));
             },
             tooltip: 'Scan',
             child: Icon(Icons.search),

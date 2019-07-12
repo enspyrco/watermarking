@@ -61,11 +61,11 @@ class StorageService {
 
     // return the upload task's event stream, transformed to actions
     return uploadTask.events.map<dynamic>((StorageTaskEvent event) {
-      final String itemId =
+      final String metadataEntryId =
           event.snapshot.storageMetadata.customMetadata['docId'];
       switch (event.type) {
         case StorageTaskEventType.success:
-          return ActionSetImageUploadSuccess(id: itemId);
+          return ActionSetUploadSuccess(id: metadataEntryId);
         case StorageTaskEventType.failure:
           return ActionAddProblem(
               problem: Problem(
@@ -73,15 +73,15 @@ class StorageService {
                   message: errorCodeStrings[event.snapshot.error],
                   info: <String, dynamic>{
                 'errorCode': event.snapshot.error,
-                'itemId': itemId
+                'itemId': metadataEntryId
               }));
         case StorageTaskEventType.progress:
-          return ActionSetImageUploadProgress(
-              bytes: event.snapshot.bytesTransferred, id: itemId);
+          return ActionSetUploadProgress(
+              bytes: event.snapshot.bytesTransferred, id: metadataEntryId);
         case StorageTaskEventType.pause:
-          return ActionSetImageUploadPaused(id: itemId);
+          return ActionSetUploadPaused(id: metadataEntryId);
         case StorageTaskEventType.resume:
-          return ActionSetImageUploadResumed(id: itemId);
+          return ActionSetUploadResumed(id: metadataEntryId);
       }
     });
   }

@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
+import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 
 class ActionSignin {
@@ -41,9 +42,14 @@ class ActionSetProfile {
   final String email;
 }
 
-class ActionSetImages {
-  const ActionSetImages({@required this.images});
-  final List<ImageReference> images;
+class ActionSetOriginalImages {
+  const ActionSetOriginalImages({@required this.images});
+  final List<OriginalImageReference> images;
+}
+
+class ActionSetDetectionItems {
+  const ActionSetDetectionItems({@required this.items});
+  final List<DetectionItem> items;
 }
 
 class ActionSetBottomNav {
@@ -61,50 +67,57 @@ class ActionShowBottomSheet {
 class ActionSetSelectedImage {
   const ActionSetSelectedImage(
       {@required this.image, @required this.height, @required this.width});
-  final ImageReference image;
+  final OriginalImageReference image;
   final int height;
   final int width;
 }
 
-class ActionSetDetectedImage {
-  const ActionSetDetectedImage({@required this.filePath});
+// when an extracted image is returned from the native view we dispatch this
+// action and rely on middleware to dispatch a new action to add the data
+// to the store
+class ActionProcessExtractedImage {
+  const ActionProcessExtractedImage({@required this.filePath});
   final String filePath;
 }
 
-class ActionStartImageUpload {
-  const ActionStartImageUpload(
+// when middleware sees ActionProcessExtractedImage it creates a unique id and
+// starts an upload (with the id as metadata) and also dispatches an action
+// to add a new extracted image (with id as a member)
+class ActionAddExtractedImage {
+  const ActionAddExtractedImage({@required this.filePath, @required this.id});
+  final String id;
+  final String filePath;
+}
+
+class ActionStartUpload {
+  const ActionStartUpload(
       {@required this.id, @required this.filePath, this.totalBytes});
   final String id;
   final String filePath;
   final int totalBytes;
 }
 
-class ActionSetImageUploadPaused {
-  const ActionSetImageUploadPaused({@required this.id});
+class ActionSetUploadPaused {
+  const ActionSetUploadPaused({@required this.id});
   final String id;
 }
 
-class ActionSetImageUploadResumed {
-  const ActionSetImageUploadResumed({@required this.id});
+class ActionSetUploadResumed {
+  const ActionSetUploadResumed({@required this.id});
   final String id;
 }
 
 // this action will also trigger middleware to create a db entry
 // to indicate status (file uploaded, waiting for result)
-class ActionSetImageUploadSuccess {
-  const ActionSetImageUploadSuccess({@required this.id});
+class ActionSetUploadSuccess {
+  const ActionSetUploadSuccess({@required this.id});
   final String id;
 }
 
-class ActionSetImageUploadProgress {
-  const ActionSetImageUploadProgress({@required this.id, @required this.bytes});
+class ActionSetUploadProgress {
+  const ActionSetUploadProgress({@required this.id, @required this.bytes});
   final String id;
   final int bytes;
-}
-
-class ActionRemoveUploadItem {
-  const ActionRemoveUploadItem({@required this.id});
-  final String id;
 }
 
 class ActionCancelUpload {
@@ -112,8 +125,8 @@ class ActionCancelUpload {
   final String id;
 }
 
-class ActionSetWatermarkDetectionProgress {
-  const ActionSetWatermarkDetectionProgress(
+class ActionSetDetectionProgress {
+  const ActionSetDetectionProgress(
       {@required this.progress, @required this.result});
   final String progress;
   final String result;

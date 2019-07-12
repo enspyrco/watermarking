@@ -1,0 +1,27 @@
+import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_mobile/utilities/hash_utilities.dart';
+
+class DetectionItemsViewModel {
+  DetectionItemsViewModel({this.items});
+
+  final List<DetectionItem> items;
+
+  DetectionItemsViewModel copyWith({final List<DetectionItem> items}) {
+    return DetectionItemsViewModel(items: items ?? this.items);
+  }
+
+  @override
+  int get hashCode => hashObjects(items);
+
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      runtimeType == other.runtimeType && items == other.items;
+
+  @override
+  String toString() {
+    return 'ImagesViewModel{items: $items}';
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'items': items};
+}

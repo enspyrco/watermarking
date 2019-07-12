@@ -1,17 +1,17 @@
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 import 'package:watermarking_mobile/utilities/string_utilities.dart';
 
-class ImageReference {
-  ImageReference({this.id, this.name, this.filePath, this.url});
+class OriginalImageReference {
+  OriginalImageReference({this.id, this.name, this.filePath, this.url});
 
   String id;
   String name;
   String filePath;
   String url;
 
-  ImageReference copyWith(
+  OriginalImageReference copyWith(
       {final String id, final String name, String filePath, final String url}) {
-    return ImageReference(
+    return OriginalImageReference(
         id: id ?? this.id,
         name: name ?? this.name,
         filePath: filePath ?? this.filePath,

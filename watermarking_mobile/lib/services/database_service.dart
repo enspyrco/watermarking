@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 /// Note: Errors in streams are intentionally passed on and handled in middleware
@@ -9,7 +9,7 @@ class DatabaseService {
   DatabaseService();
 
   String userId;
-  StreamSubscription<dynamic> imagesSubscription;
+  StreamSubscription<dynamic> originalImagesSubscription;
   StreamSubscription<dynamic> profileSubscription;
   StreamSubscription<dynamic> watermarkDetectionProgressSubscription;
 
@@ -21,7 +21,7 @@ class DatabaseService {
       .push()
       .key;
 
-  Stream<dynamic> connectToImages() {
+  Stream<dynamic> connectToOriginalImages() {
     return FirebaseDatabase.instance
         .reference()
         .child('original-images/$userId')
@@ -33,21 +33,21 @@ class DatabaseService {
       Map<String, dynamic> imagesMap =
           Map<String, dynamic>.from(event.snapshot.value);
       // use each key to access the data in the corresponding record
-      List<ImageReference> imagesList = imagesMap.keys
-          .map<ImageReference>((String key) => ImageReference(
+      List<OriginalImageReference> imagesList = imagesMap.keys
+          .map<OriginalImageReference>((String key) => OriginalImageReference(
               id: key,
               name: imagesMap[key]["name"],
               filePath: imagesMap[key]["path"],
               url: imagesMap[key]["servingUrl"]))
           .toList();
-      return ActionSetImages(images: imagesList);
+      return ActionSetOriginalImages(images: imagesList);
     });
   }
 
   Future<dynamic> cancelImagesSubscription() {
-    return (imagesSubscription == null)
+    return (originalImagesSubscription == null)
         ? Future<dynamic>.value(null)
-        : imagesSubscription.cancel();
+        : originalImagesSubscription.cancel();
   }
 
   Stream<dynamic> connectToProfile() {
@@ -107,7 +107,7 @@ class DatabaseService {
           : resultsMap =
               Map<String, dynamic>.from(event.snapshot.value["results"]);
 
-      return ActionSetWatermarkDetectionProgress(
+      return ActionSetDetectionProgress(
           progress: event.snapshot.value["progress"] ?? "null",
           result: resultsMap['message']);
     });
