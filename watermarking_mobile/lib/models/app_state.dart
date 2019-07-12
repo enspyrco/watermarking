@@ -9,7 +9,7 @@ import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class AppState {
-  AppState(
+  const AppState(
       {@required this.user,
       @required this.bottomNav,
       @required this.originals,

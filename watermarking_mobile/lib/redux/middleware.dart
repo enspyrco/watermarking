@@ -80,8 +80,8 @@ void Function(
 
     // cancel any previous subscription
     databaseService.profileSubscription?.cancel();
-    databaseService.originalImagesSubscription?.cancel();
-    databaseService.watermarkDetectionProgressSubscription?.cancel();
+    databaseService.originalsSubscription?.cancel();
+    databaseService.detectionSubscription?.cancel();
 
     if (action.userId == null) return;
 
@@ -94,16 +94,16 @@ void Function(
                     type: ProblemType.profile, message: error.toString()))),
             cancelOnError: true);
 
-    databaseService.originalImagesSubscription = databaseService
-        .connectToOriginalImages()
+    databaseService.originalsSubscription = databaseService
+        .connectToOriginals()
         .listen((dynamic action) => store.dispatch(action),
             onError: (dynamic error) => store.dispatch(ActionAddProblem(
                 problem: Problem(
                     type: ProblemType.images, message: error.toString()))),
             cancelOnError: true);
 
-    databaseService.watermarkDetectionProgressSubscription = databaseService
-        .connectToWatermarkDetectionProgress()
+    databaseService.detectionSubscription = databaseService
+        .connectToDetection()
         .listen((dynamic action) => store.dispatch(action),
             onError: (dynamic error) => store.dispatch(ActionAddProblem(
                 problem: Problem(
@@ -142,7 +142,7 @@ void Function(Store<AppState> store, ActionSetUploadSuccess action,
       NextDispatcher next) {
     next(action);
     try {
-      databaseService.addWatermarkDetectionEntry(
+      databaseService.addDetectionEntry(
           store.state.originals.selectedImage.filePath,
           'detecting-images/${store.state.user.id}/${action.id}');
     } catch (exception) {

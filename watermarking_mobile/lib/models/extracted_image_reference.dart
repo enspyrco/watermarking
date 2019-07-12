@@ -2,7 +2,7 @@ import 'package:watermarking_mobile/models/file_upload.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class ExtractedImageReference {
-  ExtractedImageReference(
+  const ExtractedImageReference(
       {this.localPath, this.bytes, this.remotePath, this.upload});
 
   final String localPath;

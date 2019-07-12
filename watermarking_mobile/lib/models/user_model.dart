@@ -3,7 +3,7 @@ import 'package:watermarking_mobile/utilities/string_utilities.dart';
 
 /// [waiting] indicates we are waiting for auth state retrieval
 class UserModel {
-  UserModel({this.id, this.waiting, this.photoUrl});
+  const UserModel({this.id, this.waiting, this.photoUrl});
 
   final String id;
   final bool waiting;

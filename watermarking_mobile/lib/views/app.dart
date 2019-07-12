@@ -80,7 +80,7 @@ class AppWidget extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home, key: Key('HomeTabIcon')),
                   title: Text('Home'),
                 ),
                 BottomNavigationBarItem(
@@ -93,14 +93,15 @@ class AppWidget extends StatelessWidget {
                           width: 50,
                           height: 50,
                           child: (imageRef == null)
-                              ? Icon(Icons.touch_app)
+                              ? Icon(Icons.touch_app, key: Key('TouchTabIcon'))
                               : Image.network(imageRef.url),
                         );
                       }),
                   title: Text(''),
                 ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.person), title: Text('Profile'))
+                    icon: Icon(Icons.person, key: Key('ProfileTabIcon')),
+                    title: Text('Profile'))
               ],
             );
           }),

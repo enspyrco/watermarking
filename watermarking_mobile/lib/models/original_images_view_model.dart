@@ -4,7 +4,7 @@ import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 // TODO(nickm): when the image reference contains the size,
 // remove width and height from ImagesViewModel
 class OriginalImagesViewModel {
-  OriginalImagesViewModel({
+  const OriginalImagesViewModel({
     this.images,
     this.selectedImage,
     this.selectedWidth,

@@ -10,7 +10,7 @@ enum UploadingEvent {
 }
 
 class FileUpload {
-  FileUpload({
+  const FileUpload({
     this.started,
     this.bytesSent,
     this.latestEvent,

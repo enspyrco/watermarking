@@ -2,7 +2,7 @@ import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class DetectionItemsViewModel {
-  DetectionItemsViewModel({this.items});
+  const DetectionItemsViewModel({this.items});
 
   final List<DetectionItem> items;
 

@@ -7,7 +7,7 @@ enum ProcessExtractedImageEvent {
 }
 
 class DetectionItem {
-  DetectionItem({
+  const DetectionItem({
     this.id,
     this.started,
     this.originalId,
