@@ -23,7 +23,7 @@ Future<void> main() async {
   enableFlutterDriverExtension();
 
   final RemoteDevToolsMiddleware remoteDevtools =
-      RemoteDevToolsMiddleware('192.168.0.18:8000');
+      RemoteDevToolsMiddleware('172.20.10.10:8000');
   await remoteDevtools.connect();
 
   final MockDatabase database = MockDatabase();

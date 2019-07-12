@@ -14,7 +14,7 @@ import 'package:watermarking_mobile/views/app.dart';
 
 Future<void> main() async {
   final RemoteDevToolsMiddleware remoteDevtools =
-      RemoteDevToolsMiddleware('192.168.0.18:8000');
+      RemoteDevToolsMiddleware('172.20.10.10:8000');
   await remoteDevtools.connect();
 
   final AuthService authService = AuthService();

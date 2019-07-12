@@ -9,7 +9,19 @@ import 'package:watermarking_mobile/models/original_image_reference.dart';
 ///
 class MockDatabase {
   MockDatabase() {
+    profileController = StreamController<Map<String, dynamic>>(
+        onListen: _onListen,
+        onPause: _onPause,
+        onResume: _onResume,
+        onCancel: _onCancel);
+
     originalsController = StreamController<List<OriginalImageReference>>(
+        onListen: _onListen,
+        onPause: _onPause,
+        onResume: _onResume,
+        onCancel: _onCancel);
+
+    detectionController = StreamController<Map<String, dynamic>>(
         onListen: _onListen,
         onPause: _onPause,
         onResume: _onResume,
@@ -19,6 +31,8 @@ class MockDatabase {
   }
 
   StreamController<List<OriginalImageReference>> originalsController;
+  StreamController<Map<String, dynamic>> profileController;
+  StreamController<Map<String, dynamic>> detectionController;
   List<OriginalImageReference> images;
 
   int idNum = 0; // when an id is requested we give the next integer as a string
@@ -33,6 +47,9 @@ class MockDatabase {
 
   Stream<List<OriginalImageReference>> get originalsStream =>
       originalsController.stream;
+  Stream<Map<String, dynamic>> get profileStream => profileController.stream;
+  Stream<Map<String, dynamic>> get detectionStream =>
+      detectionController.stream;
 
   void addTestOriginal() {
     const OriginalImageReference img = OriginalImageReference(

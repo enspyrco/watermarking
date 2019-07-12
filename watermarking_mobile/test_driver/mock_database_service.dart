@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
+import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/services/database_service.dart';
 
@@ -50,12 +51,16 @@ class MockDatabaseService implements DatabaseService {
 
   @override
   Stream connectToDetection() {
-    // TODO: implement connectToDetection
-    return null;
+    return database.detectionStream
+        .map<ActionSetDetectionProgress>((Map<String, dynamic> data) =>
+            ActionSetDetectionProgress(progress: 'progress', result: 'result'))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.images, message: error.toString())));
   }
 
   @override
-  Stream connectToOriginals() {
+  Stream<ActionSetOriginalImages> connectToOriginals() {
     return database.originalsStream
         .map<ActionSetOriginalImages>((List<OriginalImageReference> images) =>
             ActionSetOriginalImages(images: images))
@@ -65,9 +70,13 @@ class MockDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream connectToProfile() {
-    // TODO: implement connectToProfile
-    return null;
+  Stream<dynamic> connectToProfile() {
+    return database.profileStream
+        .map<ActionSetProfile>((Map<String, dynamic> data) =>
+            ActionSetProfile(name: data['name'], email: data['email']))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.profile, message: error.toString())));
   }
 
   @override
