@@ -10,11 +10,12 @@ import 'package:watermarking_mobile/services/auth_service.dart';
 import 'package:watermarking_mobile/services/database_service.dart';
 import 'package:watermarking_mobile/services/device_service.dart';
 import 'package:watermarking_mobile/services/storage_service.dart';
+import 'package:watermarking_mobile/utilities/local_server_ip.dart';
 import 'package:watermarking_mobile/views/app.dart';
 
 Future<void> main() async {
   final RemoteDevToolsMiddleware remoteDevtools =
-      RemoteDevToolsMiddleware('172.20.10.10:8000');
+      RemoteDevToolsMiddleware(localIP);
   await remoteDevtools.connect();
 
   final AuthService authService = AuthService();

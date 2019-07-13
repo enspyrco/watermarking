@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# local config files, different for different machines
+lib/utilities/local_server_ip.dart
+
 # IntelliJ related
 *.iml
 *.ipr

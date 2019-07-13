@@ -10,22 +10,22 @@ import 'package:watermarking_mobile/models/original_image_reference.dart';
 class MockDatabase {
   MockDatabase() {
     profileController = StreamController<Map<String, dynamic>>(
-        onListen: _onListen,
-        onPause: _onPause,
-        onResume: _onResume,
-        onCancel: _onCancel);
+        onListen: _onOriginalsListen,
+        onPause: _onOriginalsPause,
+        onResume: _onOriginalsResume,
+        onCancel: _onOriginalsCancel);
 
     originalsController = StreamController<List<OriginalImageReference>>(
-        onListen: _onListen,
-        onPause: _onPause,
-        onResume: _onResume,
-        onCancel: _onCancel);
+        onListen: _onProfileListen,
+        onPause: _onProfilePause,
+        onResume: _onProfileResume,
+        onCancel: _onProfileCancel);
 
     detectionController = StreamController<Map<String, dynamic>>(
-        onListen: _onListen,
-        onPause: _onPause,
-        onResume: _onResume,
-        onCancel: _onCancel);
+        onListen: _onDetectionListen,
+        onPause: _onDetectionPause,
+        onResume: _onDetectionResume,
+        onCancel: _onDetectionCancel);
 
     images = <OriginalImageReference>[];
   }
@@ -37,13 +37,23 @@ class MockDatabase {
 
   int idNum = 0; // when an id is requested we give the next integer as a string
 
-  void _onListen() {
+  void _onOriginalsListen() {
     addTestOriginal();
   }
 
-  void _onPause() {}
-  void _onResume() {}
-  void _onCancel() {}
+  void _onOriginalsPause() {}
+  void _onOriginalsResume() {}
+  void _onOriginalsCancel() {}
+
+  void _onProfileListen() {}
+  void _onProfilePause() {}
+  void _onProfileResume() {}
+  void _onProfileCancel() {}
+
+  void _onDetectionListen() {}
+  void _onDetectionPause() {}
+  void _onDetectionResume() {}
+  void _onDetectionCancel() {}
 
   Stream<List<OriginalImageReference>> get originalsStream =>
       originalsController.stream;

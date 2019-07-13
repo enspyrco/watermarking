@@ -9,6 +9,7 @@ import 'package:watermarking_mobile/models/app_state.dart';
 import 'package:watermarking_mobile/redux/epics.dart';
 import 'package:watermarking_mobile/redux/middleware.dart';
 import 'package:watermarking_mobile/redux/reducers.dart';
+import 'package:watermarking_mobile/utilities/local_server_ip.dart';
 import 'package:watermarking_mobile/views/app.dart';
 
 import 'mock_auth_service.dart';
@@ -23,7 +24,7 @@ Future<void> main() async {
   enableFlutterDriverExtension();
 
   final RemoteDevToolsMiddleware remoteDevtools =
-      RemoteDevToolsMiddleware('172.20.10.10:8000');
+      RemoteDevToolsMiddleware(localIP);
   await remoteDevtools.connect();
 
   final MockDatabase database = MockDatabase();

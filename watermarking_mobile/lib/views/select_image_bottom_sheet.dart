@@ -85,6 +85,7 @@ class _SelectImageItemState extends State<SelectImageItem> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: InkWell(
+            key: ValueKey('OriginalImageInkWell${widget.index}'),
             child: Container(
               height: 100,
               width: 100,

@@ -93,8 +93,11 @@ class AppWidget extends StatelessWidget {
                           width: 50,
                           height: 50,
                           child: (imageRef == null)
-                              ? Icon(Icons.touch_app, key: Key('TouchTabIcon'))
-                              : Image.network(imageRef.url),
+                              ? Icon(Icons.touch_app, key: Key('ImageTabIcon'))
+                              : Image.network(
+                                  imageRef.url,
+                                  key: Key('ImageTabImage'),
+                                ),
                         );
                       }),
                   title: Text(''),
@@ -115,6 +118,7 @@ class AppWidget extends StatelessWidget {
             );
           }
           return FloatingActionButton(
+            key: Key('ScanFAB'),
             onPressed: () async {
               String path = await platform.invokeMethod('startDetection', {
                 'width': viewModel.selectedWidth,

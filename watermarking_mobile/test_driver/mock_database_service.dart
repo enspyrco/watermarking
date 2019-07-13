@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
-import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/services/database_service.dart';
 
