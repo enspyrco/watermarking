@@ -33,6 +33,9 @@ List<Middleware<AppState>> createMiddlewares(
     TypedMiddleware<AppState, ActionSetAuthState>(
       _saveAuthStateAndObserveProfile(databaseService, storageService),
     ),
+    TypedMiddleware<AppState, ActionPerformExtraction>(
+      _performExtraction(deviceService),
+    ),
     TypedMiddleware<AppState, ActionProcessExtractedImage>(
       _startUploadAndSave(databaseService),
     ),
@@ -109,6 +112,22 @@ void Function(
                 problem: Problem(
                     type: ProblemType.images, message: error.toString()))),
             cancelOnError: true);
+  };
+}
+
+/// Intercept [ActionPerformExtraction] and use [DeviceService] to ...
+void Function(Store<AppState> store, ActionPerformExtraction action,
+    NextDispatcher next) _performExtraction(
+  DeviceService deviceService,
+) {
+  return (Store<AppState> store, ActionPerformExtraction action,
+      NextDispatcher next) async {
+    next(action);
+
+    final List<String> paths =
+        await deviceService.performExtraction(action.width, action.height);
+
+    store.dispatch(ActionProcessExtractedImage(filePath: paths.first));
   };
 }
 

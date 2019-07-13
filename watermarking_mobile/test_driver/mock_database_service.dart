@@ -22,7 +22,9 @@ class MockDatabaseService implements DatabaseService {
   StreamSubscription profileSubscription;
   @override
   StreamSubscription detectionSubscription;
+
   String userId;
+  int numIdsGenerated = 0;
 
   @override
   Future<void> addDetectionEntry(String originalPath, String markedPath) {
@@ -80,8 +82,8 @@ class MockDatabaseService implements DatabaseService {
 
   @override
   String getDetectedImageEntryId() {
-    // TODO: implement getDetectedImageEntryId
-    return null;
+    numIdsGenerated++;
+    return numIdsGenerated.toString();
   }
 
   @override

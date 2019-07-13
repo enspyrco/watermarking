@@ -1,13 +1,14 @@
-import 'dart:io';
-import 'package:meta/meta.dart';
-
-class ImageFile {
-  const ImageFile({@required this.path, @required this.totalBytes});
-
-  final String path;
-  final int totalBytes;
-}
+import 'package:flutter/services.dart';
 
 class DeviceService {
   DeviceService();
+
+  static const platform = const MethodChannel('watermarking.enspyr.co/detect');
+
+  Future<List<String>> performExtraction(int width, int height) async {
+    List<String> paths = await platform
+        .invokeListMethod('startDetection', {'width': width, 'height': height});
+    platform.invokeMethod('dismiss');
+    return paths;
+  }
 }

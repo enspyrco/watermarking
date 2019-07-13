@@ -72,6 +72,12 @@ class ActionSetSelectedImage {
   final int width;
 }
 
+class ActionPerformExtraction {
+  const ActionPerformExtraction({@required this.width, @required this.height});
+  final int width;
+  final int height;
+}
+
 // when an extracted image is returned from the native view we dispatch this
 // action and rely on middleware to dispatch a new action to add the data
 // to the store

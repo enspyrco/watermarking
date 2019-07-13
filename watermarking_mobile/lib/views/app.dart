@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
@@ -40,8 +39,6 @@ class MyApp extends StatelessWidget {
 
 class AppWidget extends StatelessWidget {
   const AppWidget({Key key}) : super(key: key);
-
-  static const platform = const MethodChannel('watermarking.enspyr.co/detect');
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +116,11 @@ class AppWidget extends StatelessWidget {
           }
           return FloatingActionButton(
             key: Key('ScanFAB'),
-            onPressed: () async {
-              String path = await platform.invokeMethod('startDetection', {
-                'width': viewModel.selectedWidth,
-                'height': viewModel.selectedHeight
-              });
-              platform.invokeMethod('dismiss');
-              StoreProvider.of<AppState>(context)
-                  .dispatch(ActionProcessExtractedImage(filePath: path));
+            onPressed: () {
+              StoreProvider.of<AppState>(context).dispatch(
+                  ActionPerformExtraction(
+                      width: viewModel.selectedWidth,
+                      height: viewModel.selectedHeight));
             },
             tooltip: 'Scan',
             child: Icon(Icons.search),
