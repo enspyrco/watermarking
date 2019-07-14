@@ -17,8 +17,7 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetBottomNav>(_setBottomNav),
   TypedReducer<AppState, ActionShowBottomSheet>(_setBottomSheet),
   TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
-  TypedReducer<AppState, ActionAddExtractedImage>(_addExtractedImage),
-  TypedReducer<AppState, ActionStartUpload>(_beginUpload),
+  TypedReducer<AppState, ActionAddDetectionItem>(_addDetectionItem),
   TypedReducer<AppState, ActionSetUploadProgress>(_setUploadProgress),
   // TypedReducer<AppState, UploadPauseAction>(_pauseUpload),
   // TypedReducer<AppState, UploadResumeAction>(_resumeUpload),
@@ -76,47 +75,53 @@ AppState _setDetectionItems(AppState state, ActionSetDetectionItems action) {
       detections: state.detections.copyWith(items: action.items));
 }
 
-AppState _addExtractedImage(AppState state, ActionAddExtractedImage action) {
+AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
   final ExtractedImageReference newRef =
-      ExtractedImageReference(localPath: action.filePath);
+      ExtractedImageReference(localPath: action.extractedPath);
 
-  // find the relevant DetectionItem and add the extracted image ref
-  final List<DetectionItem> nextItems = state.detections.items
-      .map<DetectionItem>((DetectionItem item) =>
-          (item.id == action.id) ? item.copyWith(extractedRef: newRef) : item)
-      .toList();
+  DetectionItem newItem = DetectionItem(
+      id: action.id,
+      extractedRef: newRef,
+      originalId: state.originals.selectedImage.id,
+      started: DateTime.now());
+
+  // // find the relevant DetectionItem and add the extracted image ref
+  // final List<DetectionItem> nextItems = state.detections.items
+  //     .map<DetectionItem>((DetectionItem item) =>
+  //         (item.id == action.id) ? item.copyWith(extractedRef: newRef) : item)
+  //     .toList();
 
   // update the viewmodel with the new extracted image
   return state.copyWith(
-      detections: state.detections.copyWith(items: nextItems));
+      detections: state.detections
+          .copyWith(items: [newItem, ...state.detections.items]));
 }
 
-// When the extracted image file is ready, the ActionStartImageUpload is
-// dispatched with the file path and size which are added to the DetectionItem
-// in the store
-AppState _beginUpload(AppState state, ActionStartUpload action) {
-  // create the new upload object
-  final FileUpload newUpload = FileUpload(
-      latestEvent: UploadingEvent.started,
-      bytesSent: 0,
-      started: DateTime.now());
+// // When the extracted image file is ready, the ActionStartImageUpload is
+// // dispatched with the file path and size which are added to the DetectionItem
+// // in the store
+// AppState _beginUpload(AppState state, ActionStartUpload action) {
+//   // create the new upload object
+//   final FileUpload newUpload = FileUpload(
+//       latestEvent: UploadingEvent.started,
+//       bytesSent: 0,
+//       started: DateTime.now());
 
-  // find the relevant DetectionItem and add the upload
-  final List<DetectionItem> nextItems = state.detections.items
-      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
-          ? item.copyWith(
-              extractedRef: item.extractedRef.copyWith(
-                  localPath: action.filePath,
-                  bytes: action.totalBytes,
-                  upload: newUpload))
-          : item)
-      .toList();
+//   // find the relevant DetectionItem and add the upload
+//   final List<DetectionItem> nextItems = state.detections.items
+//       .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+//           ? item.copyWith(
+//               extractedRef: item.extractedRef.copyWith(
+//                   localPath: action.filePath,
+//                   upload: newUpload))
+//           : item)
+//       .toList();
 
-  AppState nextState =
-      state.copyWith(detections: state.detections.copyWith(items: nextItems));
+//   AppState nextState =
+//       state.copyWith(detections: state.detections.copyWith(items: nextItems));
 
-  return nextState;
-}
+//   return nextState;
+// }
 
 AppState _setUploadProgress(AppState state, ActionSetUploadProgress action) {
   // find the relevant DetectionItem and set the progress of the upload

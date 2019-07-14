@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:watermarking_mobile/services/device_service.dart';
 
@@ -15,8 +16,15 @@ class MockDeviceService implements DeviceService {
   }
 
   @override
-  Future<List<String>> performExtraction(int width, int height) async {
+  Future<List<String>> performExtraction(
+      {@required int width, @required int height}) async {
     final File file = await addAssetToFileSystem();
     return [file.path];
+  }
+
+  @override
+  Future<int> findFileSize({String path}) {
+    // TODO: implement findFileSize
+    return null;
   }
 }

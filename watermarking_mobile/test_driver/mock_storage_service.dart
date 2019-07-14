@@ -16,7 +16,7 @@ class MockStorageService implements StorageService {
   String userId;
 
   @override
-  Stream<dynamic> startUpload({String photoPath, String entryId}) async* {
+  Stream<dynamic> startUpload({String filePath, String entryId}) async* {
     double percent = 0;
     while (percent < 0.6) {
       await Future<void>.delayed(Duration(milliseconds: 500));

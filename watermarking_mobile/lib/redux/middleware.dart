@@ -36,8 +36,8 @@ List<Middleware<AppState>> createMiddlewares(
     TypedMiddleware<AppState, ActionPerformExtraction>(
       _performExtraction(deviceService),
     ),
-    TypedMiddleware<AppState, ActionProcessExtractedImage>(
-      _startUploadAndSave(databaseService),
+    TypedMiddleware<AppState, ActionProcessExtraction>(
+      _processExtraction(databaseService, deviceService),
     ),
     TypedMiddleware<AppState, ActionSetUploadSuccess>(
       _startWatermarkDetection(databaseService),
@@ -124,30 +124,30 @@ void Function(Store<AppState> store, ActionPerformExtraction action,
       NextDispatcher next) async {
     next(action);
 
-    final List<String> paths =
-        await deviceService.performExtraction(action.width, action.height);
+    final List<String> paths = await deviceService.performExtraction(
+        width: action.width, height: action.height);
 
-    store.dispatch(ActionProcessExtractedImage(filePath: paths.first));
+    store.dispatch(ActionProcessExtraction(filePaths: paths));
   };
 }
 
 /// Intercept [ActionProcessExtractedImage] and use [DatabaseService] to generate a
 /// unique id then dispatch [ActionStartImageUpload]
-void Function(Store<AppState> store, ActionProcessExtractedImage action,
-    NextDispatcher next) _startUploadAndSave(
-  DatabaseService databaseService,
-) {
-  return (Store<AppState> store, ActionProcessExtractedImage action,
-      NextDispatcher next) {
+void Function(Store<AppState> store, ActionProcessExtraction action,
+        NextDispatcher next)
+    _processExtraction(
+        DatabaseService databaseService, DeviceService deviceService) {
+  return (Store<AppState> store, ActionProcessExtraction action,
+      NextDispatcher next) async {
     next(action);
 
-    final String newId = databaseService.getDetectedImageEntryId();
-
-    store.dispatch(
-        ActionAddExtractedImage(id: newId, filePath: action.filePath));
-
-    store.dispatch(ActionStartUpload(
-        id: newId, filePath: action.filePath, totalBytes: null));
+    for (String path in action.filePaths) {
+      final String newId = databaseService.getDetectedImageEntryId();
+      final int bytes = await deviceService.findFileSize(path: path);
+      store.dispatch(
+          ActionAddDetectionItem(id: newId, extractedPath: path, bytes: bytes));
+      store.dispatch(ActionStartUpload(id: newId, filePath: path));
+    }
   };
 }
 

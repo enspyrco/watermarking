@@ -81,26 +81,27 @@ class ActionPerformExtraction {
 // when an extracted image is returned from the native view we dispatch this
 // action and rely on middleware to dispatch a new action to add the data
 // to the store
-class ActionProcessExtractedImage {
-  const ActionProcessExtractedImage({@required this.filePath});
-  final String filePath;
+class ActionProcessExtraction {
+  const ActionProcessExtraction({@required this.filePaths});
+  final List<String> filePaths;
 }
 
 // when middleware sees ActionProcessExtractedImage it creates a unique id and
+// TODO(nickm): update this documentation
 // starts an upload (with the id as metadata) and also dispatches an action
 // to add a new extracted image (with id as a member)
-class ActionAddExtractedImage {
-  const ActionAddExtractedImage({@required this.filePath, @required this.id});
+class ActionAddDetectionItem {
+  const ActionAddDetectionItem(
+      {@required this.id, @required this.extractedPath, @required this.bytes});
   final String id;
-  final String filePath;
+  final String extractedPath;
+  final int bytes;
 }
 
 class ActionStartUpload {
-  const ActionStartUpload(
-      {@required this.id, @required this.filePath, this.totalBytes});
+  const ActionStartUpload({@required this.id, @required this.filePath});
   final String id;
   final String filePath;
-  final int totalBytes;
 }
 
 class ActionSetUploadPaused {

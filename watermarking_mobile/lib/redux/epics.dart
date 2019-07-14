@@ -25,8 +25,7 @@ Epic<AppState> createUploadEpic(
         .transform<dynamic>(
             FlatMapStreamTransformer<ActionStartUpload, dynamic>(
                 (ActionStartUpload action) {
-      return service.startUpload(
-          entryId: action.id, photoPath: action.filePath);
+      return service.startUpload(entryId: action.id, filePath: action.filePath);
     }));
   };
 }
