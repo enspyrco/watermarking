@@ -31,7 +31,7 @@ List<Middleware<AppState>> createMiddlewares(
       _signOut(authService),
     ),
     TypedMiddleware<AppState, ActionSetAuthState>(
-      _saveAuthStateAndObserveProfile(databaseService, storageService),
+      _setUserAndObserveDatabase(databaseService, storageService),
     ),
     TypedMiddleware<AppState, ActionPerformExtraction>(
       _performExtraction(deviceService),
@@ -70,7 +70,7 @@ void Function(Store<AppState> store, ActionSignout action, NextDispatcher next)
 /// which will be either null or a valid uid
 void Function(
         Store<AppState> store, ActionSetAuthState action, NextDispatcher next)
-    _saveAuthStateAndObserveProfile(
+    _setUserAndObserveDatabase(
   DatabaseService databaseService,
   StorageService storageService,
 ) {
@@ -84,7 +84,8 @@ void Function(
     // cancel any previous subscription
     databaseService.profileSubscription?.cancel();
     databaseService.originalsSubscription?.cancel();
-    databaseService.detectionSubscription?.cancel();
+    databaseService.detectingSubscription?.cancel();
+    databaseService.detectionItemsSubscription?.cancel();
 
     if (action.userId == null) return;
 
@@ -105,8 +106,16 @@ void Function(
                     type: ProblemType.images, message: error.toString()))),
             cancelOnError: true);
 
-    databaseService.detectionSubscription = databaseService
-        .connectToDetection()
+    databaseService.detectionItemsSubscription = databaseService
+        .connectToDetectionItems()
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error) => store.dispatch(ActionAddProblem(
+                problem: Problem(
+                    type: ProblemType.images, message: error.toString()))),
+            cancelOnError: true);
+
+    databaseService.detectingSubscription = databaseService
+        .connectToDetecting()
         .listen((dynamic action) => store.dispatch(action),
             onError: (dynamic error) => store.dispatch(ActionAddProblem(
                 problem: Problem(
@@ -142,7 +151,7 @@ void Function(Store<AppState> store, ActionProcessExtraction action,
     next(action);
 
     for (String path in action.filePaths) {
-      final String newId = databaseService.getDetectedImageEntryId();
+      final String newId = databaseService.getDetectionItemId();
       final int bytes = await deviceService.findFileSize(path: path);
       store.dispatch(
           ActionAddDetectionItem(id: newId, extractedPath: path, bytes: bytes));
@@ -161,9 +170,10 @@ void Function(Store<AppState> store, ActionSetUploadSuccess action,
       NextDispatcher next) {
     next(action);
     try {
-      databaseService.addDetectionEntry(
-          store.state.originals.selectedImage.filePath,
-          'detecting-images/${store.state.user.id}/${action.id}');
+      databaseService.addDetectingEntry(
+          itemId: action.id,
+          originalPath: store.state.originals.selectedImage.filePath,
+          markedPath: 'detecting-images/${store.state.user.id}/${action.id}');
     } catch (exception) {
       print(exception);
     }

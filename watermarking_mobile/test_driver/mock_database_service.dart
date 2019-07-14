@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_mobile/models/extracted_image_reference.dart';
+import 'package:watermarking_mobile/models/file_upload.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
@@ -21,26 +25,31 @@ class MockDatabaseService implements DatabaseService {
   @override
   StreamSubscription profileSubscription;
   @override
-  StreamSubscription detectionSubscription;
+  StreamSubscription detectingSubscription;
+  @override
+  StreamSubscription detectionItemsSubscription;
 
   String userId;
   int numIdsGenerated = 0;
 
   @override
-  Future<void> addDetectionEntry(String originalPath, String markedPath) {
+  String getDetectionItemId() {
+    numIdsGenerated++;
+    return numIdsGenerated.toString();
+  }
+
+  @override
+  Future<void> addDetectingEntry(
+      {@required String itemId,
+      @required String originalPath,
+      @required String markedPath}) {
     // TODO: implement addDetectionEntry
     return null;
   }
 
   @override
-  Future cancelDetectionSubscription() {
-    // TODO: implement cancelDetectionSubscription
-    return null;
-  }
-
-  @override
-  Future cancelOriginalsSubscription() {
-    // TODO: implement cancelOriginalsSubscription
+  Future<void> requestOriginalDelete(String entryId) {
+    // TODO: implement requestOriginalDelete
     return null;
   }
 
@@ -51,23 +60,21 @@ class MockDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream connectToDetection() {
-    return database.detectionStream
-        .map<ActionSetDetectionProgress>((Map<String, dynamic> data) =>
-            ActionSetDetectionProgress(progress: 'progress', result: 'result'))
-        .handleError((dynamic error) => ActionAddProblem(
-            problem:
-                Problem(type: ProblemType.images, message: error.toString())));
+  Future cancelOriginalsSubscription() {
+    // TODO: implement cancelOriginalsSubscription
+    return null;
   }
 
   @override
-  Stream<ActionSetOriginalImages> connectToOriginals() {
-    return database.originalsStream
-        .map<ActionSetOriginalImages>((List<OriginalImageReference> images) =>
-            ActionSetOriginalImages(images: images))
-        .handleError((dynamic error) => ActionAddProblem(
-            problem:
-                Problem(type: ProblemType.images, message: error.toString())));
+  Future cancelDetectingSubscription() {
+    // TODO: implement cancelDetectionSubscription
+    return null;
+  }
+
+  @override
+  Future cancelDetectionItemsSubscription() {
+    // TODO: implement cancelDetectionItemsSubscription
+    return null;
   }
 
   @override
@@ -81,14 +88,35 @@ class MockDatabaseService implements DatabaseService {
   }
 
   @override
-  String getDetectedImageEntryId() {
-    numIdsGenerated++;
-    return numIdsGenerated.toString();
+  Stream<dynamic> connectToOriginals() {
+    return database.originalsStream
+        .map<ActionSetOriginalImages>((List<OriginalImageReference> images) =>
+            ActionSetOriginalImages(images: images))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.images, message: error.toString())));
   }
 
   @override
-  Future<void> requestOriginalDelete(String entryId) {
-    // TODO: implement requestOriginalDelete
-    return null;
+  Stream<dynamic> connectToDetecting() {
+    return database.detectingStream
+        .map<ActionSetDetectingProgress>((Map<String, dynamic> data) =>
+            ActionSetDetectingProgress(
+                id: numIdsGenerated.toString(),
+                progress: 'progress',
+                result: 'result'))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.images, message: error.toString())));
+  }
+
+  @override
+  Stream<dynamic> connectToDetectionItems() {
+    return database.detectionItemsStream
+        .map<ActionSetDetectionItems>((List<DetectionItem> items) =>
+            ActionSetDetectionItems(items: items))
+        .handleError((dynamic error) => ActionAddProblem(
+            problem:
+                Problem(type: ProblemType.profile, message: error.toString())));
   }
 }

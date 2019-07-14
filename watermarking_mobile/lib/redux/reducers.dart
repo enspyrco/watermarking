@@ -18,11 +18,13 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionShowBottomSheet>(_setBottomSheet),
   TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
   TypedReducer<AppState, ActionAddDetectionItem>(_addDetectionItem),
+  TypedReducer<AppState, ActionStartUpload>(_setUploadStartTime),
   TypedReducer<AppState, ActionSetUploadProgress>(_setUploadProgress),
   // TypedReducer<AppState, UploadPauseAction>(_pauseUpload),
   // TypedReducer<AppState, UploadResumeAction>(_resumeUpload),
+
   TypedReducer<AppState, ActionSetUploadSuccess>(_setUploadSucceeded),
-  TypedReducer<AppState, ActionSetDetectionProgress>(_setDetectionProgress),
+  TypedReducer<AppState, ActionSetDetectingProgress>(_setDetectingProgress),
   TypedReducer<AppState, ActionAddProblem>(_addProblem),
   TypedReducer<AppState, ActionRemoveProblem>(_removeProblem),
 ]);
@@ -76,14 +78,15 @@ AppState _setDetectionItems(AppState state, ActionSetDetectionItems action) {
 }
 
 AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
-  final ExtractedImageReference newRef =
-      ExtractedImageReference(localPath: action.extractedPath);
+  final ExtractedImageReference newRef = ExtractedImageReference(
+      localPath: action.extractedPath, upload: FileUpload(bytesSent: 0));
 
   DetectionItem newItem = DetectionItem(
-      id: action.id,
-      extractedRef: newRef,
-      originalId: state.originals.selectedImage.id,
-      started: DateTime.now());
+    id: action.id,
+    extractedRef: newRef,
+    originalId: state.originals.selectedImage.id,
+    started: DateTime.now(),
+  );
 
   // // find the relevant DetectionItem and add the extracted image ref
   // final List<DetectionItem> nextItems = state.detections.items
@@ -95,6 +98,22 @@ AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
   return state.copyWith(
       detections: state.detections
           .copyWith(items: [newItem, ...state.detections.items]));
+}
+
+AppState _setUploadStartTime(AppState state, ActionStartUpload action) {
+  // find the relevant DetectionItem and set the start time of the upload
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(
+              extractedRef: item.extractedRef.copyWith(
+                  upload: item.extractedRef.upload
+                      .copyWith(started: DateTime.now())))
+          : item)
+      .toList();
+
+  // return the new state
+  return state.copyWith(
+      detections: state.detections.copyWith(items: nextItems));
 }
 
 // // When the extracted image file is ready, the ActionStartImageUpload is
@@ -170,9 +189,18 @@ AppState _setUploadSucceeded(AppState state, ActionSetUploadSuccess action) {
 }
 
 // when we receive a progress event, add the change to the correct item
-AppState _setDetectionProgress(
-    AppState state, ActionSetDetectionProgress action) {
-  return state;
+AppState _setDetectingProgress(
+    AppState state, ActionSetDetectingProgress action) {
+  // find the relevant DetectionItem and set the progress of the detection
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(progress: action.progress, result: action.result)
+          : item)
+      .toList();
+
+  // return the new state
+  return state.copyWith(
+      detections: state.detections.copyWith(items: nextItems));
 }
 
 AppState _addProblem(AppState state, ActionAddProblem action) {

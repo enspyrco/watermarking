@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:meta/meta.dart';
+import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
@@ -11,13 +13,14 @@ class DatabaseService {
   String userId;
   StreamSubscription<dynamic> originalsSubscription;
   StreamSubscription<dynamic> profileSubscription;
-  StreamSubscription<dynamic> detectionSubscription;
+  StreamSubscription<dynamic> detectingSubscription;
+  StreamSubscription<dynamic> detectionItemsSubscription;
 
   // create a document id that will be added as metadata to the upload
   // for use in a cloud function
-  String getDetectedImageEntryId() => FirebaseDatabase.instance
+  String getDetectionItemId() => FirebaseDatabase.instance
       .reference()
-      .child('detected-images/$userId')
+      .child('detection-items/$userId')
       .push()
       .key;
 
@@ -75,9 +78,13 @@ class DatabaseService {
         .update(<String, dynamic>{'delete': true});
   }
 
-  Future<void> addDetectionEntry(String originalPath, String markedPath) {
+  Future<void> addDetectingEntry(
+      {@required String itemId,
+      @required String originalPath,
+      @required String markedPath}) {
     FirebaseDatabase.instance.reference()
       ..child('detecting/incomplete/$userId').set({
+        'itemId': itemId,
         'progress': 'Adding a detection task to the queue...',
         'isDetecting': true,
         'pathOriginal': originalPath,
@@ -94,27 +101,54 @@ class DatabaseService {
     return Future.value();
   }
 
-  Stream<dynamic> connectToDetection() {
+  Stream<dynamic> connectToDetecting() {
     return FirebaseDatabase.instance
         .reference()
         .child('detecting/incomplete/$userId/')
         .onValue
         .map<dynamic>((Event event) {
       Map<String, dynamic> resultsMap;
-      (event.snapshot.value["results"] == null)
+      (event.snapshot.value['results'] == null)
           ? resultsMap = {'message': 'nullo'}
           : resultsMap =
               Map<String, dynamic>.from(event.snapshot.value["results"]);
 
-      return ActionSetDetectionProgress(
+      return ActionSetDetectingProgress(
+          id: resultsMap['itemId'],
           progress: event.snapshot.value["progress"] ?? "null",
           result: resultsMap['message']);
     });
   }
 
-  Future<dynamic> cancelDetectionSubscription() {
-    return (detectionSubscription == null)
+  Future<dynamic> cancelDetectingSubscription() {
+    return (detectingSubscription == null)
         ? Future<dynamic>.value(null)
-        : detectionSubscription.cancel();
+        : detectingSubscription.cancel();
+  }
+
+  Stream<dynamic> connectToDetectionItems() {
+    return FirebaseDatabase.instance
+        .reference()
+        .child('detection-items/$userId/')
+        .onValue
+        .map<dynamic>((Event event) {
+      Map<String, dynamic> itemsMap =
+          Map<String, dynamic>.from(event.snapshot.value);
+      List<DetectionItem> list = [];
+      for (String key in itemsMap.keys) {
+        list.add(DetectionItem(
+            id: key,
+            progress: itemsMap[key]['progress'],
+            result: itemsMap[key]['result']));
+      }
+
+      return ActionSetDetectionItems(items: list);
+    });
+  }
+
+  Future<dynamic> cancelDetectionItemsSubscription() {
+    return (detectionItemsSubscription == null)
+        ? Future<dynamic>.value(null)
+        : detectionItemsSubscription.cancel();
   }
 }

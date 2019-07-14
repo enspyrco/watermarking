@@ -23,8 +23,7 @@ class MockDeviceService implements DeviceService {
   }
 
   @override
-  Future<int> findFileSize({String path}) {
-    // TODO: implement findFileSize
-    return null;
+  Future<int> findFileSize({String path}) async {
+    return 1000;
   }
 }

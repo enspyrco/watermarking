@@ -132,9 +132,10 @@ class ActionCancelUpload {
   final String id;
 }
 
-class ActionSetDetectionProgress {
-  const ActionSetDetectionProgress(
-      {@required this.progress, @required this.result});
+class ActionSetDetectingProgress {
+  const ActionSetDetectingProgress(
+      {@required this.id, @required this.progress, @required this.result});
+  final String id;
   final String progress;
   final String result;
 }

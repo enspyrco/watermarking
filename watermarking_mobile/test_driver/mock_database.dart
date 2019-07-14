@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 
 /// The [MockDatabase] is created in test_driver/app.dart and passed in to all
@@ -21,18 +22,25 @@ class MockDatabase {
         onResume: _onProfileResume,
         onCancel: _onProfileCancel);
 
-    detectionController = StreamController<Map<String, dynamic>>(
-        onListen: _onDetectionListen,
-        onPause: _onDetectionPause,
-        onResume: _onDetectionResume,
-        onCancel: _onDetectionCancel);
+    detectingController = StreamController<Map<String, dynamic>>(
+        onListen: _onDetectingListen,
+        onPause: _onDetectingPause,
+        onResume: _onDetectingResume,
+        onCancel: _onDetectingCancel);
+
+    detectionItemsController = StreamController<List<DetectionItem>>(
+        onListen: _onDetectionItemsListen,
+        onPause: _onDetectionItemsPause,
+        onResume: _onDetectionItemsResume,
+        onCancel: _onDetectionItemsCancel);
 
     images = <OriginalImageReference>[];
   }
 
   StreamController<List<OriginalImageReference>> originalsController;
+  StreamController<List<DetectionItem>> detectionItemsController;
   StreamController<Map<String, dynamic>> profileController;
-  StreamController<Map<String, dynamic>> detectionController;
+  StreamController<Map<String, dynamic>> detectingController;
   List<OriginalImageReference> images;
 
   int idNum = 0; // when an id is requested we give the next integer as a string
@@ -50,16 +58,26 @@ class MockDatabase {
   void _onProfileResume() {}
   void _onProfileCancel() {}
 
-  void _onDetectionListen() {}
-  void _onDetectionPause() {}
-  void _onDetectionResume() {}
-  void _onDetectionCancel() {}
+  void _onDetectingListen() {}
+  void _onDetectingPause() {}
+  void _onDetectingResume() {}
+  void _onDetectingCancel() {}
+
+  void _onDetectionItemsListen() {
+    addTestDetectionItem();
+  }
+
+  void _onDetectionItemsPause() {}
+  void _onDetectionItemsResume() {}
+  void _onDetectionItemsCancel() {}
 
   Stream<List<OriginalImageReference>> get originalsStream =>
       originalsController.stream;
   Stream<Map<String, dynamic>> get profileStream => profileController.stream;
-  Stream<Map<String, dynamic>> get detectionStream =>
-      detectionController.stream;
+  Stream<Map<String, dynamic>> get detectingStream =>
+      detectingController.stream;
+  Stream<List<DetectionItem>> get detectionItemsStream =>
+      detectionItemsController.stream;
 
   void addTestOriginal() {
     const OriginalImageReference img = OriginalImageReference(
@@ -70,6 +88,16 @@ class MockDatabase {
             'https://lh4.googleusercontent.com/-q5LxfJgDNZU/AAAAAAAAAAI/AAAAAAAABCc/Qg-SpkylHCA/photo.jpg');
     images.add(img);
     originalsController.add(<OriginalImageReference>[img]);
+  }
+
+  void addTestDetectionItem() {
+    DetectionItem item = DetectionItem(
+        started: DateTime.now(),
+        id: '0',
+        originalId: '0',
+        progress: 'progress',
+        result: 'result');
+    detectionItemsController.add(<DetectionItem>[item]);
   }
 
   void addOriginal(OriginalImageReference img) {
