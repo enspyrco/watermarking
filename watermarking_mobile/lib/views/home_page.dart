@@ -71,7 +71,8 @@ class DetectionSteps extends StatelessWidget {
       height: 90,
       child: Theme(
         data: ThemeData(
-            accentColor: Colors.redAccent, backgroundColor: Colors.redAccent),
+          primaryColor: Colors.red,
+        ),
         child: Stepper(
           currentStep: 1,
           type: StepperType.horizontal,

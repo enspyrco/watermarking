@@ -25,6 +25,11 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
         store: store,
         child: MaterialApp(
+            theme: Theme.of(context).copyWith(
+                primaryColor: Colors.amber,
+                textTheme: Theme.of(context).textTheme.copyWith(
+                    body1: new TextStyle(color: Colors.red),
+                    body2: new TextStyle(color: Colors.pink, fontSize: 24.0))),
             home: StoreConnector<AppState, UserModel>(
                 converter: (Store<AppState> store) => store.state.user,
                 builder: (BuildContext context, UserModel user) {
