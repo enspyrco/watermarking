@@ -20,9 +20,6 @@ final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionAddDetectionItem>(_addDetectionItem),
   TypedReducer<AppState, ActionStartUpload>(_setUploadStartTime),
   TypedReducer<AppState, ActionSetUploadProgress>(_setUploadProgress),
-  // TypedReducer<AppState, UploadPauseAction>(_pauseUpload),
-  // TypedReducer<AppState, UploadResumeAction>(_resumeUpload),
-
   TypedReducer<AppState, ActionSetUploadSuccess>(_setUploadSucceeded),
   TypedReducer<AppState, ActionSetDetectingProgress>(_setDetectingProgress),
   TypedReducer<AppState, ActionAddProblem>(_addProblem),
@@ -77,6 +74,7 @@ AppState _setDetectionItems(AppState state, ActionSetDetectionItems action) {
       detections: state.detections.copyWith(items: action.items));
 }
 
+// Create a new DetectionItem with the given extracted image
 AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
   final ExtractedImageReference newRef = ExtractedImageReference(
       localPath: action.extractedPath, upload: FileUpload(bytesSent: 0));
@@ -84,17 +82,10 @@ AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
   DetectionItem newItem = DetectionItem(
     id: action.id,
     extractedRef: newRef,
-    originalId: state.originals.selectedImage.id,
+    originalRef: state.originals.selectedImage,
     started: DateTime.now(),
   );
 
-  // // find the relevant DetectionItem and add the extracted image ref
-  // final List<DetectionItem> nextItems = state.detections.items
-  //     .map<DetectionItem>((DetectionItem item) =>
-  //         (item.id == action.id) ? item.copyWith(extractedRef: newRef) : item)
-  //     .toList();
-
-  // update the viewmodel with the new extracted image
   return state.copyWith(
       detections: state.detections
           .copyWith(items: [newItem, ...state.detections.items]));
@@ -116,32 +107,6 @@ AppState _setUploadStartTime(AppState state, ActionStartUpload action) {
       detections: state.detections.copyWith(items: nextItems));
 }
 
-// // When the extracted image file is ready, the ActionStartImageUpload is
-// // dispatched with the file path and size which are added to the DetectionItem
-// // in the store
-// AppState _beginUpload(AppState state, ActionStartUpload action) {
-//   // create the new upload object
-//   final FileUpload newUpload = FileUpload(
-//       latestEvent: UploadingEvent.started,
-//       bytesSent: 0,
-//       started: DateTime.now());
-
-//   // find the relevant DetectionItem and add the upload
-//   final List<DetectionItem> nextItems = state.detections.items
-//       .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
-//           ? item.copyWith(
-//               extractedRef: item.extractedRef.copyWith(
-//                   localPath: action.filePath,
-//                   upload: newUpload))
-//           : item)
-//       .toList();
-
-//   AppState nextState =
-//       state.copyWith(detections: state.detections.copyWith(items: nextItems));
-
-//   return nextState;
-// }
-
 AppState _setUploadProgress(AppState state, ActionSetUploadProgress action) {
   // find the relevant DetectionItem and set the progress of the upload
   final List<DetectionItem> nextItems = state.detections.items
@@ -158,18 +123,6 @@ AppState _setUploadProgress(AppState state, ActionSetUploadProgress action) {
   return state.copyWith(
       detections: state.detections.copyWith(items: nextItems));
 }
-
-// AppState _pauseImageUpload(
-//         AppState state, ImageUploadPauseAction action) =>
-//     state.copyWith(
-//         profileViewModel:
-//             state.profileViewModel.copyWith(pickedPhotoPath: null));
-
-// AppState _resumeImageUpload(
-//         AppState state, ImageUploadResumeAction action) =>
-//     state.copyWith(
-//         profileViewModel:
-//             state.profileViewModel.copyWith(pickedPhotoPath: null));
 
 // when we receive a success event, change the relevant latestEvent property to success
 AppState _setUploadSucceeded(AppState state, ActionSetUploadSuccess action) {
