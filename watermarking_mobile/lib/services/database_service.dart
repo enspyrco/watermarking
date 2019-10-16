@@ -136,7 +136,8 @@ class DatabaseService {
       List<DetectionItem> list = [];
 
       // guard against no data
-      if (event.snapshot.value == null) return list;
+      if (event.snapshot.value == null)
+        return ActionSetDetectionItems(items: list);
 
       Map<String, dynamic> itemsMap =
           Map<String, dynamic>.from(event.snapshot.value);

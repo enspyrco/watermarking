@@ -70,7 +70,7 @@ class DetectionItem {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
-        'started': started,
+        'started': started?.toIso8601String(),
         'originalRef': originalRef,
         'extractedRef': extractedRef,
         'progress': progress,

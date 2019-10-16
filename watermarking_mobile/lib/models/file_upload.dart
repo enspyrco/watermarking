@@ -45,7 +45,7 @@ class FileUpload {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'started': started,
+        'started': started?.toIso8601String(),
         'bytesSent': bytesSent,
         'latestEvent': latestEvent,
       };
