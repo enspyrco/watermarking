@@ -91,40 +91,65 @@ void Function(
 
     databaseService.profileSubscription = databaseService
         .connectToProfile()
-        .listen(
-            (dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.profile, message: error.toString()))),
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.profile,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
 
     databaseService.originalsSubscription = databaseService
         .connectToOriginals()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.images, message: error.toString()))),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
 
     databaseService.detectionItemsSubscription = databaseService
         .connectToDetectionItems()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.images, message: error.toString()))),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
 
     databaseService.detectingSubscription = databaseService
         .connectToDetecting()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.images, message: error.toString()))),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
   };
 }
 
-/// Intercept [ActionPerformExtraction] and use [DeviceService] to ...
+/// Intercept [ActionPerformExtraction] and use [DeviceService] via platform
+/// channels to push a view onto the stack that performs image detection and
+/// extraction.
 void Function(Store<AppState> store, ActionPerformExtraction action,
     NextDispatcher next) _performExtraction(
   DeviceService deviceService,
@@ -133,6 +158,7 @@ void Function(Store<AppState> store, ActionPerformExtraction action,
       NextDispatcher next) async {
     next(action);
 
+    // TODO(nickm): remove use of fake
     final String path = await deviceService.performFakeExtraction(
         width: action.width, height: action.height);
 

@@ -132,14 +132,21 @@ class DatabaseService {
         .child('detection-items/$userId/')
         .onValue
         .map<dynamic>((Event event) {
+      // the list that will be returned
+      List<DetectionItem> list = [];
+
+      // guard against no data
+      if (event.snapshot.value == null) return list;
+
       Map<String, dynamic> itemsMap =
           Map<String, dynamic>.from(event.snapshot.value);
-      List<DetectionItem> list = [];
       for (String key in itemsMap.keys) {
-        list.add(DetectionItem(
-            id: key,
-            progress: itemsMap[key]['progress'],
-            result: itemsMap[key]['result']));
+        list.add(
+          DetectionItem(
+              id: key,
+              progress: itemsMap[key]['progress'] ?? 'null',
+              result: itemsMap[key]['result'] ?? 'null'),
+        );
       }
 
       return ActionSetDetectionItems(items: list);

@@ -41,6 +41,7 @@ class ProblemsObserver extends StatelessWidget {
               children: <Widget>[
                 const Text('There was a problem.'),
                 Text(problem.message),
+                if (problem.trace != null) Text(problem.trace.toString()),
               ],
             ),
           ),
