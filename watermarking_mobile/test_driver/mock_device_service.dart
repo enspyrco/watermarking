@@ -16,14 +16,20 @@ class MockDeviceService implements DeviceService {
   }
 
   @override
-  Future<List<String>> performExtraction(
+  Future<String> performExtraction(
       {@required int width, @required int height}) async {
     final File file = await addAssetToFileSystem();
-    return [file.path];
+    return file.path;
   }
 
   @override
   Future<int> findFileSize({String path}) async {
     return 1000;
+  }
+
+  @override
+  Future<String> performFakeExtraction({int width, int height}) {
+    // TODO: implement performFakeExtraction
+    return null;
   }
 }

@@ -82,8 +82,8 @@ class ActionPerformExtraction {
 // action and rely on middleware to dispatch a new action to add the data
 // to the store
 class ActionProcessExtraction {
-  const ActionProcessExtraction({@required this.filePaths});
-  final List<String> filePaths;
+  const ActionProcessExtraction({@required this.filePath});
+  final String filePath;
 }
 
 // when middleware sees ActionProcessExtractedImage it creates a unique id and

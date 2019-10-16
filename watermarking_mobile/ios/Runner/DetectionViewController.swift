@@ -160,7 +160,7 @@ extension DetectionViewController: RectangleDetectorDelegate {
 }
 
 // placeholder extension for editing later 
-// TODO(nickm(: take the code from tapDetected() and turn into an extension 
+// TODO(nickm): take the code from tapDetected() and turn into an extension 
 extension UIImage {
     
     /**

@@ -133,10 +133,10 @@ void Function(Store<AppState> store, ActionPerformExtraction action,
       NextDispatcher next) async {
     next(action);
 
-    final List<String> paths = await deviceService.performExtraction(
+    final String path = await deviceService.performFakeExtraction(
         width: action.width, height: action.height);
 
-    store.dispatch(ActionProcessExtraction(filePaths: paths));
+    store.dispatch(ActionProcessExtraction(filePath: path));
   };
 }
 
@@ -150,13 +150,11 @@ void Function(Store<AppState> store, ActionProcessExtraction action,
       NextDispatcher next) async {
     next(action);
 
-    for (String path in action.filePaths) {
-      final String newId = databaseService.getDetectionItemId();
-      final int bytes = await deviceService.findFileSize(path: path);
-      store.dispatch(
-          ActionAddDetectionItem(id: newId, extractedPath: path, bytes: bytes));
-      store.dispatch(ActionStartUpload(id: newId, filePath: path));
-    }
+    final String newId = databaseService.getDetectionItemId();
+    final int bytes = await deviceService.findFileSize(path: action.filePath);
+    store.dispatch(ActionAddDetectionItem(
+        id: newId, extractedPath: action.filePath, bytes: bytes));
+    store.dispatch(ActionStartUpload(id: newId, filePath: action.filePath));
   };
 }
 
