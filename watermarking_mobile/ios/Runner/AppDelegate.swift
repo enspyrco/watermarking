@@ -19,7 +19,7 @@ enum ChannelName {
     guard let controller = window?.rootViewController as? FlutterViewController else {
         fatalError("rootViewController is not type FlutterViewController")
     }
-    let detectChannel = FlutterMethodChannel(name: ChannelName.detect, binaryMessenger: controller)
+    let detectChannel = FlutterMethodChannel(name: ChannelName.detect, binaryMessenger: controller.binaryMessenger)
     detectChannel.setMethodCallHandler({
         [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
         

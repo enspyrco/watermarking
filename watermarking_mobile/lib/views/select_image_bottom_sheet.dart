@@ -7,7 +7,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
 
-import 'package:watermarking_mobile/models/images_view_model.dart';
+import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 class SelectImageBottomSheet extends StatelessWidget {
@@ -15,9 +15,9 @@ class SelectImageBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, ImagesViewModel>(
-        converter: (Store<AppState> store) => store.state.images,
-        builder: (BuildContext context, ImagesViewModel viewModel) {
+    return StoreConnector<AppState, OriginalImagesViewModel>(
+        converter: (Store<AppState> store) => store.state.originals,
+        builder: (BuildContext context, OriginalImagesViewModel viewModel) {
           return Container(
             height: 150,
             child: ImagesList(
@@ -31,7 +31,7 @@ class SelectImageBottomSheet extends StatelessWidget {
 class ImagesList extends StatelessWidget {
   const ImagesList({Key key, @required this.viewModel}) : super(key: key);
 
-  final ImagesViewModel viewModel;
+  final OriginalImagesViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class SelectImageItem extends StatefulWidget {
     @required this.index,
   }) : super(key: key);
 
-  final ImagesViewModel viewModel;
+  final OriginalImagesViewModel viewModel;
   final int index;
 
   @override
@@ -70,8 +70,8 @@ class _SelectImageItemState extends State<SelectImageItem> {
   Widget build(BuildContext context) {
     Image image = Image.network(widget.viewModel.images[widget.index].url);
     Completer<ui.Image> completer = Completer<ui.Image>();
-    image.image.resolve(ImageConfiguration()).addListener(
-        (ImageInfo info, bool _) => completer.complete(info.image));
+    image.image.resolve(ImageConfiguration()).addListener(ImageStreamListener(
+        (ImageInfo info, bool _) => completer.complete(info.image)));
 
     // use box decoration to indicate selected status
     BoxDecoration boxDecoration = (widget.viewModel.images[widget.index] ==
@@ -85,6 +85,7 @@ class _SelectImageItemState extends State<SelectImageItem> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: InkWell(
+            key: ValueKey('OriginalImageInkWell${widget.index}'),
             child: Container(
               height: 100,
               width: 100,

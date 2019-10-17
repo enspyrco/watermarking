@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
+import 'package:meta/meta.dart';
+import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 /// Note: Errors in streams are intentionally passed on and handled in middleware
@@ -9,19 +11,20 @@ class DatabaseService {
   DatabaseService();
 
   String userId;
-  StreamSubscription<dynamic> imagesSubscription;
+  StreamSubscription<dynamic> originalsSubscription;
   StreamSubscription<dynamic> profileSubscription;
-  StreamSubscription<dynamic> watermarkDetectionProgressSubscription;
+  StreamSubscription<dynamic> detectingSubscription;
+  StreamSubscription<dynamic> detectionItemsSubscription;
 
   // create a document id that will be added as metadata to the upload
   // for use in a cloud function
-  String getDetectedImageEntryId() => FirebaseDatabase.instance
+  String getDetectionItemId() => FirebaseDatabase.instance
       .reference()
-      .child('detected-images/$userId')
+      .child('detection-items/$userId')
       .push()
       .key;
 
-  Stream<dynamic> connectToImages() {
+  Stream<dynamic> connectToOriginals() {
     return FirebaseDatabase.instance
         .reference()
         .child('original-images/$userId')
@@ -33,21 +36,21 @@ class DatabaseService {
       Map<String, dynamic> imagesMap =
           Map<String, dynamic>.from(event.snapshot.value);
       // use each key to access the data in the corresponding record
-      List<ImageReference> imagesList = imagesMap.keys
-          .map<ImageReference>((String key) => ImageReference(
+      List<OriginalImageReference> imagesList = imagesMap.keys
+          .map<OriginalImageReference>((String key) => OriginalImageReference(
               id: key,
               name: imagesMap[key]["name"],
               filePath: imagesMap[key]["path"],
               url: imagesMap[key]["servingUrl"]))
           .toList();
-      return ActionSetImages(images: imagesList);
+      return ActionSetOriginalImages(images: imagesList);
     });
   }
 
-  Future<dynamic> cancelImagesSubscription() {
-    return (imagesSubscription == null)
+  Future<dynamic> cancelOriginalsSubscription() {
+    return (originalsSubscription == null)
         ? Future<dynamic>.value(null)
-        : imagesSubscription.cancel();
+        : originalsSubscription.cancel();
   }
 
   Stream<dynamic> connectToProfile() {
@@ -68,17 +71,20 @@ class DatabaseService {
 
   /// Adds a flag to the images entry that will be picked up by a cloud
   /// function and go through the deletion sequence (remove file, stop serving)
-  Future<void> requestImageDelete(String entryId) {
+  Future<void> requestOriginalDelete(String entryId) {
     return FirebaseDatabase.instance
         .reference()
         .child('original-images/$userId/$entryId')
         .update(<String, dynamic>{'delete': true});
   }
 
-  Future<void> addWatermarkDetectionEntry(
-      String originalPath, String markedPath) {
+  Future<void> addDetectingEntry(
+      {@required String itemId,
+      @required String originalPath,
+      @required String markedPath}) {
     FirebaseDatabase.instance.reference()
       ..child('detecting/incomplete/$userId').set({
+        'itemId': itemId,
         'progress': 'Adding a detection task to the queue...',
         'isDetecting': true,
         'pathOriginal': originalPath,
@@ -95,27 +101,63 @@ class DatabaseService {
     return Future.value();
   }
 
-  Stream<dynamic> connectToWatermarkDetectionProgress() {
+  Stream<dynamic> connectToDetecting() {
     return FirebaseDatabase.instance
         .reference()
         .child('detecting/incomplete/$userId/')
         .onValue
         .map<dynamic>((Event event) {
       Map<String, dynamic> resultsMap;
-      (event.snapshot.value["results"] == null)
-          ? resultsMap = {'message': 'nullo'}
+      (event.snapshot.value['results'] == null)
+          ? resultsMap = {'message': null}
           : resultsMap =
               Map<String, dynamic>.from(event.snapshot.value["results"]);
 
-      return ActionSetWatermarkDetectionProgress(
-          progress: event.snapshot.value["progress"] ?? "null",
-          result: resultsMap['message']);
+      return ActionSetDetectingProgress(
+        id: event.snapshot.value['itemId'],
+        progress: event.snapshot.value["progress"] ?? "null",
+        result: resultsMap['message'],
+      );
     });
   }
 
-  Future<dynamic> cancelWatermarkDetectionProgressSubscription() {
-    return (watermarkDetectionProgressSubscription == null)
+  Future<dynamic> cancelDetectingSubscription() {
+    return (detectingSubscription == null)
         ? Future<dynamic>.value(null)
-        : watermarkDetectionProgressSubscription.cancel();
+        : detectingSubscription.cancel();
+  }
+
+  Stream<dynamic> connectToDetectionItems() {
+    return FirebaseDatabase.instance
+        .reference()
+        .child('detection-items/$userId/')
+        .onValue
+        .map<dynamic>((Event event) {
+      // the list that will be returned
+      List<DetectionItem> list = [];
+
+      // guard against no data
+      if (event.snapshot.value == null)
+        return ActionSetDetectionItems(items: list);
+
+      Map<String, dynamic> itemsMap =
+          Map<String, dynamic>.from(event.snapshot.value);
+      for (String key in itemsMap.keys) {
+        list.add(
+          DetectionItem(
+              id: key,
+              progress: itemsMap[key]['progress'] ?? 'null',
+              result: itemsMap[key]['result'] ?? 'null'),
+        );
+      }
+
+      return ActionSetDetectionItems(items: list);
+    });
+  }
+
+  Future<dynamic> cancelDetectionItemsSubscription() {
+    return (detectionItemsSubscription == null)
+        ? Future<dynamic>.value(null)
+        : detectionItemsSubscription.cancel();
   }
 }

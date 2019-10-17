@@ -1,0 +1,79 @@
+import 'package:watermarking_mobile/models/extracted_image_reference.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
+import 'package:watermarking_mobile/utilities/hash_utilities.dart';
+
+enum ProcessExtractedImageEvent {
+  started,
+  processed,
+}
+
+class DetectionItem {
+  const DetectionItem({
+    this.id,
+    this.started,
+    this.originalRef,
+    this.extractedRef,
+    this.progress,
+    this.result,
+  });
+
+  final String id;
+  final DateTime started;
+  final OriginalImageReference originalRef;
+  final ExtractedImageReference extractedRef;
+  final String progress;
+  final String result;
+
+  DetectionItem copyWith({
+    final String id,
+    final DateTime started,
+    final OriginalImageReference originalRef,
+    final ExtractedImageReference extractedRef,
+    final String progress,
+    final String result,
+  }) {
+    return DetectionItem(
+      id: id ?? this.id,
+      started: started ?? this.started,
+      originalRef: originalRef ?? this.originalRef,
+      extractedRef: extractedRef ?? this.extractedRef,
+      progress: progress ?? this.progress,
+      result: result ?? this.result,
+    );
+  }
+
+  @override
+  int get hashCode => hashObjects([
+        this.id,
+        this.started,
+        this.originalRef,
+        this.extractedRef,
+        this.progress,
+        this.result,
+      ]);
+
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      runtimeType == other.runtimeType &&
+          id == other.id &&
+          started == other.started &&
+          originalRef == other.originalRef &&
+          extractedRef == other.extractedRef &&
+          progress == other.progress &&
+          result == other.result;
+
+  @override
+  String toString() {
+    return 'ImagesViewModel{id: $id, started: $started, originalRef: $originalRef, extractedRef: $extractedRef, progress: $progress, result: $result}';
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'started': started?.toIso8601String(),
+        'originalRef': originalRef,
+        'extractedRef': extractedRef,
+        'progress': progress,
+        'result': result,
+      };
+}

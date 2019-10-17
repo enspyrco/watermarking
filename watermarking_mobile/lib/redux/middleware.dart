@@ -31,12 +31,15 @@ List<Middleware<AppState>> createMiddlewares(
       _signOut(authService),
     ),
     TypedMiddleware<AppState, ActionSetAuthState>(
-      _saveAuthStateAndObserveProfile(databaseService, storageService),
+      _setUserAndObserveDatabase(databaseService, storageService),
     ),
-    TypedMiddleware<AppState, ActionSetDetectedImage>(
-      _startUpload(databaseService),
+    TypedMiddleware<AppState, ActionPerformExtraction>(
+      _performExtraction(deviceService),
     ),
-    TypedMiddleware<AppState, ActionSetImageUploadSuccess>(
+    TypedMiddleware<AppState, ActionProcessExtraction>(
+      _processExtraction(databaseService, deviceService),
+    ),
+    TypedMiddleware<AppState, ActionSetUploadSuccess>(
       _startWatermarkDetection(databaseService),
     ),
     TypedMiddleware<AppState, ActionCancelUpload>(
@@ -67,7 +70,7 @@ void Function(Store<AppState> store, ActionSignout action, NextDispatcher next)
 /// which will be either null or a valid uid
 void Function(
         Store<AppState> store, ActionSetAuthState action, NextDispatcher next)
-    _saveAuthStateAndObserveProfile(
+    _setUserAndObserveDatabase(
   DatabaseService databaseService,
   StorageService storageService,
 ) {
@@ -80,70 +83,120 @@ void Function(
 
     // cancel any previous subscription
     databaseService.profileSubscription?.cancel();
-    databaseService.imagesSubscription?.cancel();
-    databaseService.watermarkDetectionProgressSubscription?.cancel();
+    databaseService.originalsSubscription?.cancel();
+    databaseService.detectingSubscription?.cancel();
+    databaseService.detectionItemsSubscription?.cancel();
 
     if (action.userId == null) return;
 
     databaseService.profileSubscription = databaseService
         .connectToProfile()
-        .listen(
-            (dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.profile, message: error.toString()))),
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.profile,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
 
-    databaseService.imagesSubscription = databaseService
-        .connectToImages()
+    databaseService.originalsSubscription = databaseService
+        .connectToOriginals()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.images, message: error.toString()))),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
 
-    databaseService.watermarkDetectionProgressSubscription = databaseService
-        .connectToWatermarkDetectionProgress()
+    databaseService.detectionItemsSubscription = databaseService
+        .connectToDetectionItems()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error) => store.dispatch(ActionAddProblem(
-                problem: Problem(
-                    type: ProblemType.images, message: error.toString()))),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
+            cancelOnError: true);
+
+    databaseService.detectingSubscription = databaseService
+        .connectToDetecting()
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (dynamic error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace ?? StackTrace.current,
+                    ),
+                  ),
+                ),
             cancelOnError: true);
   };
 }
 
-/// Intercept [ActionSetDetectedImage] and use [DatabaseService] to generate a
-/// unique id then dispatch [ActionStartUpload]
-void Function(Store<AppState> store, ActionSetDetectedImage action,
-    NextDispatcher next) _startUpload(
-  DatabaseService databaseService,
+/// Intercept [ActionPerformExtraction] and use [DeviceService] via platform
+/// channels to push a view onto the stack that performs image detection and
+/// extraction.
+void Function(Store<AppState> store, ActionPerformExtraction action,
+    NextDispatcher next) _performExtraction(
+  DeviceService deviceService,
 ) {
-  return (Store<AppState> store, ActionSetDetectedImage action,
-      NextDispatcher next) {
+  return (Store<AppState> store, ActionPerformExtraction action,
+      NextDispatcher next) async {
     next(action);
 
-    store.dispatch(ActionStartImageUpload(
-        id: databaseService.getDetectedImageEntryId(),
-        filePath: action.filePath,
-        totalBytes: null));
+    final String path = await deviceService.performExtraction(
+        width: action.width, height: action.height);
+
+    store.dispatch(ActionProcessExtraction(filePath: path));
   };
 }
 
-/// Intercept [ActionSetImageUploadSuccess] and use [DatabaseService] to add
-/// an entry in the database that the server observe
-void Function(Store<AppState> store, ActionSetImageUploadSuccess action,
+/// Intercept [ActionProcessExtractedImage] and use [DatabaseService] to generate a
+/// unique id then dispatch [ActionStartImageUpload]
+void Function(Store<AppState> store, ActionProcessExtraction action,
+        NextDispatcher next)
+    _processExtraction(
+        DatabaseService databaseService, DeviceService deviceService) {
+  return (Store<AppState> store, ActionProcessExtraction action,
+      NextDispatcher next) async {
+    next(action);
+
+    final String newId = databaseService.getDetectionItemId();
+    final int bytes = await deviceService.findFileSize(path: action.filePath);
+    store.dispatch(ActionAddDetectionItem(
+        id: newId, extractedPath: action.filePath, bytes: bytes));
+    store.dispatch(ActionStartUpload(id: newId, filePath: action.filePath));
+  };
+}
+
+/// Intercept [ActionSetUploadSuccess] and use [DatabaseService] to add
+/// an entry in the database that the server is observing
+void Function(Store<AppState> store, ActionSetUploadSuccess action,
     NextDispatcher next) _startWatermarkDetection(
   DatabaseService databaseService,
 ) {
-  return (Store<AppState> store, ActionSetImageUploadSuccess action,
+  return (Store<AppState> store, ActionSetUploadSuccess action,
       NextDispatcher next) {
     next(action);
     try {
-      databaseService.addWatermarkDetectionEntry(
-          store.state.images.selectedImage.filePath,
-          // TODO(nickm): the marked image remote path should not be built from
-          // the store state, maybe carried with the action?
-          'detecting-images/${store.state.user.id}/${store.state.upload.id}');
+      databaseService.addDetectingEntry(
+          itemId: action.id,
+          originalPath: store.state.originals.selectedImage.filePath,
+          markedPath: 'detecting-images/${store.state.user.id}/${action.id}');
     } catch (exception) {
       print(exception);
     }

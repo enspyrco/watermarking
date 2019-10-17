@@ -1,58 +1,50 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:watermarking_mobile/models/bottom_nav_view_model.dart';
-import 'package:watermarking_mobile/models/detected_image_view_model.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
-import 'package:watermarking_mobile/models/images_view_model.dart';
+import 'package:watermarking_mobile/models/detection_items_view_model.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
+import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/models/problem.dart';
-import 'package:watermarking_mobile/models/upload_item.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class AppState {
-  AppState(
+  const AppState(
       {@required this.user,
       @required this.bottomNav,
-      @required this.upload,
-      @required this.images,
-      @required this.detectedImage,
+      @required this.originals,
+      @required this.detections,
       @required this.problems});
 
   final UserModel user;
   final BottomNavViewModel bottomNav;
-  final UploadItem upload;
-  final ImagesViewModel images;
-  final DetectedImageViewModel detectedImage;
+  final OriginalImagesViewModel originals;
+  final DetectionItemsViewModel detections;
   final List<Problem> problems;
 
   static AppState intialState() => AppState(
       user: UserModel(waiting: true),
       bottomNav: BottomNavViewModel(index: 0),
-      upload: UploadItem(latestEvent: UploadingEvent.processed),
-      images: ImagesViewModel(images: <ImageReference>[]),
-      detectedImage: DetectedImageViewModel(
-          watermarkDetectionProgress: "", watermarkDetectionResult: ""),
+      originals: OriginalImagesViewModel(images: <OriginalImageReference>[]),
+      detections: DetectionItemsViewModel(items: []),
       problems: <Problem>[]);
 
   AppState copyWith(
       {UserModel user,
       BottomNavViewModel bottomNav,
-      UploadItem upload,
-      ImagesViewModel images,
-      DetectedImageViewModel detectedImage,
+      OriginalImagesViewModel originals,
+      DetectionItemsViewModel detections,
       List<Problem> problems}) {
     return AppState(
         user: user ?? this.user,
         bottomNav: bottomNav ?? this.bottomNav,
-        upload: upload ?? this.upload,
-        images: images ?? this.images,
-        detectedImage: detectedImage ?? this.detectedImage,
+        originals: originals ?? this.originals,
+        detections: detections ?? this.detections,
         problems: problems ?? this.problems);
   }
 
   @override
-  int get hashCode =>
-      hash6(user, bottomNav, upload, images, detectedImage, problems);
+  int get hashCode => hash5(user, bottomNav, originals, detections, problems);
 
   @override
   bool operator ==(dynamic other) =>
@@ -60,22 +52,20 @@ class AppState {
       runtimeType == other.runtimeType &&
           user == other.user &&
           bottomNav == other.bottomNav &&
-          upload == other.upload &&
-          images == other.images &&
-          detectedImage == other.detectedImage &&
+          originals == other.originals &&
+          detections == other.detections &&
           problems == other.problems;
 
   @override
   String toString() {
-    return 'AppState{user: $user, bottomNav: $bottomNav, upload: $upload, images: $images, detectedImage: $detectedImage, problems: $problems}';
+    return 'AppState{user: $user, bottomNav: $bottomNav, originals: $originals, detections: $detections, problems: $problems}';
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'user': user,
         'bottomNav': bottomNav,
-        'uploading': upload,
-        'images': images,
-        'detectedImage': detectedImage,
+        'originals': originals,
+        'detections': detections,
         'problems': problems,
       };
 }

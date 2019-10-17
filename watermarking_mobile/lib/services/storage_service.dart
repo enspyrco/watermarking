@@ -37,9 +37,9 @@ class StorageService {
   /// [photoPath] is the path to the photo to upload
   ///
   Stream<dynamic> startUpload(
-      {@required String photoPath, @required String entryId}) {
+      {@required String filePath, @required String entryId}) {
     // access the file
-    final File picFile = File(photoPath);
+    final File file = File(filePath);
 
     // setup an upload task and initiate the upload
     final FirebaseStorage storage = FirebaseStorage();
@@ -49,7 +49,7 @@ class StorageService {
         .child('$userId')
         .child('$entryId');
     final StorageUploadTask uploadTask = ref.putFile(
-      picFile,
+      file,
       StorageMetadata(
         contentType: 'image/.',
         customMetadata: <String, String>{'docId': entryId, 'uid': userId},
@@ -61,11 +61,18 @@ class StorageService {
 
     // return the upload task's event stream, transformed to actions
     return uploadTask.events.map<dynamic>((StorageTaskEvent event) {
-      final String itemId =
+      final String metadataEntryId =
           event.snapshot.storageMetadata.customMetadata['docId'];
       switch (event.type) {
         case StorageTaskEventType.success:
-          return ActionSetImageUploadSuccess(id: itemId);
+          return ActionSetUploadSuccess(id: metadataEntryId);
+        case StorageTaskEventType.progress:
+          return ActionSetUploadProgress(
+              bytes: event.snapshot.bytesTransferred, id: metadataEntryId);
+        case StorageTaskEventType.pause:
+          return ActionSetUploadPaused(id: metadataEntryId);
+        case StorageTaskEventType.resume:
+          return ActionSetUploadResumed(id: metadataEntryId);
         case StorageTaskEventType.failure:
           return ActionAddProblem(
               problem: Problem(
@@ -73,15 +80,13 @@ class StorageService {
                   message: errorCodeStrings[event.snapshot.error],
                   info: <String, dynamic>{
                 'errorCode': event.snapshot.error,
-                'itemId': itemId
+                'itemId': metadataEntryId
               }));
-        case StorageTaskEventType.progress:
-          return ActionSetImageUploadProgress(
-              bytes: event.snapshot.bytesTransferred, id: itemId);
-        case StorageTaskEventType.pause:
-          return ActionSetImageUploadPaused(id: itemId);
-        case StorageTaskEventType.resume:
-          return ActionSetImageUploadResumed(id: itemId);
+        default:
+          return ActionAddProblem(
+              problem: Problem(
+                  type: ProblemType.imageUpload,
+                  message: 'Unkown event type.'));
       }
     });
   }

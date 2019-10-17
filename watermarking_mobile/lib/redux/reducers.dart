@@ -1,9 +1,10 @@
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
-import 'package:watermarking_mobile/models/images_view_model.dart';
+import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_mobile/models/extracted_image_reference.dart';
+import 'package:watermarking_mobile/models/file_upload.dart';
+import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/models/problem.dart';
-import 'package:watermarking_mobile/models/upload_item.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
@@ -11,19 +12,16 @@ import 'package:watermarking_mobile/redux/actions.dart';
 final Function appReducer = combineReducers<AppState>(<Reducer<AppState>>[
   TypedReducer<AppState, ActionSetAuthState>(_setAuthState),
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
-  TypedReducer<AppState, ActionSetImages>(_setImages),
+  TypedReducer<AppState, ActionSetOriginalImages>(_setOriginalImages),
+  TypedReducer<AppState, ActionSetDetectionItems>(_setDetectionItems),
   TypedReducer<AppState, ActionSetBottomNav>(_setBottomNav),
   TypedReducer<AppState, ActionShowBottomSheet>(_setBottomSheet),
   TypedReducer<AppState, ActionSetSelectedImage>(_setSelectedImage),
-  TypedReducer<AppState, ActionSetDetectedImage>(_setDetectedImage),
-  TypedReducer<AppState, ActionStartImageUpload>(_beginImageUpload),
-  TypedReducer<AppState, ActionSetImageUploadProgress>(_setImageUploadProgress),
-  // TypedReducer<AppState, ImageUploadPauseAction>(_pauseImageUpload),
-  // TypedReducer<AppState, ImageUploadResumeAction>(_resumeImageUpload),
-  TypedReducer<AppState, ActionSetImageUploadSuccess>(_setImageUploadSucceeded),
-  TypedReducer<AppState, ActionRemoveUploadItem>(_removeUploadItem),
-  TypedReducer<AppState, ActionSetWatermarkDetectionProgress>(
-      _setWatermarkDetectionProgress),
+  TypedReducer<AppState, ActionAddDetectionItem>(_addDetectionItem),
+  TypedReducer<AppState, ActionStartUpload>(_setUploadStartTime),
+  TypedReducer<AppState, ActionSetUploadProgress>(_setUploadProgress),
+  TypedReducer<AppState, ActionSetUploadSuccess>(_setUploadSucceeded),
+  TypedReducer<AppState, ActionSetDetectingProgress>(_setDetectingProgress),
   TypedReducer<AppState, ActionAddProblem>(_addProblem),
   TypedReducer<AppState, ActionRemoveProblem>(_removeProblem),
 ]);
@@ -40,18 +38,10 @@ AppState _setProfilePicUrl(AppState state, ActionSetProfilePicUrl action) {
   return state.copyWith(user: newUserModel);
 }
 
-// any change to the profile pics list pushes the whole new list down the stream
-AppState _setImages(AppState state, ActionSetImages action) {
-  // set the UploadItem to processed if it refers to one of the images
-  UploadItem newUpload;
-  action.images?.forEach((ImageReference ref) => (ref.id == state.upload.id)
-      ? newUpload = state.upload.copyWith(latestEvent: UploadingEvent.processed)
-      : newUpload = null);
-
-  // create the viewmodel for the images
-  ImagesViewModel newImages = ImagesViewModel(images: action.images);
-
-  return state.copyWith(images: newImages, upload: newUpload);
+// any change to the original images list pushes the whole new list down the stream
+AppState _setOriginalImages(AppState state, ActionSetOriginalImages action) {
+  return state.copyWith(
+      originals: OriginalImagesViewModel(images: action.images));
 }
 
 AppState _setBottomNav(AppState state, ActionSetBottomNav action) {
@@ -70,99 +60,131 @@ AppState _setSelectedImage(AppState state, ActionSetSelectedImage action) {
   // TODO(nickm): when the image reference contains the size,
   // just use the selected image
   return state.copyWith(
-      images: state.images.copyWith(
+      originals: state.originals.copyWith(
           selectedImage: action.image,
           selectedWidth: action.width,
           selectedHeight: action.height),
       bottomNav: state.bottomNav.copyWith(shouldShowBottomSheet: false));
 }
 
-// any change to the profile pics list pushes the whole new list down the stream
-AppState _setDetectedImage(AppState state, ActionSetDetectedImage action) {
-  // update the viewmodel with the detected image path
+// any change to the detection items list pushes the whole new list down the stream
+AppState _setDetectionItems(AppState state, ActionSetDetectionItems action) {
+  // update the viewmodel with the extracted images
   return state.copyWith(
-      detectedImage:
-          state.detectedImage.copyWith(detectedImagePath: action.filePath));
+      detections: state.detections.copyWith(items: action.items));
 }
 
-// When the detected image file is ready, the ActionStartImageUpload is dispatched
-// with the file path and size. The file size is added to the UploadingState of the
-// store while the path is added to the
-AppState _beginImageUpload(AppState state, ActionStartImageUpload action) {
-  // create the new upload item
-  final UploadItem newUpload = UploadItem(
-      id: action.id,
-      filePath: action.filePath,
-      latestEvent: UploadingEvent.started,
-      bytesSent: 0,
-      totalBytes: action.totalBytes,
-      started: DateTime.now());
+// Create a new DetectionItem with the given extracted image
+AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
+  final ExtractedImageReference newRef = ExtractedImageReference(
+      bytes: action.bytes,
+      localPath: action.extractedPath,
+      upload: FileUpload(bytesSent: 0, percent: 0));
 
-  AppState nextState = state.copyWith(upload: newUpload);
+  DetectionItem newItem = DetectionItem(
+    id: action.id,
+    extractedRef: newRef,
+    originalRef: state.originals.selectedImage,
+    started: DateTime.now(),
+  );
 
-  return nextState;
-}
-
-AppState _setImageUploadProgress(
-    AppState state, ActionSetImageUploadProgress action) {
-  // replace the uploading item this progress event refers to and return the new state
   return state.copyWith(
-      upload: state.upload.copyWith(
-          latestEvent: UploadingEvent.progress, bytesSent: action.bytes));
+      detections: state.detections
+          .copyWith(items: [newItem, ...state.detections.items]));
 }
 
-// AppState _pauseImageUpload(
-//         AppState state, ImageUploadPauseAction action) =>
-//     state.copyWith(
-//         profileViewModel:
-//             state.profileViewModel.copyWith(pickedPhotoPath: null));
+AppState _setUploadStartTime(AppState state, ActionStartUpload action) {
+  // find the relevant DetectionItem and set the start time of the upload
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(
+              extractedRef: item.extractedRef.copyWith(
+                  upload: item.extractedRef.upload
+                      .copyWith(started: DateTime.now())))
+          : item)
+      .toList();
 
-// AppState _resumeImageUpload(
-//         AppState state, ImageUploadResumeAction action) =>
-//     state.copyWith(
-//         profileViewModel:
-//             state.profileViewModel.copyWith(pickedPhotoPath: null));
-
-// when we receive a success event, change the relevant latestEvent property to success
-AppState _setImageUploadSucceeded(
-    AppState state, ActionSetImageUploadSuccess action) {
   // return the new state
   return state.copyWith(
-      upload: state.upload.copyWith(latestEvent: UploadingEvent.success));
+      detections: state.detections.copyWith(items: nextItems));
 }
 
-// as we only have one upload item, just set to processed
-// TODO(nickm): review if we need remove functionality
-AppState _removeUploadItem(AppState state, ActionRemoveUploadItem action) {
-  // remove the uploading item this action refers to return the new state
+AppState _setUploadProgress(AppState state, ActionSetUploadProgress action) {
+  // find the relevant DetectionItem and set the progress of the upload
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(
+              extractedRef: item.extractedRef.copyWith(
+                upload: item.extractedRef.upload.copyWith(
+                    latestEvent: UploadingEvent.progress,
+                    bytesSent: action.bytes,
+                    percent: action.bytes / item.extractedRef.bytes),
+              ),
+            )
+          : item)
+      .toList();
+
+  // return the new state
   return state.copyWith(
-      upload: state.upload.copyWith(latestEvent: UploadingEvent.processed));
+      detections: state.detections.copyWith(items: nextItems));
 }
 
 // when we receive a success event, change the relevant latestEvent property to success
-AppState _setWatermarkDetectionProgress(
-    AppState state, ActionSetWatermarkDetectionProgress action) {
+AppState _setUploadSucceeded(AppState state, ActionSetUploadSuccess action) {
+  // find the relevant DetectionItem and set the progress of the upload
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(
+              extractedRef: item.extractedRef.copyWith(
+                  upload: item.extractedRef.upload
+                      .copyWith(latestEvent: UploadingEvent.success)))
+          : item)
+      .toList();
+
   // return the new state
   return state.copyWith(
-      detectedImage: state.detectedImage.copyWith(
-          watermarkDetectionProgress: action.progress,
-          watermarkDetectionResult: action.result));
+      detections: state.detections.copyWith(items: nextItems));
+}
+
+// when we receive a progress event, add the change to the correct item
+AppState _setDetectingProgress(
+    AppState state, ActionSetDetectingProgress action) {
+  // find the relevant DetectionItem and set the progress of the detection
+  final List<DetectionItem> nextItems = state.detections.items
+      .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
+          ? item.copyWith(progress: action.progress, result: action.result)
+          : item)
+      .toList();
+
+  // return the new state
+  return state.copyWith(
+      detections: state.detections.copyWith(items: nextItems));
 }
 
 AppState _addProblem(AppState state, ActionAddProblem action) {
   // TODO(nickm): remove in production
   print(action.problem);
 
-  // add to the list of problems
+  // make new problems list with the new problem added
   final List<Problem> newProblems =
       List<Problem>.unmodifiable(state.problems + <Problem>[action.problem]);
 
-  // if it was an upload problem, also edit the relevant UploadItem
+  // if it was an upload problem, also edit the relevant FileUpload object
   if (action.problem.type == ProblemType.imageUpload) {
-    // update the uploading item this problem refers to
+    // make new list of DetectionItems with new latest event for the upload
+    final List<DetectionItem> nextItems = state.detections.items
+        .map<DetectionItem>((DetectionItem item) =>
+            (item.id == action.problem.info['id'])
+                ? item.copyWith(
+                    extractedRef: item.extractedRef.copyWith(
+                        upload: item.extractedRef.upload
+                            .copyWith(latestEvent: UploadingEvent.failure)))
+                : item)
+        .toList();
+
     return state.copyWith(
         problems: newProblems,
-        upload: state.upload.copyWith(latestEvent: UploadingEvent.failure));
+        detections: state.detections.copyWith(items: nextItems));
   } else {
     // otherwise just return the new state
     return state.copyWith(problems: newProblems);

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/image_reference.dart';
-import 'package:watermarking_mobile/models/images_view_model.dart';
+import 'package:watermarking_mobile/models/original_image_reference.dart';
+import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/views/account_button.dart';
@@ -26,25 +25,25 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
         store: store,
         child: MaterialApp(
+            theme: Theme.of(context).copyWith(
+                primaryColor: Colors.amber,
+                textTheme: Theme.of(context).textTheme.copyWith(
+                    body1: new TextStyle(color: Colors.red),
+                    body2: new TextStyle(color: Colors.pink, fontSize: 24.0))),
             home: StoreConnector<AppState, UserModel>(
                 converter: (Store<AppState> store) => store.state.user,
                 builder: (BuildContext context, UserModel user) {
-                  if (user.waiting) {
-                    return const Text('Waiting',
-                        textDirection: TextDirection.ltr);
-                  }
-                  if (user.id != null) {
-                    return const AppWidget();
-                  }
-                  return SigninPage();
+                  return (user.waiting)
+                      ? const Text('Waiting', textDirection: TextDirection.ltr)
+                      : (user.id == null)
+                          ? const SigninPage()
+                          : const AppWidget();
                 })));
   }
 }
 
 class AppWidget extends StatelessWidget {
   const AppWidget({Key key}) : super(key: key);
-
-  static const platform = const MethodChannel('watermarking.enspyr.co/detect');
 
   @override
   Widget build(BuildContext context) {
@@ -83,32 +82,37 @@ class AppWidget extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home, key: Key('HomeTabIcon')),
                   title: Text('Home'),
                 ),
                 BottomNavigationBarItem(
-                  icon: StoreConnector<AppState, ImageReference>(
+                  icon: StoreConnector<AppState, OriginalImageReference>(
                       converter: (Store<AppState> store) =>
-                          store.state.images.selectedImage,
-                      builder: (BuildContext context, ImageReference imageRef) {
+                          store.state.originals.selectedImage,
+                      builder: (BuildContext context,
+                          OriginalImageReference imageRef) {
                         return Container(
                           width: 50,
                           height: 50,
                           child: (imageRef == null)
-                              ? Icon(Icons.touch_app)
-                              : Image.network(imageRef.url),
+                              ? Icon(Icons.touch_app, key: Key('ImageTabIcon'))
+                              : Image.network(
+                                  imageRef.url,
+                                  key: Key('ImageTabImage'),
+                                ),
                         );
                       }),
                   title: Text(''),
                 ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.person), title: Text('Profile'))
+                    icon: Icon(Icons.person, key: Key('ProfileTabIcon')),
+                    title: Text('Profile'))
               ],
             );
           }),
-      floatingActionButton: StoreConnector<AppState, ImagesViewModel>(
-        converter: (Store<AppState> store) => store.state.images,
-        builder: (BuildContext context, ImagesViewModel viewModel) {
+      floatingActionButton: StoreConnector<AppState, OriginalImagesViewModel>(
+        converter: (Store<AppState> store) => store.state.originals,
+        builder: (BuildContext context, OriginalImagesViewModel viewModel) {
           if (viewModel.selectedImage == null) {
             return Container(
               height: 0,
@@ -116,14 +120,12 @@ class AppWidget extends StatelessWidget {
             );
           }
           return FloatingActionButton(
-            onPressed: () async {
-              String path = await platform.invokeMethod('startDetection', {
-                'width': viewModel.selectedWidth,
-                'height': viewModel.selectedHeight
-              });
-              platform.invokeMethod('dismiss');
-              StoreProvider.of<AppState>(context)
-                  .dispatch(ActionSetDetectedImage(filePath: path));
+            key: Key('ScanFAB'),
+            onPressed: () {
+              StoreProvider.of<AppState>(context).dispatch(
+                  ActionPerformExtraction(
+                      width: viewModel.selectedWidth,
+                      height: viewModel.selectedHeight));
             },
             tooltip: 'Scan',
             child: Icon(Icons.search),

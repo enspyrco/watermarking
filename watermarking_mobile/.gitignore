@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# local config files, different for different machines
+lib/utilities/local_server_ip.dart
+
 # IntelliJ related
 *.iml
 *.ipr
@@ -69,3 +72,9 @@
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# My added ignores ############################
+
+# Flutter generated files 
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.podspec

@@ -8,7 +8,7 @@ import 'package:watermarking_mobile/redux/actions.dart';
 import 'package:watermarking_mobile/views/signin_button.dart';
 
 class SigninPage extends StatefulWidget {
-  SigninPage({Key key}) : super(key: key);
+  const SigninPage({Key key}) : super(key: key);
   @override
   _SigninPageState createState() => _SigninPageState();
 }

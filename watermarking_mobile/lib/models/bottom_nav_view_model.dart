@@ -1,7 +1,7 @@
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class BottomNavViewModel {
-  BottomNavViewModel({this.index, this.shouldShowBottomSheet});
+  const BottomNavViewModel({this.index, this.shouldShowBottomSheet});
 
   final int index;
   final bool shouldShowBottomSheet;

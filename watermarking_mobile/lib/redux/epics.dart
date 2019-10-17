@@ -20,13 +20,12 @@ Epic<AppState> createUploadEpic(
     DatabaseService databaseService, StorageService service) {
   return (Stream<dynamic> actions, EpicStore<AppState> store) {
     return actions
-        .where((dynamic action) => action is ActionStartImageUpload)
-        .cast<ActionStartImageUpload>()
+        .where((dynamic action) => action is ActionStartUpload)
+        .cast<ActionStartUpload>()
         .transform<dynamic>(
-            FlatMapStreamTransformer<ActionStartImageUpload, dynamic>(
-                (ActionStartImageUpload action) {
-      return service.startUpload(
-          entryId: action.id, photoPath: action.filePath);
+            FlatMapStreamTransformer<ActionStartUpload, dynamic>(
+                (ActionStartUpload action) {
+      return service.startUpload(entryId: action.id, filePath: action.filePath);
     }));
   };
 }
