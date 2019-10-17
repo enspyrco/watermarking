@@ -3,77 +3,102 @@ import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 
-class ActionSignin {
-  const ActionSignin();
+class Action {
+  const Action(this.propsMap);
+  Action.fromJson(Map<String, dynamic> json) : propsMap = json;
+  final Map<String, dynamic> propsMap;
+  Map<String, dynamic> toJson() => propsMap;
 }
 
-class ActionSignout {
-  const ActionSignout();
+class ActionSignin extends Action {
+  const ActionSignin() : super(const <String, Object>{});
 }
 
-class ActionAddProblem {
-  const ActionAddProblem({@required this.problem});
+class ActionSignout extends Action {
+  const ActionSignout() : super(const <String, Object>{});
+}
+
+class ActionAddProblem extends Action {
+  ActionAddProblem({@required this.problem})
+      : super(<String, Object>{'problem': problem});
   final Problem problem;
 }
 
-class ActionRemoveProblem {
-  const ActionRemoveProblem({@required this.problem});
+class ActionRemoveProblem extends Action {
+  ActionRemoveProblem({@required this.problem})
+      : super(<String, Object>{'problem': problem});
   final Problem problem;
 }
 
-class ActionObserveAuthState {
-  const ActionObserveAuthState();
+class ActionObserveAuthState extends Action {
+  const ActionObserveAuthState() : super(const <String, Object>{});
 }
 
-class ActionSetAuthState {
-  const ActionSetAuthState({@required this.userId, @required this.photoUrl});
+class ActionSetAuthState extends Action {
+  ActionSetAuthState({@required this.userId, @required this.photoUrl})
+      : super(<String, Object>{
+          'userId': userId,
+          'photoUrl': photoUrl,
+        });
   final String userId;
   final String photoUrl;
 }
 
-class ActionSetProfilePicUrl {
-  const ActionSetProfilePicUrl({@required this.url});
+class ActionSetProfilePicUrl extends Action {
+  ActionSetProfilePicUrl({@required this.url})
+      : super(<String, Object>{'url': url});
   final String url;
 }
 
-class ActionSetProfile {
-  const ActionSetProfile({@required this.name, @required this.email});
+class ActionSetProfile extends Action {
+  ActionSetProfile({@required this.name, @required this.email})
+      : super(<String, Object>{
+          'name': name,
+          'email': email,
+        });
   final String name;
   final String email;
 }
 
-class ActionSetOriginalImages {
-  const ActionSetOriginalImages({@required this.images});
+class ActionSetOriginalImages extends Action {
+  ActionSetOriginalImages({@required this.images})
+      : super(<String, Object>{'images': images});
   final List<OriginalImageReference> images;
 }
 
-class ActionSetDetectionItems {
-  const ActionSetDetectionItems({@required this.items});
+class ActionSetDetectionItems extends Action {
+  ActionSetDetectionItems({@required this.items})
+      : super(<String, Object>{'items': items});
   final List<DetectionItem> items;
 }
 
-class ActionSetBottomNav {
-  const ActionSetBottomNav({@required this.index});
+class ActionSetBottomNav extends Action {
+  ActionSetBottomNav({@required this.index})
+      : super(<String, Object>{'index': index});
   final int index;
 }
 
-class ActionShowBottomSheet {
-  const ActionShowBottomSheet({@required this.show});
+class ActionShowBottomSheet extends Action {
+  ActionShowBottomSheet({@required this.show})
+      : super(<String, Object>{'show': show});
   final bool show;
 }
 
 // TODO(nickm): when the image reference contains the size,
 // just send the image reference
-class ActionSetSelectedImage {
-  const ActionSetSelectedImage(
-      {@required this.image, @required this.height, @required this.width});
+class ActionSetSelectedImage extends Action {
+  ActionSetSelectedImage(
+      {@required this.image, @required this.height, @required this.width})
+      : super(
+            <String, Object>{'image': image, 'height': height, 'width': width});
   final OriginalImageReference image;
   final int height;
   final int width;
 }
 
-class ActionPerformExtraction {
-  const ActionPerformExtraction({@required this.width, @required this.height});
+class ActionPerformExtraction extends Action {
+  ActionPerformExtraction({@required this.width, @required this.height})
+      : super(<String, Object>{'height': height, 'width': width});
   final int width;
   final int height;
 }
@@ -81,8 +106,9 @@ class ActionPerformExtraction {
 // when an extracted image is returned from the native view we dispatch this
 // action and rely on middleware to dispatch a new action to add the data
 // to the store
-class ActionProcessExtraction {
-  const ActionProcessExtraction({@required this.filePath});
+class ActionProcessExtraction extends Action {
+  ActionProcessExtraction({@required this.filePath})
+      : super(<String, Object>{'filePath': filePath});
   final String filePath;
 }
 
@@ -90,51 +116,63 @@ class ActionProcessExtraction {
 // TODO(nickm): update this documentation
 // starts an upload (with the id as metadata) and also dispatches an action
 // to add a new extracted image (with id as a member)
-class ActionAddDetectionItem {
-  const ActionAddDetectionItem(
-      {@required this.id, @required this.extractedPath, @required this.bytes});
+class ActionAddDetectionItem extends Action {
+  ActionAddDetectionItem(
+      {@required this.id, @required this.extractedPath, @required this.bytes})
+      : super(<String, Object>{
+          'id': id,
+          'extractedPath': extractedPath,
+          'bytes': bytes
+        });
   final String id;
   final String extractedPath;
   final int bytes;
 }
 
-class ActionStartUpload {
-  const ActionStartUpload({@required this.id, @required this.filePath});
+class ActionStartUpload extends Action {
+  ActionStartUpload({@required this.id, @required this.filePath})
+      : super(<String, Object>{'id': id, 'filePath': filePath});
   final String id;
   final String filePath;
 }
 
-class ActionSetUploadPaused {
-  const ActionSetUploadPaused({@required this.id});
+class ActionSetUploadPaused extends Action {
+  ActionSetUploadPaused({@required this.id})
+      : super(<String, Object>{'id': id});
   final String id;
 }
 
-class ActionSetUploadResumed {
-  const ActionSetUploadResumed({@required this.id});
+class ActionSetUploadResumed extends Action {
+  ActionSetUploadResumed({@required this.id})
+      : super(<String, Object>{'id': id});
   final String id;
 }
 
 // this action will also trigger middleware to create a db entry
 // to indicate status (file uploaded, waiting for result)
-class ActionSetUploadSuccess {
-  const ActionSetUploadSuccess({@required this.id});
+class ActionSetUploadSuccess extends Action {
+  ActionSetUploadSuccess({@required this.id})
+      : super(<String, Object>{'id': id});
   final String id;
 }
 
-class ActionSetUploadProgress {
-  const ActionSetUploadProgress({@required this.id, @required this.bytes});
+class ActionSetUploadProgress extends Action {
+  ActionSetUploadProgress({@required this.id, @required this.bytes})
+      : super(<String, Object>{'id': id, 'bytes': bytes});
   final String id;
   final int bytes;
 }
 
-class ActionCancelUpload {
-  const ActionCancelUpload({@required this.id});
+class ActionCancelUpload extends Action {
+  ActionCancelUpload({@required this.id}) : super(<String, Object>{'id': id});
   final String id;
 }
 
-class ActionSetDetectingProgress {
-  const ActionSetDetectingProgress(
-      {@required this.id, @required this.progress, @required this.result});
+class ActionSetDetectingProgress extends Action {
+  ActionSetDetectingProgress(
+      {@required this.id, @required this.progress, @required this.result})
+      : super(
+            <String, Object>{'id': id, 'progress': progress, 'result': result});
   final String id;
   final String progress;
   final String result;

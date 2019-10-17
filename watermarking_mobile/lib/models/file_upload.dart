@@ -14,22 +14,29 @@ class FileUpload {
     this.started,
     this.bytesSent,
     this.latestEvent,
+    this.percent,
   });
 
   final DateTime started;
   final int bytesSent;
   final UploadingEvent latestEvent;
+  final double percent;
 
-  FileUpload copyWith(
-      {DateTime started, int bytesSent, UploadingEvent latestEvent}) {
+  FileUpload copyWith({
+    DateTime started,
+    int bytesSent,
+    UploadingEvent latestEvent,
+    double percent,
+  }) {
     return FileUpload(
         started: started ?? this.started,
         bytesSent: bytesSent ?? this.bytesSent,
-        latestEvent: latestEvent ?? this.latestEvent);
+        latestEvent: latestEvent ?? this.latestEvent,
+        percent: percent ?? this.percent);
   }
 
   @override
-  int get hashCode => hash3(started, bytesSent, latestEvent);
+  int get hashCode => hash4(started, bytesSent, latestEvent, percent);
 
   @override
   bool operator ==(dynamic other) =>
@@ -37,16 +44,18 @@ class FileUpload {
       runtimeType == other.runtimeType &&
           started == other.started &&
           bytesSent == other.bytesSent &&
-          latestEvent == other.latestEvent;
+          latestEvent == other.latestEvent &&
+          percent == other.percent;
 
   @override
   String toString() {
-    return 'FileUpload{startded: $started, bytesSent: $bytesSent, latestEvent: $latestEvent}';
+    return 'FileUpload{startded: $started, bytesSent: $bytesSent, latestEvent: $latestEvent, percent: $percent}';
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'started': started?.toIso8601String(),
         'bytesSent': bytesSent,
-        'latestEvent': latestEvent,
+        'latestEvent': latestEvent?.index,
+        'percent': percent
       };
 }

@@ -77,7 +77,9 @@ AppState _setDetectionItems(AppState state, ActionSetDetectionItems action) {
 // Create a new DetectionItem with the given extracted image
 AppState _addDetectionItem(AppState state, ActionAddDetectionItem action) {
   final ExtractedImageReference newRef = ExtractedImageReference(
-      localPath: action.extractedPath, upload: FileUpload(bytesSent: 0));
+      bytes: action.bytes,
+      localPath: action.extractedPath,
+      upload: FileUpload(bytesSent: 0, percent: 0));
 
   DetectionItem newItem = DetectionItem(
     id: action.id,
@@ -113,9 +115,12 @@ AppState _setUploadProgress(AppState state, ActionSetUploadProgress action) {
       .map<DetectionItem>((DetectionItem item) => (item.id == action.id)
           ? item.copyWith(
               extractedRef: item.extractedRef.copyWith(
-                  upload: item.extractedRef.upload.copyWith(
-                      latestEvent: UploadingEvent.progress,
-                      bytesSent: action.bytes)))
+                upload: item.extractedRef.upload.copyWith(
+                    latestEvent: UploadingEvent.progress,
+                    bytesSent: action.bytes,
+                    percent: action.bytes / item.extractedRef.bytes),
+              ),
+            )
           : item)
       .toList();
 

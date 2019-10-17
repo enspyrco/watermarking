@@ -6,7 +6,7 @@ class MockAuthService implements AuthService {
 
   @override
   Stream<ActionSetAuthState> listenToAuthState() async* {
-    yield const ActionSetAuthState(
+    yield ActionSetAuthState(
         userId: '0',
         photoUrl:
             'https://lh4.googleusercontent.com/-q5LxfJgDNZU/AAAAAAAAAAI/AAAAAAAABCc/Qg-SpkylHCA/photo.jpg');

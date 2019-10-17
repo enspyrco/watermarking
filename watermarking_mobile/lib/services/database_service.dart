@@ -114,9 +114,10 @@ class DatabaseService {
               Map<String, dynamic>.from(event.snapshot.value["results"]);
 
       return ActionSetDetectingProgress(
-          id: resultsMap['itemId'],
-          progress: event.snapshot.value["progress"] ?? "null",
-          result: resultsMap['message']);
+        id: event.snapshot.value['itemId'],
+        progress: event.snapshot.value["progress"] ?? "null",
+        result: resultsMap['message'],
+      );
     });
   }
 

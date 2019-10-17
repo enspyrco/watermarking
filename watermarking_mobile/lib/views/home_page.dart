@@ -42,14 +42,15 @@ class DetectionHistoryListView extends StatelessWidget {
                       children: <Widget>[
                         ListTile(
                           leading: Image.network(items[index].originalRef.url),
-                          title: Text(items[index].progress),
-                          subtitle: Text(items[index].result),
+                          title: Text(items[index].progress ?? ''),
+                          subtitle: Text(items[index].result ?? ''),
                         ),
+                        LinearProgressIndicator(
+                            value: items[index].extractedRef.upload.percent),
                         ListTile(
                           leading: Image.file(
                               File(items[index].extractedRef.localPath)),
                         ),
-                        DetectionSteps()
                       ],
                     ),
                   ),

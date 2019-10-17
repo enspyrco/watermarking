@@ -158,8 +158,7 @@ void Function(Store<AppState> store, ActionPerformExtraction action,
       NextDispatcher next) async {
     next(action);
 
-    // TODO(nickm): remove use of fake
-    final String path = await deviceService.performFakeExtraction(
+    final String path = await deviceService.performExtraction(
         width: action.width, height: action.height);
 
     store.dispatch(ActionProcessExtraction(filePath: path));

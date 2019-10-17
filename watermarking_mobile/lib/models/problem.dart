@@ -25,7 +25,7 @@ class Problem {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
+        'type': type?.index,
         'message': message,
         'info': info,
         'trace': trace,
