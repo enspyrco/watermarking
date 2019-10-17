@@ -109,7 +109,7 @@ class DatabaseService {
         .map<dynamic>((Event event) {
       Map<String, dynamic> resultsMap;
       (event.snapshot.value['results'] == null)
-          ? resultsMap = {'message': 'nullo'}
+          ? resultsMap = {'message': null}
           : resultsMap =
               Map<String, dynamic>.from(event.snapshot.value["results"]);
 

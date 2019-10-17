@@ -11,14 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        DetectionSteps(),
-        Expanded(
-          child: DetectionHistoryListView(),
-        )
-      ],
-    );
+    return DetectionHistoryListView();
   }
 }
 
@@ -32,67 +25,111 @@ class DetectionHistoryListView extends StatelessWidget {
     return StoreConnector<AppState, List<DetectionItem>>(
         converter: (Store<AppState> store) => store.state.detections.items,
         builder: (BuildContext context, List<DetectionItem> items) {
-          return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          leading: Image.network(items[index].originalRef.url),
-                          title: Text(items[index].progress ?? ''),
-                          subtitle: Text(items[index].result ?? ''),
+          return Column(
+            children: <Widget>[
+              if (items.isNotEmpty && items.first.result == null)
+                DetectionSteps(items.first),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Center(
+                        child: Card(
+                          color: (items[index].result == null)
+                              ? Colors.blueGrey
+                              : Colors.white,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading:
+                                    Image.network(items[index].originalRef.url),
+                                title: Text(items[index].result ?? ''),
+                                subtitle: Text(
+                                  items[index]
+                                      .extractedRef
+                                      .upload
+                                      .started
+                                      .toIso8601String(),
+                                ),
+                                trailing: Image.file(
+                                  File(items[index].extractedRef.localPath),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        LinearProgressIndicator(
-                            value: items[index].extractedRef.upload.percent),
-                        ListTile(
-                          leading: Image.file(
-                              File(items[index].extractedRef.localPath)),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              });
+                      );
+                    }),
+              )
+            ],
+          );
         });
   }
 }
 
 class DetectionSteps extends StatelessWidget {
-  const DetectionSteps({
+  const DetectionSteps(
+    this.firstItem, {
     Key key,
   }) : super(key: key);
 
+  final DetectionItem firstItem;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
-      height: 90,
-      child: Theme(
-        data: ThemeData(
-          primaryColor: Colors.red,
+    int currentStep = 2;
+    if (firstItem.extractedRef.upload.percent < 1)
+      currentStep = 0;
+    else if (firstItem.progress == null) currentStep = 1;
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+          height: 200,
+          child: Theme(
+            data: ThemeData(
+              primaryColor: Colors.red,
+            ),
+            child: Stepper(
+              currentStep: currentStep,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return Container();
+              },
+              type: StepperType.horizontal,
+              steps: [
+                Step(
+                  title: Text('Upload'),
+                  content: LinearProgressIndicator(
+                      value: firstItem.extractedRef.upload.percent),
+                  isActive: currentStep == 0,
+                  state: (currentStep > 0)
+                      ? StepState.complete
+                      : StepState.indexed,
+                ),
+                Step(
+                  title: Text('Setup'),
+                  content: Center(child: CircularProgressIndicator()),
+                  isActive: currentStep == 1,
+                  state: (currentStep > 1)
+                      ? StepState.complete
+                      : StepState.indexed,
+                ),
+                Step(
+                  title: Text('Detect'),
+                  content: Text(firstItem.progress ?? ''),
+                  isActive: currentStep == 2,
+                  state: (currentStep > 2)
+                      ? StepState.complete
+                      : StepState.indexed,
+                ),
+              ],
+              onStepTapped: print,
+            ),
+          ),
         ),
-        child: Stepper(
-          currentStep: 1,
-          type: StepperType.horizontal,
-          controlsBuilder: (BuildContext context,
-              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-            return Container();
-          },
-          steps: [
-            Step(title: Text('Step1'), content: Container()),
-            Step(
-                title: Text('Step2'),
-                content: Container(),
-                state: StepState.indexed,
-                isActive: true),
-            Step(title: Text('Step3'), content: Container()),
-          ],
-          onStepTapped: print,
-        ),
-      ),
+      ],
     );
   }
 }

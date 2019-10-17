@@ -23,11 +23,11 @@ class DeviceService {
   Future<String> performExtraction(
       {@required int width, @required int height}) async {
     // TODO(nickm): remove use of fake
-    return performFakeExtraction(width: width, height: height);
-    // String path = await platform
-    //     .invokeMethod('startDetection', {'width': width, 'height': height});
-    // platform.invokeMethod('dismiss');
-    // return path;
+    // return performFakeExtraction(width: width, height: height);
+    String path = await platform
+        .invokeMethod('startDetection', {'width': width, 'height': height});
+    platform.invokeMethod('dismiss');
+    return path;
   }
 
   Future<int> findFileSize({@required String path}) {
