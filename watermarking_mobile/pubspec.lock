@@ -84,28 +84,28 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.1+12"
+    version: "0.14.0+5"
   firebase_core:
     dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0+8"
+    version: "0.4.0+9"
   firebase_database:
     dependency: "direct main"
     description:
       name: firebase_database
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.5"
+    version: "3.0.7"
   firebase_storage:
     dependency: "direct main"
     description:
       name: firebase_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.6"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -129,7 +129,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.1"
+    version: "0.14.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -153,21 +153,21 @@ packages:
       name: glob
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7"
+    version: "1.2.0"
   google_sign_in:
     dependency: "direct main"
     description:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.4"
+    version: "4.0.11"
   html:
     dependency: transitive
     description:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0+2"
+    version: "0.14.0+3"
   http:
     dependency: transitive
     description:
@@ -258,7 +258,7 @@ packages:
       name: mockito
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.1"
   multi_server_socket:
     dependency: transitive
     description:
@@ -266,20 +266,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  node_interop:
+    dependency: transitive
+    description:
+      name: node_interop
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
+  node_io:
+    dependency: transitive
+    description:
+      name: node_io
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1+2"
   node_preamble:
     dependency: transitive
     description:
       name: node_preamble
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.5"
+    version: "1.4.8"
   package_config:
     dependency: transitive
     description:
       name: package_config
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.1.0"
   package_resolver:
     dependency: transitive
     description:
@@ -314,7 +328,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "1.4.0"
   pedantic:
     dependency: transitive
     description:
@@ -384,21 +398,21 @@ packages:
       name: redux_epics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.6"
+    version: "0.11.0"
   redux_remote_devtools:
     dependency: "direct main"
     description:
       name: redux_remote_devtools
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.9"
+    version: "0.0.11"
   rxdart:
     dependency: "direct main"
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.22.0"
+    version: "0.22.5"
   shelf:
     dependency: transitive
     description:
@@ -438,7 +452,7 @@ packages:
       name: socketcluster_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3"
+    version: "0.2.0"
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -557,7 +571,7 @@ packages:
       name: yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.16"
+    version: "2.2.0"
 sdks:
   dart: ">=2.4.0 <3.0.0"
   flutter: ">=1.5.9-pre.94 <2.0.0"
