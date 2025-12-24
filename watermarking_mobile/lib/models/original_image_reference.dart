@@ -4,13 +4,17 @@ import 'package:watermarking_mobile/utilities/string_utilities.dart';
 class OriginalImageReference {
   const OriginalImageReference({this.id, this.name, this.filePath, this.url});
 
-  final String id;
-  final String name;
-  final String filePath;
-  final String url;
+  final String? id;
+  final String? name;
+  final String? filePath;
+  final String? url;
 
-  OriginalImageReference copyWith(
-      {final String id, final String name, String filePath, final String url}) {
+  OriginalImageReference copyWith({
+    String? id,
+    String? name,
+    String? filePath,
+    String? url,
+  }) {
     return OriginalImageReference(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -22,9 +26,10 @@ class OriginalImageReference {
   int get hashCode => hash4(id, name, filePath, url);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is OriginalImageReference &&
+          runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
           filePath == other.filePath &&
@@ -32,7 +37,7 @@ class OriginalImageReference {
 
   @override
   String toString() {
-    final String trimmedUrl = trimToLast(15, url);
+    final String? trimmedUrl = trimToLast(15, url);
     return 'ImageReference{uid: $id, name: $name, filePath: $filePath, url: $trimmedUrl}';
   }
 
@@ -40,6 +45,6 @@ class OriginalImageReference {
         'id': id,
         'name': name,
         'filePath': filePath,
-        'url': url
+        'url': url,
       };
 }

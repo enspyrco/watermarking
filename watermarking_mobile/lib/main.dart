@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
@@ -10,7 +11,10 @@ import 'package:watermarking_mobile/services/device_service.dart';
 import 'package:watermarking_mobile/services/storage_service.dart';
 import 'package:watermarking_mobile/views/app.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   final AuthService authService = AuthService();
   final DatabaseService databaseService = DatabaseService();
   final StorageService storageService = StorageService();
@@ -22,7 +26,7 @@ void main() {
             authService, databaseService, deviceService, storageService),
         createEpicMiddleware(authService, databaseService, storageService),
       ],
-      initialState: AppState.intialState());
+      initialState: AppState.initialState());
 
   runApp(MyApp(store));
 }

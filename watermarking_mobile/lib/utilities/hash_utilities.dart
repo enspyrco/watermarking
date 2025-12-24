@@ -2,24 +2,24 @@
 // found in this discussion https://github.com/dart-lang/sdk/issues/11617
 
 /// Generates a hash code for multiple [objects].
-int hashObjects(Iterable<dynamic> objects) =>
-    _finish(objects.fold(0, (dynamic h, dynamic i) => _combine(h, i.hashCode)));
+int hashObjects(Iterable<Object?> objects) =>
+    _finish(objects.fold(0, (int h, Object? i) => _combine(h, i.hashCode)));
 
 /// Generates a hash code for two objects.
-int hash2(dynamic a, dynamic b) =>
+int hash2(Object? a, Object? b) =>
     _finish(_combine(_combine(0, a.hashCode), b.hashCode));
 
 /// Generates a hash code for three objects.
-int hash3(dynamic a, dynamic b, dynamic c) => _finish(
+int hash3(Object? a, Object? b, Object? c) => _finish(
     _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode));
 
 /// Generates a hash code for four objects.
-int hash4(dynamic a, dynamic b, dynamic c, dynamic d) => _finish(_combine(
+int hash4(Object? a, Object? b, Object? c, Object? d) => _finish(_combine(
     _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
     d.hashCode));
 
 /// Generates a hash code for five objects.
-int hash5(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e) =>
+int hash5(Object? a, Object? b, Object? c, Object? d, Object? e) =>
     _finish(_combine(
         _combine(
             _combine(_combine(_combine(0, a.hashCode), b.hashCode), c.hashCode),
@@ -27,7 +27,7 @@ int hash5(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e) =>
         e.hashCode));
 
 /// Generates a hash code for 6 objects.
-int hash6(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f) =>
+int hash6(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f) =>
     _finish(_combine(
         _combine(
             _combine(
@@ -38,16 +38,18 @@ int hash6(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f) =>
         f.hashCode));
 
 /// Generates a hash code for 7 objects.
-int hash7(dynamic a, dynamic b, dynamic c, dynamic d, dynamic e, dynamic f, dynamic g) =>
+int hash7(Object? a, Object? b, Object? c, Object? d, Object? e, Object? f,
+        Object? g) =>
     _finish(_combine(
         _combine(
             _combine(
                 _combine(
-                    _combine(_combine
-                      (_combine(0, a.hashCode), b.hashCode), c.hashCode),
-                d.hashCode),
-            e.hashCode),
-        f.hashCode),
+                    _combine(
+                        _combine(_combine(0, a.hashCode), b.hashCode),
+                        c.hashCode),
+                    d.hashCode),
+                e.hashCode),
+            f.hashCode),
         g.hashCode));
 
 // Jenkins hash functions

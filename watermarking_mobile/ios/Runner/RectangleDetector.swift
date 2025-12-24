@@ -1,5 +1,5 @@
 /*
-See LICENSE folder for this sample’s licensing information.
+See LICENSE folder for this sample's licensing information.
 
 Abstract:
 An object that checks images for rectangles.
@@ -11,20 +11,20 @@ import CoreImage
 
 /// - Tag: RectangleDetector
 class RectangleDetector {
-    
+
     private var currentCameraImage: CVPixelBuffer!
-    
+
     private var updateTimer: Timer?
-    
+
     /// The number of times per second to check for rectangles.
     /// - Tag: UpdateInterval
     private var updateInterval: TimeInterval = 0.1
-    
+
     /// - Tag: IsBusy
     private var isBusy = false
-    
+
     weak var delegate: RectangleDetectorDelegate?
-    
+
     /// - Tag: InitializeVisionTimer
     init() {
         self.updateTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] _ in
@@ -40,38 +40,38 @@ class RectangleDetector {
 	private func search(in pixelBuffer: CVPixelBuffer) {
         guard !isBusy else { return }
         isBusy = true
- 
+
         // Remember the current image.
         currentCameraImage = pixelBuffer
-        
+
         // Note that the pixel buffer's orientation doesn't change even when the device rotates.
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up)
-        
+
         // Create a Vision rectangle detection request for running on the GPU.
         let request = VNDetectRectanglesRequest { request, error in
             self.completedVisionRequest(request, error: error)
         }
-        
+
         // Look only for one rectangle at a time.
         request.maximumObservations = 1
-        
+
         // Require rectangles to be reasonably large.
         request.minimumSize = 0.25
-        
+
         // Require high confidence for detection results.
         request.minimumConfidence = 0.90
-        
+
         // Ignore rectangles with a too uneven aspect ratio.
         request.minimumAspectRatio = 0.3
-        
+
         // Ignore rectangles that are skewed too much.
         request.quadratureTolerance = 20
-        
+
         // You leverage the `usesCPUOnly` flag of `VNRequest` to decide whether your Vision requests are processed on the CPU or GPU.
         // This sample disables `usesCPUOnly` because rectangle detection isn't very taxing on the GPU. You may benefit by enabling
         // `usesCPUOnly` if your app does a lot of rendering, or runs a complicated neural network.
         request.usesCPUOnly = false
-        
+
 		DispatchQueue.global().async {
             do {
                 try handler.perform([request])
@@ -81,7 +81,7 @@ class RectangleDetector {
             }
 		}
 	}
-	
+
     /// Check for a rectangle result.
     /// If one is found, crop the camera image and correct its perspective.
     /// - Tag: CropCameraImage
@@ -105,31 +105,31 @@ class RectangleDetector {
         let topRight = CGPoint(x: rectangle.topRight.x * width, y: rectangle.topRight.y * height)
         let bottomLeft = CGPoint(x: rectangle.bottomLeft.x * width, y: rectangle.bottomLeft.y * height)
         let bottomRight = CGPoint(x: rectangle.bottomRight.x * width, y: rectangle.bottomRight.y * height)
-        
+
         filter.setValue(CIVector(cgPoint: topLeft), forKey: "inputTopLeft")
         filter.setValue(CIVector(cgPoint: topRight), forKey: "inputTopRight")
         filter.setValue(CIVector(cgPoint: bottomLeft), forKey: "inputBottomLeft")
         filter.setValue(CIVector(cgPoint: bottomRight), forKey: "inputBottomRight")
-        
+
         let ciImage = CIImage(cvPixelBuffer: currentCameraImage).oriented(.up)
         filter.setValue(ciImage, forKey: kCIInputImageKey)
-        
+
         guard let perspectiveImage: CIImage = filter.value(forKey: kCIOutputImageKey) as? CIImage else {
             print("Error: Rectangle detection failed - perspective correction filter has no output image.")
             return
         }
-        
+
         guard let scaleFilter = CIFilter(name: "CILanczosScaleTransform") else {
             print("Error: Rectangle detection failed - Could not create scale filter.")
             return
         }
         scaleFilter.setValue(perspectiveImage.oriented(.right), forKey: kCIInputImageKey)
         scaleFilter.setValue(512.0/perspectiveImage.extent.width, forKey: kCIInputScaleKey)
-        
+
         delegate?.rectangleFound(rectangleContent: scaleFilter.outputImage!)
     }
 }
 
-protocol RectangleDetectorDelegate: class {
+protocol RectangleDetectorDelegate: AnyObject {
 	func rectangleFound(rectangleContent: CIImage)
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget signinButton(String title, String uri,
     [Color color = const Color.fromRGBO(68, 68, 76, .8)]) {
-  return Container(
+  return SizedBox(
     width: 200.0,
     child: Center(
       child: Row(
@@ -13,6 +13,7 @@ Widget signinButton(String title, String uri,
             width: 25.0,
           ),
           Padding(
+            padding: const EdgeInsets.only(left: 15.0),
             child: Text(
               'Sign in with $title',
               style: TextStyle(
@@ -20,7 +21,6 @@ Widget signinButton(String title, String uri,
                 color: color,
               ),
             ),
-            padding: const EdgeInsets.only(left: 15.0),
           ),
         ],
       ),
@@ -30,7 +30,7 @@ Widget signinButton(String title, String uri,
 
 Widget phoneSigninButton(String title,
     [Color color = const Color.fromRGBO(68, 68, 76, .8)]) {
-  return Container(
+  return SizedBox(
     width: 200.0,
     child: Center(
       child: Row(
@@ -40,19 +40,15 @@ Widget phoneSigninButton(String title,
             Icons.local_phone,
             size: 25.0,
           ),
-          // Image.asset(
-          //   uri,
-          //   width: 25.0,
-          // ),
           Padding(
+            padding: const EdgeInsets.only(left: 15.0),
             child: Text(
-              '$title',
+              title,
               style: TextStyle(
                 fontFamily: 'Roboto',
                 color: color,
               ),
             ),
-            padding: const EdgeInsets.only(left: 15.0),
           ),
         ],
       ),

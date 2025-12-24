@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:meta/meta.dart';
 import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
@@ -10,145 +9,154 @@ import 'package:watermarking_mobile/redux/actions.dart';
 class DatabaseService {
   DatabaseService();
 
-  String userId;
-  StreamSubscription<dynamic> originalsSubscription;
-  StreamSubscription<dynamic> profileSubscription;
-  StreamSubscription<dynamic> detectingSubscription;
-  StreamSubscription<dynamic> detectionItemsSubscription;
+  String? userId;
+  StreamSubscription<dynamic>? originalsSubscription;
+  StreamSubscription<dynamic>? profileSubscription;
+  StreamSubscription<dynamic>? detectingSubscription;
+  StreamSubscription<dynamic>? detectionItemsSubscription;
 
-  // create a document id that will be added as metadata to the upload
-  // for use in a cloud function
   String getDetectionItemId() => FirebaseDatabase.instance
-      .reference()
+      .ref()
       .child('detection-items/$userId')
       .push()
-      .key;
+      .key!;
 
   Stream<dynamic> connectToOriginals() {
     return FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('original-images/$userId')
         .onValue
-        .map<dynamic>((Event event) {
-      // convert to a usable map
-      // the unconverted type is '_InternalLinkedHashMap<dynamic, dynamic>'
-      // TODO(nickm): determine if using Map.from is the best approach
-      Map<String, dynamic> imagesMap =
-          Map<String, dynamic>.from(event.snapshot.value);
-      // use each key to access the data in the corresponding record
-      List<OriginalImageReference> imagesList = imagesMap.keys
+        .map<dynamic>((DatabaseEvent event) {
+      final value = event.snapshot.value;
+      if (value == null) {
+        return ActionSetOriginalImages(images: []);
+      }
+
+      final Map<String, dynamic> imagesMap =
+          Map<String, dynamic>.from(value as Map);
+      final List<OriginalImageReference> imagesList = imagesMap.keys
           .map<OriginalImageReference>((String key) => OriginalImageReference(
               id: key,
-              name: imagesMap[key]["name"],
-              filePath: imagesMap[key]["path"],
-              url: imagesMap[key]["servingUrl"]))
+              name: imagesMap[key]["name"] as String?,
+              filePath: imagesMap[key]["path"] as String?,
+              url: imagesMap[key]["servingUrl"] as String?))
           .toList();
       return ActionSetOriginalImages(images: imagesList);
     });
   }
 
   Future<dynamic> cancelOriginalsSubscription() {
-    return (originalsSubscription == null)
-        ? Future<dynamic>.value(null)
-        : originalsSubscription.cancel();
+    return originalsSubscription?.cancel() ?? Future<dynamic>.value(null);
   }
 
   Stream<dynamic> connectToProfile() {
     return FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('users/$userId')
         .onValue
-        .map<dynamic>((Event event) => ActionSetProfile(
-            name: event.snapshot.value['name'],
-            email: event.snapshot.value['email']));
+        .map<dynamic>((DatabaseEvent event) {
+      final value = event.snapshot.value;
+      if (value == null) {
+        return ActionSetProfile(name: '', email: '');
+      }
+      final data = value as Map;
+      return ActionSetProfile(
+          name: data['name'] as String? ?? '',
+          email: data['email'] as String? ?? '');
+    });
   }
 
   Future<dynamic> cancelProfileSubscription() {
-    return (profileSubscription == null)
-        ? Future<dynamic>.value(null)
-        : profileSubscription.cancel();
+    return profileSubscription?.cancel() ?? Future<dynamic>.value(null);
   }
 
-  /// Adds a flag to the images entry that will be picked up by a cloud
-  /// function and go through the deletion sequence (remove file, stop serving)
   Future<void> requestOriginalDelete(String entryId) {
     return FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('original-images/$userId/$entryId')
         .update(<String, dynamic>{'delete': true});
   }
 
-  Future<void> addDetectingEntry(
-      {@required String itemId,
-      @required String originalPath,
-      @required String markedPath}) {
-    FirebaseDatabase.instance.reference()
-      ..child('detecting/incomplete/$userId').set({
-        'itemId': itemId,
-        'progress': 'Adding a detection task to the queue...',
-        'isDetecting': true,
-        'pathOriginal': originalPath,
-        'pathMarked': markedPath,
-        'attempts': 0
-      })
-      ..child('queue/tasks').push().set({
-        '_state': 'download_original_spec_start',
-        'uid': userId,
-        'pathOriginal': originalPath,
-        'pathMarked': markedPath,
-      });
-
-    return Future.value();
+  Future<void> addDetectingEntry({
+    required String itemId,
+    required String originalPath,
+    required String markedPath,
+  }) async {
+    final ref = FirebaseDatabase.instance.ref();
+    await ref.child('detecting/incomplete/$userId').set({
+      'itemId': itemId,
+      'progress': 'Adding a detection task to the queue...',
+      'isDetecting': true,
+      'pathOriginal': originalPath,
+      'pathMarked': markedPath,
+      'attempts': 0,
+    });
+    await ref.child('queue/tasks').push().set({
+      '_state': 'download_original_spec_start',
+      'uid': userId,
+      'pathOriginal': originalPath,
+      'pathMarked': markedPath,
+    });
   }
 
   Stream<dynamic> connectToDetecting() {
     return FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('detecting/incomplete/$userId/')
         .onValue
-        .map<dynamic>((Event event) {
-      Map<String, dynamic> resultsMap;
-      (event.snapshot.value['results'] == null)
-          ? resultsMap = {'message': null}
-          : resultsMap =
-              Map<String, dynamic>.from(event.snapshot.value["results"]);
+        .map<dynamic>((DatabaseEvent event) {
+      final value = event.snapshot.value;
+      if (value == null) {
+        return ActionSetDetectingProgress(
+          id: '',
+          progress: '',
+          result: null,
+        );
+      }
+
+      final data = value as Map;
+      Map<String, dynamic>? resultsMap;
+      if (data['results'] != null) {
+        resultsMap = Map<String, dynamic>.from(data['results'] as Map);
+      }
 
       return ActionSetDetectingProgress(
-        id: event.snapshot.value['itemId'],
-        progress: event.snapshot.value["progress"] ?? "null",
-        result: resultsMap['message'],
+        id: data['itemId'] as String? ?? '',
+        progress: data['progress'] as String? ?? '',
+        result: resultsMap?['message'] as String?,
       );
     });
   }
 
   Future<dynamic> cancelDetectingSubscription() {
-    return (detectingSubscription == null)
-        ? Future<dynamic>.value(null)
-        : detectingSubscription.cancel();
+    return detectingSubscription?.cancel() ?? Future<dynamic>.value(null);
   }
 
   Stream<dynamic> connectToDetectionItems() {
     return FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('detection-items/$userId/')
         .onValue
-        .map<dynamic>((Event event) {
-      // the list that will be returned
-      List<DetectionItem> list = [];
+        .map<dynamic>((DatabaseEvent event) {
+      final List<DetectionItem> list = [];
 
-      // guard against no data
-      if (event.snapshot.value == null)
+      final value = event.snapshot.value;
+      if (value == null) {
         return ActionSetDetectionItems(items: list);
+      }
 
-      Map<String, dynamic> itemsMap =
-          Map<String, dynamic>.from(event.snapshot.value);
-      for (String key in itemsMap.keys) {
-        list.add(
-          DetectionItem(
-              id: key,
-              progress: itemsMap[key]['progress'] ?? 'null',
-              result: itemsMap[key]['result'] ?? 'null'),
-        );
+      final Map<String, dynamic> itemsMap =
+          Map<String, dynamic>.from(value as Map);
+      for (final String key in itemsMap.keys) {
+        final item = itemsMap[key] as Map?;
+        if (item != null) {
+          list.add(
+            DetectionItem(
+                id: key,
+                progress: item['progress'] as String? ?? '',
+                result: item['result'] as String?),
+          );
+        }
       }
 
       return ActionSetDetectionItems(items: list);
@@ -156,8 +164,6 @@ class DatabaseService {
   }
 
   Future<dynamic> cancelDetectionItemsSubscription() {
-    return (detectionItemsSubscription == null)
-        ? Future<dynamic>.value(null)
-        : detectionItemsSubscription.cancel();
+    return detectionItemsSubscription?.cancel() ?? Future<dynamic>.value(null);
   }
 }

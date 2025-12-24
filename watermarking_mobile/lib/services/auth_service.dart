@@ -4,11 +4,11 @@ import 'package:watermarking_mobile/redux/actions.dart';
 class AuthService {
   AuthService();
 
-  /// Receives [FirebaseUser] each time the user signIn or signOut
+  /// Receives [User] each time the user signIn or signOut
   Stream<ActionSetAuthState> listenToAuthState() {
-    return FirebaseAuth.instance.onAuthStateChanged.map(
-        (FirebaseUser firebaseUser) => ActionSetAuthState(
-            userId: firebaseUser?.uid, photoUrl: firebaseUser?.photoUrl));
+    return FirebaseAuth.instance.authStateChanges().map(
+        (User? user) => ActionSetAuthState(
+            userId: user?.uid, photoUrl: user?.photoURL));
   }
 
   Future<void> signOut() {

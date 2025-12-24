@@ -22,11 +22,9 @@ Epic<AppState> createUploadEpic(
     return actions
         .where((dynamic action) => action is ActionStartUpload)
         .cast<ActionStartUpload>()
-        .transform<dynamic>(
-            FlatMapStreamTransformer<ActionStartUpload, dynamic>(
-                (ActionStartUpload action) {
+        .flatMap((ActionStartUpload action) {
       return service.startUpload(entryId: action.id, filePath: action.filePath);
-    }));
+    });
   };
 }
 
@@ -35,10 +33,8 @@ Epic<AppState> createAuthEpic(AuthService service) {
     return actions
         .where((dynamic action) => action is ActionObserveAuthState)
         .cast<ActionObserveAuthState>()
-        .transform<dynamic>(
-            FlatMapStreamTransformer<ActionObserveAuthState, dynamic>(
-                (ActionObserveAuthState action) {
+        .flatMap((ActionObserveAuthState action) {
       return service.listenToAuthState();
-    }));
+    });
   };
 }

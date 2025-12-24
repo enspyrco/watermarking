@@ -17,16 +17,16 @@ class FileUpload {
     this.percent,
   });
 
-  final DateTime started;
-  final int bytesSent;
-  final UploadingEvent latestEvent;
-  final double percent;
+  final DateTime? started;
+  final int? bytesSent;
+  final UploadingEvent? latestEvent;
+  final double? percent;
 
   FileUpload copyWith({
-    DateTime started,
-    int bytesSent,
-    UploadingEvent latestEvent,
-    double percent,
+    DateTime? started,
+    int? bytesSent,
+    UploadingEvent? latestEvent,
+    double? percent,
   }) {
     return FileUpload(
         started: started ?? this.started,
@@ -39,9 +39,10 @@ class FileUpload {
   int get hashCode => hash4(started, bytesSent, latestEvent, percent);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is FileUpload &&
+          runtimeType == other.runtimeType &&
           started == other.started &&
           bytesSent == other.bytesSent &&
           latestEvent == other.latestEvent &&
@@ -56,6 +57,6 @@ class FileUpload {
         'started': started?.toIso8601String(),
         'bytesSent': bytesSent,
         'latestEvent': latestEvent?.index,
-        'percent': percent
+        'percent': percent,
       };
 }

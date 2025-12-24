@@ -7,20 +7,6 @@ import 'package:watermarking_mobile/services/database_service.dart';
 import 'package:watermarking_mobile/services/device_service.dart';
 import 'package:watermarking_mobile/services/storage_service.dart';
 
-// A middleware takes in 3 parameters: your Store, which you can use to
-// read state or dispatch new actions, the action that was dispatched,
-// and a `next` function. The first two you know about, and the `next`
-// function is responsible for sending the action to your Reducer, or
-// the next Middleware if you provide more than one.
-//
-// Middleware do not return any values themselves. They simply forward
-// actions on to the Reducer or swallow actions in some special cases.
-
-// NextDispatcher sends the action to the Reducer, or
-// the next Middleware if we provide more than one.
-// Middleware do not return any values themselves. They simply forward
-// actions on to the Reducer or swallow actions in some special cases.
-
 List<Middleware<AppState>> createMiddlewares(
     AuthService authService,
     DatabaseService databaseService,
@@ -43,7 +29,7 @@ List<Middleware<AppState>> createMiddlewares(
       _startWatermarkDetection(databaseService),
     ),
     TypedMiddleware<AppState, ActionCancelUpload>(
-      _cancelUpload(databaseService, storageService),
+      _cancelUpload(storageService),
     ),
   ];
 }
@@ -54,7 +40,6 @@ void Function(Store<AppState> store, ActionSignout action, NextDispatcher next)
       NextDispatcher next) async {
     next(action);
 
-    // attempt to sign out and dispatch appropiate actions based on result
     try {
       await authService.signOut();
     } catch (error) {
@@ -65,9 +50,6 @@ void Function(Store<AppState> store, ActionSignout action, NextDispatcher next)
   };
 }
 
-/// AuthState changes when a user signs in or out
-/// The [AuthStateChangedAction] contains a single member, uid
-/// which will be either null or a valid uid
 void Function(
         Store<AppState> store, ActionSetAuthState action, NextDispatcher next)
     _setUserAndObserveDatabase(
@@ -76,12 +58,10 @@ void Function(
 ) {
   return (Store<AppState> store, ActionSetAuthState action,
       NextDispatcher next) {
-    // set/reset the userId store in services before dispatching next action
     databaseService.userId = action.userId;
     storageService.userId = action.userId;
     next(action);
 
-    // cancel any previous subscription
     databaseService.profileSubscription?.cancel();
     databaseService.originalsSubscription?.cancel();
     databaseService.detectingSubscription?.cancel();
@@ -92,12 +72,12 @@ void Function(
     databaseService.profileSubscription = databaseService
         .connectToProfile()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error, StackTrace trace) => store.dispatch(
+            onError: (Object error, StackTrace trace) => store.dispatch(
                   ActionAddProblem(
                     problem: Problem(
                       type: ProblemType.profile,
                       message: error.toString(),
-                      trace: trace ?? StackTrace.current,
+                      trace: trace,
                     ),
                   ),
                 ),
@@ -106,12 +86,12 @@ void Function(
     databaseService.originalsSubscription = databaseService
         .connectToOriginals()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error, StackTrace trace) => store.dispatch(
+            onError: (Object error, StackTrace trace) => store.dispatch(
                   ActionAddProblem(
                     problem: Problem(
                       type: ProblemType.images,
                       message: error.toString(),
-                      trace: trace ?? StackTrace.current,
+                      trace: trace,
                     ),
                   ),
                 ),
@@ -120,12 +100,12 @@ void Function(
     databaseService.detectionItemsSubscription = databaseService
         .connectToDetectionItems()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error, StackTrace trace) => store.dispatch(
+            onError: (Object error, StackTrace trace) => store.dispatch(
                   ActionAddProblem(
                     problem: Problem(
                       type: ProblemType.images,
                       message: error.toString(),
-                      trace: trace ?? StackTrace.current,
+                      trace: trace,
                     ),
                   ),
                 ),
@@ -134,12 +114,12 @@ void Function(
     databaseService.detectingSubscription = databaseService
         .connectToDetecting()
         .listen((dynamic action) => store.dispatch(action),
-            onError: (dynamic error, StackTrace trace) => store.dispatch(
+            onError: (Object error, StackTrace trace) => store.dispatch(
                   ActionAddProblem(
                     problem: Problem(
                       type: ProblemType.images,
                       message: error.toString(),
-                      trace: trace ?? StackTrace.current,
+                      trace: trace,
                     ),
                   ),
                 ),
@@ -147,9 +127,6 @@ void Function(
   };
 }
 
-/// Intercept [ActionPerformExtraction] and use [DeviceService] via platform
-/// channels to push a view onto the stack that performs image detection and
-/// extraction.
 void Function(Store<AppState> store, ActionPerformExtraction action,
     NextDispatcher next) _performExtraction(
   DeviceService deviceService,
@@ -165,8 +142,6 @@ void Function(Store<AppState> store, ActionPerformExtraction action,
   };
 }
 
-/// Intercept [ActionProcessExtractedImage] and use [DatabaseService] to generate a
-/// unique id then dispatch [ActionStartImageUpload]
 void Function(Store<AppState> store, ActionProcessExtraction action,
         NextDispatcher next)
     _processExtraction(
@@ -183,8 +158,6 @@ void Function(Store<AppState> store, ActionProcessExtraction action,
   };
 }
 
-/// Intercept [ActionSetUploadSuccess] and use [DatabaseService] to add
-/// an entry in the database that the server is observing
 void Function(Store<AppState> store, ActionSetUploadSuccess action,
     NextDispatcher next) _startWatermarkDetection(
   DatabaseService databaseService,
@@ -193,11 +166,15 @@ void Function(Store<AppState> store, ActionSetUploadSuccess action,
       NextDispatcher next) {
     next(action);
     try {
-      databaseService.addDetectingEntry(
-          itemId: action.id,
-          originalPath: store.state.originals.selectedImage.filePath,
-          markedPath: 'detecting-images/${store.state.user.id}/${action.id}');
+      final selectedImagePath = store.state.originals.selectedImage?.filePath;
+      if (selectedImagePath != null) {
+        databaseService.addDetectingEntry(
+            itemId: action.id,
+            originalPath: selectedImagePath,
+            markedPath: 'detecting-images/${store.state.user.id}/${action.id}');
+      }
     } catch (exception) {
+      // ignore: avoid_print
       print(exception);
     }
   };
@@ -205,8 +182,7 @@ void Function(Store<AppState> store, ActionSetUploadSuccess action,
 
 void Function(
         Store<AppState> store, ActionCancelUpload action, NextDispatcher next)
-    _cancelUpload(
-        DatabaseService databaseService, StorageService storageService) {
+    _cancelUpload(StorageService storageService) {
   return (Store<AppState> store, ActionCancelUpload action,
       NextDispatcher next) {
     next(action);

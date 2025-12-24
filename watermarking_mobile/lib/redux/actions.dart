@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:watermarking_mobile/models/detection_item.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/models/problem.dart';
@@ -19,13 +18,13 @@ class ActionSignout extends Action {
 }
 
 class ActionAddProblem extends Action {
-  ActionAddProblem({@required this.problem})
+  ActionAddProblem({required this.problem})
       : super(<String, Object>{'problem': problem});
   final Problem problem;
 }
 
 class ActionRemoveProblem extends Action {
-  ActionRemoveProblem({@required this.problem})
+  ActionRemoveProblem({required this.problem})
       : super(<String, Object>{'problem': problem});
   final Problem problem;
 }
@@ -35,23 +34,23 @@ class ActionObserveAuthState extends Action {
 }
 
 class ActionSetAuthState extends Action {
-  ActionSetAuthState({@required this.userId, @required this.photoUrl})
-      : super(<String, Object>{
+  ActionSetAuthState({this.userId, this.photoUrl})
+      : super(<String, Object?>{
           'userId': userId,
           'photoUrl': photoUrl,
         });
-  final String userId;
-  final String photoUrl;
+  final String? userId;
+  final String? photoUrl;
 }
 
 class ActionSetProfilePicUrl extends Action {
-  ActionSetProfilePicUrl({@required this.url})
+  ActionSetProfilePicUrl({required this.url})
       : super(<String, Object>{'url': url});
   final String url;
 }
 
 class ActionSetProfile extends Action {
-  ActionSetProfile({@required this.name, @required this.email})
+  ActionSetProfile({required this.name, required this.email})
       : super(<String, Object>{
           'name': name,
           'email': email,
@@ -61,68 +60,66 @@ class ActionSetProfile extends Action {
 }
 
 class ActionSetOriginalImages extends Action {
-  ActionSetOriginalImages({@required this.images})
+  ActionSetOriginalImages({required this.images})
       : super(<String, Object>{'images': images});
   final List<OriginalImageReference> images;
 }
 
 class ActionSetDetectionItems extends Action {
-  ActionSetDetectionItems({@required this.items})
+  ActionSetDetectionItems({required this.items})
       : super(<String, Object>{'items': items});
   final List<DetectionItem> items;
 }
 
 class ActionSetBottomNav extends Action {
-  ActionSetBottomNav({@required this.index})
+  ActionSetBottomNav({required this.index})
       : super(<String, Object>{'index': index});
   final int index;
 }
 
 class ActionShowBottomSheet extends Action {
-  ActionShowBottomSheet({@required this.show})
+  ActionShowBottomSheet({required this.show})
       : super(<String, Object>{'show': show});
   final bool show;
 }
 
-// TODO(nickm): when the image reference contains the size,
-// just send the image reference
 class ActionSetSelectedImage extends Action {
-  ActionSetSelectedImage(
-      {@required this.image, @required this.height, @required this.width})
-      : super(
-            <String, Object>{'image': image, 'height': height, 'width': width});
+  ActionSetSelectedImage({
+    required this.image,
+    required this.height,
+    required this.width,
+  }) : super(<String, Object>{
+          'image': image,
+          'height': height,
+          'width': width,
+        });
   final OriginalImageReference image;
   final int height;
   final int width;
 }
 
 class ActionPerformExtraction extends Action {
-  ActionPerformExtraction({@required this.width, @required this.height})
+  ActionPerformExtraction({required this.width, required this.height})
       : super(<String, Object>{'height': height, 'width': width});
   final int width;
   final int height;
 }
 
-// when an extracted image is returned from the native view we dispatch this
-// action and rely on middleware to dispatch a new action to add the data
-// to the store
 class ActionProcessExtraction extends Action {
-  ActionProcessExtraction({@required this.filePath})
+  ActionProcessExtraction({required this.filePath})
       : super(<String, Object>{'filePath': filePath});
   final String filePath;
 }
 
-// when middleware sees ActionProcessExtractedImage it creates a unique id and
-// TODO(nickm): update this documentation
-// starts an upload (with the id as metadata) and also dispatches an action
-// to add a new extracted image (with id as a member)
 class ActionAddDetectionItem extends Action {
-  ActionAddDetectionItem(
-      {@required this.id, @required this.extractedPath, @required this.bytes})
-      : super(<String, Object>{
+  ActionAddDetectionItem({
+    required this.id,
+    required this.extractedPath,
+    required this.bytes,
+  }) : super(<String, Object>{
           'id': id,
           'extractedPath': extractedPath,
-          'bytes': bytes
+          'bytes': bytes,
         });
   final String id;
   final String extractedPath;
@@ -130,50 +127,53 @@ class ActionAddDetectionItem extends Action {
 }
 
 class ActionStartUpload extends Action {
-  ActionStartUpload({@required this.id, @required this.filePath})
+  ActionStartUpload({required this.id, required this.filePath})
       : super(<String, Object>{'id': id, 'filePath': filePath});
   final String id;
   final String filePath;
 }
 
 class ActionSetUploadPaused extends Action {
-  ActionSetUploadPaused({@required this.id})
+  ActionSetUploadPaused({required this.id})
       : super(<String, Object>{'id': id});
   final String id;
 }
 
 class ActionSetUploadResumed extends Action {
-  ActionSetUploadResumed({@required this.id})
+  ActionSetUploadResumed({required this.id})
       : super(<String, Object>{'id': id});
   final String id;
 }
 
-// this action will also trigger middleware to create a db entry
-// to indicate status (file uploaded, waiting for result)
 class ActionSetUploadSuccess extends Action {
-  ActionSetUploadSuccess({@required this.id})
+  ActionSetUploadSuccess({required this.id})
       : super(<String, Object>{'id': id});
   final String id;
 }
 
 class ActionSetUploadProgress extends Action {
-  ActionSetUploadProgress({@required this.id, @required this.bytes})
+  ActionSetUploadProgress({required this.id, required this.bytes})
       : super(<String, Object>{'id': id, 'bytes': bytes});
   final String id;
   final int bytes;
 }
 
 class ActionCancelUpload extends Action {
-  ActionCancelUpload({@required this.id}) : super(<String, Object>{'id': id});
+  ActionCancelUpload({required this.id}) : super(<String, Object>{'id': id});
   final String id;
 }
 
 class ActionSetDetectingProgress extends Action {
-  ActionSetDetectingProgress(
-      {@required this.id, @required this.progress, @required this.result})
-      : super(
-            <String, Object>{'id': id, 'progress': progress, 'result': result});
+  ActionSetDetectingProgress({
+    required this.id,
+    required this.progress,
+    this.result,
+  }) : super(<String, Object?>{
+          'id': id,
+          'progress': progress,
+          'result': result,
+        });
   final String id;
   final String progress;
-  final String result;
+  final String? result;
 }

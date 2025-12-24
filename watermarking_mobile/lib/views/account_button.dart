@@ -6,7 +6,8 @@ import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 class AccountButton extends StatelessWidget {
-  AccountButton({Key key}) : super(key: key);
+  const AccountButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -30,7 +31,7 @@ class AccountButton extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: Image.network(user.photoUrl).image),
+                      image: NetworkImage(user.photoUrl!)),
                   border: Border.all(
                     color: Colors.white,
                     width: 2.0,

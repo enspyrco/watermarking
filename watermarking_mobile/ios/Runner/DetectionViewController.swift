@@ -1,5 +1,5 @@
 /*
-See LICENSE folder for this sample’s licensing information.
+See LICENSE folder for this sample's licensing information.
 
 Abstract:
 A view controller that recognizes and tracks images found in the user's environment.
@@ -16,24 +16,24 @@ class DetectionViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
 
     static var instance: DetectionViewController?
-    
+
     var result: FlutterResult?
-    
+
     let filter: CIFilter = CIFilter(name: "WeightedCombine")!
     var foreground: CIImage? = nil
     var background: CIImage? = nil
     var numCombined: Int = 0
-    let accumulator: CIImageAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 512, height: 512), format: kCIFormatARGB8)!
-    
+    let accumulator: CIImageAccumulator = CIImageAccumulator(extent: CGRect(x: 0, y: 0, width: 512, height: 512), format: CIFormat.ARGB8)!
+
     /// An object that detects rectangular shapes in the user's environment.
     let rectangleDetector = RectangleDetector()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         rectangleDetector.delegate = self
         sceneView.delegate = self
-        
+
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapDetected))
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(tapRecognizer)
@@ -42,56 +42,56 @@ class DetectionViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
         DetectionViewController.instance = self
-		
+
 		// Prevent the screen from being dimmed after a while.
 		UIApplication.shared.isIdleTimerDisabled = true
-        
+
         let configuration = ARImageTrackingConfiguration()
         configuration.maximumNumberOfTrackedImages = 1
         configuration.trackingImages = []
         sceneView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
 	}
-    
+
     /// Handles tap gesture input.
     @IBAction func didTap(_ sender: Any) {
-        
+
     }
 }
 
 extension DetectionViewController: ARSCNViewDelegate {
-    
+
     /// - Tag: ImageWasRecognized
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        
+
     }
 
     /// - Tag: DidUpdateAnchor
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        
+
     }
-    
+
     func session(_ session: ARSession, didFailWithError error: Error) {
         guard let arError = error as? ARError else { return }
-        
+
         if arError.code == .invalidReferenceImage {
             // Restart the experience, as otherwise the AR session remains stopped.
             // There's no benefit in surfacing this error to the user.
             print("Error: The detected rectangle cannot be tracked.")
             return
         }
-        
+
         let errorWithInfo = arError as NSError
         let messages = [
             errorWithInfo.localizedDescription,
             errorWithInfo.localizedFailureReason,
             errorWithInfo.localizedRecoverySuggestion
         ]
-        
+
         // Use `compactMap(_:)` to remove optional error messages.
         let errorMessage = messages.compactMap({ $0 }).joined(separator: "\n")
-        
+
         DispatchQueue.main.async {
-            
+
             // Present an alert informing about the error that just occurred.
             let alertController = UIAlertController(title: "The AR session failed.", message: errorMessage, preferredStyle: .alert)
             let restartAction = UIAlertAction(title: "Restart Session", style: .default) { _ in
@@ -101,32 +101,34 @@ extension DetectionViewController: ARSCNViewDelegate {
             self.present(alertController, animated: true, completion: nil)
         }
     }
-    
+
     //Action
     @objc func tapDetected() {
-        
-        let originalImage = imageView.image!
-        UIGraphicsBeginImageContext(originalImage.size)
-        originalImage.draw(in: CGRect(x: 0, y: 0, width: originalImage.size.width, height: originalImage.size.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
+        guard let originalImage = imageView.image else {
+            result?(FlutterError(code: "SAVE_ERROR", message: "No image to save", details: nil))
+            return
+        }
+
+        // Use UIGraphicsImageRenderer for modern image drawing
+        let renderer = UIGraphicsImageRenderer(size: originalImage.size)
+        let newImage = renderer.image { context in
+            originalImage.draw(in: CGRect(origin: .zero, size: originalImage.size))
+        }
+
         let fileName = "image.png"
-        
-        guard let data = UIImagePNGRepresentation(newImage) else {
-            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to create UIImagePNGRepresentation", details: nil))
+
+        guard let data = newImage.pngData() else {
+            result?(FlutterError(code: "SAVE_ERROR", message: "Failed to create PNG data", details: nil))
             return
         }
-        guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
-            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to create directory", details: nil))
-            return
-        }
+
         do {
-            try data.write(to: directory.appendingPathComponent(fileName)!)
-            let filePath = URL(fileURLWithPath: directory.absoluteString!).appendingPathComponent(fileName).path
-            result!(filePath)
+            let directory = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let fileURL = directory.appendingPathComponent(fileName)
+            try data.write(to: fileURL)
+            result?(fileURL.path)
         } catch {
-            result!(FlutterError(code: "SAVE_ERROR", message: "Failed to write image data", details: error.localizedDescription))
+            result?(FlutterError(code: "SAVE_ERROR", message: "Failed to write image data", details: error.localizedDescription))
         }
     }
 }
@@ -135,58 +137,53 @@ extension DetectionViewController: RectangleDetectorDelegate {
     /// Called when the app recognized a rectangular shape in the user's environment.
     /// - Tag: NewAlteredImage
     func rectangleFound(rectangleContent: CIImage) {
-        
+
         if background == nil {
             background = rectangleContent.copy() as? CIImage
         }
         else {
             background = accumulator.image()
         }
-        
+
         numCombined += 1
-        
+
         // setup and apply the filter
         filter.setValue(rectangleContent, forKey: kCIInputImageKey)
         filter.setValue(background, forKey: kCIInputBackgroundImageKey)
         filter.setValue(NSNumber(value: numCombined), forKey: kCIInputScaleKey)
         accumulator.setImage(filter.outputImage!)
-        
-        // display the new combine image 
+
+        // display the new combine image
         DispatchQueue.main.async {
             self.imageView.image = UIImage.init(ciImage: self.accumulator.image())
         }
-        
+
     }
 }
 
-// placeholder extension for editing later 
-// TODO(nickm): take the code from tapDetected() and turn into an extension 
+// placeholder extension for editing later
+// TODO(nickm): take the code from tapDetected() and turn into an extension
 extension UIImage {
-    
+
     /**
-     Creates the UIImageJPEGRepresentation out of an UIImage
+     Creates the JPEG data out of an UIImage
      @return Data
      */
-    
-    func generateJPEGRepresentation() -> Data {
-        
+
+    func generateJPEGRepresentation() -> Data? {
         let newImage = self.copyOriginalImage()
-        let newData = UIImageJPEGRepresentation(newImage, 0.75)
-        
-        return newData!
+        return newImage?.jpegData(compressionQuality: 0.75)
     }
-    
+
     /**
      Copies Original Image which fixes the crash for extracting Data from UIImage
      @return UIImage
      */
-    
-    private func copyOriginalImage() -> UIImage {
-        UIGraphicsBeginImageContext(self.size);
-        self.draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext();
-        
-        return newImage!
+
+    private func copyOriginalImage() -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: self.size)
+        return renderer.image { context in
+            self.draw(in: CGRect(origin: .zero, size: self.size))
+        }
     }
 }

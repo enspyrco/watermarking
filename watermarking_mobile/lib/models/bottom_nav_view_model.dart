@@ -1,13 +1,15 @@
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class BottomNavViewModel {
-  const BottomNavViewModel({this.index, this.shouldShowBottomSheet});
+  const BottomNavViewModel({this.index = 0, this.shouldShowBottomSheet = false});
 
   final int index;
   final bool shouldShowBottomSheet;
 
-  BottomNavViewModel copyWith(
-      {final int index, final bool shouldShowBottomSheet}) {
+  BottomNavViewModel copyWith({
+    int? index,
+    bool? shouldShowBottomSheet,
+  }) {
     return BottomNavViewModel(
         index: index ?? this.index,
         shouldShowBottomSheet:
@@ -18,9 +20,10 @@ class BottomNavViewModel {
   int get hashCode => hash2(index, shouldShowBottomSheet);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is BottomNavViewModel &&
+          runtimeType == other.runtimeType &&
           index == other.index &&
           shouldShowBottomSheet == other.shouldShowBottomSheet;
 
@@ -31,6 +34,6 @@ class BottomNavViewModel {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'index': index,
-        'shouldShowBottomSheet': shouldShowBottomSheet
+        'shouldShowBottomSheet': shouldShowBottomSheet,
       };
 }

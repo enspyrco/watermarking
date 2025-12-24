@@ -1,5 +1,6 @@
-String trimToLast(int trimmedLength, String trimString) {
-  return (trimString == null || trimString.length <= trimmedLength)
-      ? trimString
-      : '...${trimString.substring(trimString.length - trimmedLength)}';
+String? trimToLast(int trimmedLength, String? trimString) {
+  if (trimString == null || trimString.length <= trimmedLength) {
+    return trimString;
+  }
+  return '...${trimString.substring(trimString.length - trimmedLength)}';
 }

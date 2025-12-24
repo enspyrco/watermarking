@@ -31,7 +31,7 @@ Future<void> main() async {
             authService, databaseService, deviceService, storageService),
         createEpicMiddleware(authService, databaseService, storageService),
       ],
-      initialState: AppState.intialState());
+      initialState: AppState.initialState());
 
   remoteDevtools.store = store;
 

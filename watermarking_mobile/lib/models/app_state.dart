@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 import 'package:watermarking_mobile/models/bottom_nav_view_model.dart';
 import 'package:watermarking_mobile/models/detection_items_view_model.dart';
 import 'package:watermarking_mobile/models/original_image_reference.dart';
@@ -9,12 +7,13 @@ import 'package:watermarking_mobile/models/user_model.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class AppState {
-  const AppState(
-      {@required this.user,
-      @required this.bottomNav,
-      @required this.originals,
-      @required this.detections,
-      @required this.problems});
+  const AppState({
+    required this.user,
+    required this.bottomNav,
+    required this.originals,
+    required this.detections,
+    required this.problems,
+  });
 
   final UserModel user;
   final BottomNavViewModel bottomNav;
@@ -22,19 +21,20 @@ class AppState {
   final DetectionItemsViewModel detections;
   final List<Problem> problems;
 
-  static AppState intialState() => AppState(
+  static AppState initialState() => AppState(
       user: UserModel(waiting: true),
       bottomNav: BottomNavViewModel(index: 0),
       originals: OriginalImagesViewModel(images: <OriginalImageReference>[]),
       detections: DetectionItemsViewModel(items: []),
       problems: <Problem>[]);
 
-  AppState copyWith(
-      {UserModel user,
-      BottomNavViewModel bottomNav,
-      OriginalImagesViewModel originals,
-      DetectionItemsViewModel detections,
-      List<Problem> problems}) {
+  AppState copyWith({
+    UserModel? user,
+    BottomNavViewModel? bottomNav,
+    OriginalImagesViewModel? originals,
+    DetectionItemsViewModel? detections,
+    List<Problem>? problems,
+  }) {
     return AppState(
         user: user ?? this.user,
         bottomNav: bottomNav ?? this.bottomNav,
@@ -47,9 +47,10 @@ class AppState {
   int get hashCode => hash5(user, bottomNav, originals, detections, problems);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is AppState &&
+          runtimeType == other.runtimeType &&
           user == other.user &&
           bottomNav == other.bottomNav &&
           originals == other.originals &&

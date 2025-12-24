@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
@@ -11,14 +10,14 @@ import 'package:watermarking_mobile/models/original_images_view_model.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 class SelectImageBottomSheet extends StatelessWidget {
-  const SelectImageBottomSheet({Key key}) : super(key: key);
+  const SelectImageBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, OriginalImagesViewModel>(
         converter: (Store<AppState> store) => store.state.originals,
         builder: (BuildContext context, OriginalImagesViewModel viewModel) {
-          return Container(
+          return SizedBox(
             height: 150,
             child: ImagesList(
               viewModel: viewModel,
@@ -29,7 +28,7 @@ class SelectImageBottomSheet extends StatelessWidget {
 }
 
 class ImagesList extends StatelessWidget {
-  const ImagesList({Key key, @required this.viewModel}) : super(key: key);
+  const ImagesList({super.key, required this.viewModel});
 
   final OriginalImagesViewModel viewModel;
 
@@ -47,30 +46,35 @@ class ImagesList extends StatelessWidget {
 
 class SelectImageItem extends StatefulWidget {
   const SelectImageItem({
-    Key key,
-    @required this.viewModel,
-    @required this.index,
-  }) : super(key: key);
+    super.key,
+    required this.viewModel,
+    required this.index,
+  });
 
   final OriginalImagesViewModel viewModel;
   final int index;
 
   @override
-  _SelectImageItemState createState() => _SelectImageItemState();
+  State<SelectImageItem> createState() => _SelectImageItemState();
 }
 
 // TODO(nickm): when the image reference contains the size, width and height
 // can be removed and this widget can be refactored - the Image's resolve
 // callback removed and change the widget to Stateless
 class _SelectImageItemState extends State<SelectImageItem> {
-  int width;
-  int height;
+  int? width;
+  int? height;
 
   @override
   Widget build(BuildContext context) {
-    Image image = Image.network(widget.viewModel.images[widget.index].url);
+    final imageUrl = widget.viewModel.images[widget.index].url;
+    if (imageUrl == null) {
+      return const SizedBox.shrink();
+    }
+
+    Image image = Image.network(imageUrl);
     Completer<ui.Image> completer = Completer<ui.Image>();
-    image.image.resolve(ImageConfiguration()).addListener(ImageStreamListener(
+    image.image.resolve(const ImageConfiguration()).addListener(ImageStreamListener(
         (ImageInfo info, bool _) => completer.complete(info.image)));
 
     // use box decoration to indicate selected status
@@ -97,8 +101,8 @@ class _SelectImageItemState extends State<SelectImageItem> {
                 StoreProvider.of<AppState>(context).dispatch(
                     ActionSetSelectedImage(
                         image: widget.viewModel.images[widget.index],
-                        width: width,
-                        height: height));
+                        width: width!,
+                        height: height!));
               }
             },
           ),
@@ -107,13 +111,13 @@ class _SelectImageItemState extends State<SelectImageItem> {
           future: completer.future,
           builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
             if (snapshot.hasData) {
-              width = snapshot.data.width;
-              height = snapshot.data.height;
+              width = snapshot.data!.width;
+              height = snapshot.data!.height;
               return Text(
                 '${width}x$height',
               );
             } else {
-              return Text('Loading...');
+              return const Text('Loading...');
             }
           },
         ),
@@ -127,7 +131,7 @@ class _SelectImageItemState extends State<SelectImageItem> {
         width: 1,
         color: Colors.blueGrey,
       ),
-      borderRadius: BorderRadius.all(Radius.circular(3.0)),
+      borderRadius: const BorderRadius.all(Radius.circular(3.0)),
     );
   }
 
@@ -137,7 +141,7 @@ class _SelectImageItemState extends State<SelectImageItem> {
         width: 2,
         color: Colors.blueAccent,
       ),
-      borderRadius: BorderRadius.all(Radius.circular(3.0)),
+      borderRadius: const BorderRadius.all(Radius.circular(3.0)),
     );
   }
 }

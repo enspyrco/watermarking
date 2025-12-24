@@ -4,29 +4,40 @@ description: Watermark Detection App
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.3.0-dev.0.5.flutter-a1668566e5 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: any
-  firebase_database: any
-  firebase_storage: any
-  firebase_auth: any
-  google_sign_in: any
-  rxdart: any
-  flutter_redux: any
-  redux_epics: any
-  redux_remote_devtools: any
-  flutter_svg: any
+
+  # Firebase
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.3.4
+  firebase_database: ^11.2.0
+  firebase_storage: ^12.3.7
+
+  # Auth
+  google_sign_in: ^6.2.2
+
+  # State management
+  redux: ^5.0.0
+  flutter_redux: ^0.10.0
+  redux_epics: ^0.15.0
+  redux_remote_devtools: ^3.0.0
+
+  # Utilities
+  rxdart: ^0.28.0
+  path_provider: ^2.1.5
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_driver:
     sdk: flutter
-  test: any
-  mockito: any
+  flutter_lints: ^5.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.14
 
 flutter:
 

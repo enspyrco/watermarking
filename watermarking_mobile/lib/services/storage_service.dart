@@ -1,105 +1,96 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 class StorageService {
   StorageService();
 
-  String userId;
-  Map<String, StorageUploadTask> uploadTasks = <String, StorageUploadTask>{};
-
-  // error codes that can come from firebase storage plugin
-  // mapped to a string for display
-  static final Map<int, String> errorCodeStrings = <int, String>{
-    StorageError.unknown: 'StorageError.unknown',
-    StorageError.objectNotFound: 'StorageError.objectNotFound',
-    StorageError.bucketNotFound: 'StorageError.bucketNotFound',
-    StorageError.projectNotFound: 'StorageError.projectNotFound',
-    StorageError.quotaExceeded: 'StorageError.quotaExceeded',
-    StorageError.notAuthenticated: 'StorageError.notAuthenticated',
-    StorageError.notAuthorized: 'StorageError.notAuthorized',
-    StorageError.retryLimitExceeded: 'StorageError.retryLimitExceeded',
-    StorageError.invalidChecksum: 'StorageError.invalidChecksum',
-    StorageError.canceled: 'StorageError.canceled',
-  };
+  String? userId;
+  final Map<String, UploadTask> uploadTasks = <String, UploadTask>{};
 
   /// Start an upload and return a stream that emits actions of type:
-  /// - ActionProfilePicUploadSuccess
-  /// - ActionProfilePicUploadFailure
-  /// - ActionProfilePicUploadProgress
-  /// - ActionProfilePicUploadPause
-  /// - ActionProfilePicUploadResume
-  ///
-  /// [uid] is the user ID
-  /// [photoPath] is the path to the photo to upload
-  ///
-  Stream<dynamic> startUpload(
-      {@required String filePath, @required String entryId}) {
-    // access the file
+  /// - ActionSetUploadSuccess
+  /// - ActionAddProblem (for failures)
+  /// - ActionSetUploadProgress
+  Stream<dynamic> startUpload({
+    required String filePath,
+    required String entryId,
+  }) {
     final File file = File(filePath);
 
-    // setup an upload task and initiate the upload
-    final FirebaseStorage storage = FirebaseStorage();
-    final StorageReference ref = storage
+    final Reference ref = FirebaseStorage.instance
         .ref()
         .child('detecting-images')
         .child('$userId')
-        .child('$entryId');
-    final StorageUploadTask uploadTask = ref.putFile(
+        .child(entryId);
+
+    final UploadTask uploadTask = ref.putFile(
       file,
-      StorageMetadata(
-        contentType: 'image/.',
-        customMetadata: <String, String>{'docId': entryId, 'uid': userId},
+      SettableMetadata(
+        contentType: 'image/png',
+        customMetadata: <String, String>{'docId': entryId, 'uid': userId ?? ''},
       ),
     );
 
-    // keep the upload task in case we want to cancel
     uploadTasks[entryId] = uploadTask;
 
-    // return the upload task's event stream, transformed to actions
-    return uploadTask.events.map<dynamic>((StorageTaskEvent event) {
-      final String metadataEntryId =
-          event.snapshot.storageMetadata.customMetadata['docId'];
-      switch (event.type) {
-        case StorageTaskEventType.success:
-          return ActionSetUploadSuccess(id: metadataEntryId);
-        case StorageTaskEventType.progress:
+    // Convert the upload task events to actions
+    final progressStream = uploadTask.snapshotEvents.map<dynamic>((TaskSnapshot snapshot) {
+      switch (snapshot.state) {
+        case TaskState.running:
           return ActionSetUploadProgress(
-              bytes: event.snapshot.bytesTransferred, id: metadataEntryId);
-        case StorageTaskEventType.pause:
-          return ActionSetUploadPaused(id: metadataEntryId);
-        case StorageTaskEventType.resume:
-          return ActionSetUploadResumed(id: metadataEntryId);
-        case StorageTaskEventType.failure:
+            bytes: snapshot.bytesTransferred,
+            id: entryId,
+          );
+        case TaskState.paused:
+          return ActionSetUploadPaused(id: entryId);
+        case TaskState.success:
+          return ActionSetUploadSuccess(id: entryId);
+        case TaskState.canceled:
           return ActionAddProblem(
-              problem: Problem(
-                  type: ProblemType.imageUpload,
-                  message: errorCodeStrings[event.snapshot.error],
-                  info: <String, dynamic>{
-                'errorCode': event.snapshot.error,
-                'itemId': metadataEntryId
-              }));
-        default:
+            problem: Problem(
+              type: ProblemType.imageUpload,
+              message: 'Upload canceled',
+              info: <String, dynamic>{'itemId': entryId},
+            ),
+          );
+        case TaskState.error:
           return ActionAddProblem(
-              problem: Problem(
-                  type: ProblemType.imageUpload,
-                  message: 'Unkown event type.'));
+            problem: Problem(
+              type: ProblemType.imageUpload,
+              message: 'Upload failed',
+              info: <String, dynamic>{'itemId': entryId},
+            ),
+          );
       }
     });
+
+    // Handle errors from the upload task
+    final errorStream = uploadTask.asStream().handleError((Object error) {
+      return ActionAddProblem(
+        problem: Problem(
+          type: ProblemType.imageUpload,
+          message: error.toString(),
+          info: <String, dynamic>{'itemId': entryId},
+        ),
+      );
+    }).where((_) => false).cast<dynamic>(); // Filter out successful completions
+
+    return Rx.merge([progressStream, errorStream]);
   }
 
   void cancelUpload(String entryId) {
-    uploadTasks[entryId].cancel();
+    uploadTasks[entryId]?.cancel();
   }
 
   void pauseUpload(String entryId) {
-    uploadTasks[entryId].pause();
+    uploadTasks[entryId]?.pause();
   }
 
   void resumeUpload(String entryId) {
-    uploadTasks[entryId].resume();
+    uploadTasks[entryId]?.resume();
   }
 }

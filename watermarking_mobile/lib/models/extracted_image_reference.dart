@@ -2,19 +2,23 @@ import 'package:watermarking_mobile/models/file_upload.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
 class ExtractedImageReference {
-  const ExtractedImageReference(
-      {this.localPath, this.bytes, this.remotePath, this.upload});
+  const ExtractedImageReference({
+    this.localPath,
+    this.bytes,
+    this.remotePath,
+    this.upload,
+  });
 
-  final String localPath;
-  final int bytes;
-  final String remotePath;
-  final FileUpload upload;
+  final String? localPath;
+  final int? bytes;
+  final String? remotePath;
+  final FileUpload? upload;
 
   ExtractedImageReference copyWith({
-    final String localPath,
-    final int bytes,
-    final String remotePath,
-    final FileUpload upload,
+    String? localPath,
+    int? bytes,
+    String? remotePath,
+    FileUpload? upload,
   }) {
     return ExtractedImageReference(
       localPath: localPath ?? this.localPath,
@@ -28,9 +32,10 @@ class ExtractedImageReference {
   int get hashCode => hashObjects([localPath, bytes, remotePath, upload]);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is ExtractedImageReference &&
+          runtimeType == other.runtimeType &&
           localPath == other.localPath &&
           bytes == other.bytes &&
           remotePath == other.remotePath &&

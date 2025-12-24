@@ -14,27 +14,38 @@ import 'package:watermarking_mobile/views/profile_page.dart';
 import 'package:watermarking_mobile/views/select_image_observer.dart';
 import 'package:watermarking_mobile/views/signin_page.dart';
 
-class MyApp extends StatelessWidget {
-  MyApp(this.store, {Key key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp(this.store, {super.key});
 
   final Store<AppState> store;
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    widget.store.dispatch(const ActionObserveAuthState());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    store.dispatch(const ActionObserveAuthState());
     return StoreProvider<AppState>(
-        store: store,
+        store: widget.store,
         child: MaterialApp(
-            theme: Theme.of(context).copyWith(
-                primaryColor: Colors.amber,
-                textTheme: Theme.of(context).textTheme.copyWith(
-                    body1: new TextStyle(color: Colors.red),
-                    body2: new TextStyle(color: Colors.pink, fontSize: 24.0))),
+            theme: ThemeData(
+              primaryColor: Colors.amber,
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+            ),
             home: StoreConnector<AppState, UserModel>(
                 converter: (Store<AppState> store) => store.state.user,
                 builder: (BuildContext context, UserModel user) {
                   return (user.waiting)
-                      ? const Text('Waiting', textDirection: TextDirection.ltr)
+                      ? const Center(
+                          child:
+                              Text('Waiting', textDirection: TextDirection.ltr))
                       : (user.id == null)
                           ? const SigninPage()
                           : const AppWidget();
@@ -43,7 +54,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AppWidget extends StatelessWidget {
-  const AppWidget({Key key}) : super(key: key);
+  const AppWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +64,6 @@ class AppWidget extends StatelessWidget {
           'assets/dw_logo_white.svg',
           height: 100.0,
           fit: BoxFit.cover,
-          allowDrawingOutsideViewBox: true,
         ),
         actions: <Widget>[
           AccountButton(key: const Key('AccountButton')),
@@ -66,47 +76,46 @@ class AppWidget extends StatelessWidget {
           builder: (BuildContext context, int index) {
             return (index == 0) ? const HomePage() : const ProfilePage();
           }),
-      // TODO(nickm): when the image reference contains the size,
-      // just watch the selected image
       bottomNavigationBar: StoreConnector<AppState, int>(
           converter: (Store<AppState> store) => store.state.bottomNav.index,
           builder: (BuildContext context, int index) {
             return BottomNavigationBar(
               currentIndex: index,
               onTap: (int index) {
-                dynamic action = (index == 1)
+                final action = (index == 1)
                     ? ActionShowBottomSheet(show: true)
                     : ActionSetBottomNav(index: index);
                 StoreProvider.of<AppState>(context).dispatch(action);
               },
               type: BottomNavigationBarType.fixed,
               items: [
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                   icon: Icon(Icons.home, key: Key('HomeTabIcon')),
-                  title: Text('Home'),
+                  label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: StoreConnector<AppState, OriginalImageReference>(
+                  icon: StoreConnector<AppState, OriginalImageReference?>(
                       converter: (Store<AppState> store) =>
                           store.state.originals.selectedImage,
                       builder: (BuildContext context,
-                          OriginalImageReference imageRef) {
-                        return Container(
+                          OriginalImageReference? imageRef) {
+                        return SizedBox(
                           width: 50,
                           height: 50,
-                          child: (imageRef == null)
-                              ? Icon(Icons.touch_app, key: Key('ImageTabIcon'))
+                          child: (imageRef?.url == null)
+                              ? const Icon(Icons.touch_app,
+                                  key: Key('ImageTabIcon'))
                               : Image.network(
-                                  imageRef.url,
-                                  key: Key('ImageTabImage'),
+                                  imageRef!.url!,
+                                  key: const Key('ImageTabImage'),
                                 ),
                         );
                       }),
-                  title: Text(''),
+                  label: '',
                 ),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.person, key: Key('ProfileTabIcon')),
-                    title: Text('Profile'))
+                    label: 'Profile'),
               ],
             );
           }),
@@ -114,21 +123,18 @@ class AppWidget extends StatelessWidget {
         converter: (Store<AppState> store) => store.state.originals,
         builder: (BuildContext context, OriginalImagesViewModel viewModel) {
           if (viewModel.selectedImage == null) {
-            return Container(
-              height: 0,
-              width: 0,
-            );
+            return const SizedBox.shrink();
           }
           return FloatingActionButton(
-            key: Key('ScanFAB'),
+            key: const Key('ScanFAB'),
             onPressed: () {
               StoreProvider.of<AppState>(context).dispatch(
                   ActionPerformExtraction(
-                      width: viewModel.selectedWidth,
-                      height: viewModel.selectedHeight));
+                      width: viewModel.selectedWidth ?? 512,
+                      height: viewModel.selectedHeight ?? 512));
             },
             tooltip: 'Scan',
-            child: Icon(Icons.search),
+            child: const Icon(Icons.search),
           );
         },
       ),

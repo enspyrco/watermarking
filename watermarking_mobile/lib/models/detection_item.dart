@@ -17,20 +17,20 @@ class DetectionItem {
     this.result,
   });
 
-  final String id;
-  final DateTime started;
-  final OriginalImageReference originalRef;
-  final ExtractedImageReference extractedRef;
-  final String progress;
-  final String result;
+  final String? id;
+  final DateTime? started;
+  final OriginalImageReference? originalRef;
+  final ExtractedImageReference? extractedRef;
+  final String? progress;
+  final String? result;
 
   DetectionItem copyWith({
-    final String id,
-    final DateTime started,
-    final OriginalImageReference originalRef,
-    final ExtractedImageReference extractedRef,
-    final String progress,
-    final String result,
+    String? id,
+    DateTime? started,
+    OriginalImageReference? originalRef,
+    ExtractedImageReference? extractedRef,
+    String? progress,
+    String? result,
   }) {
     return DetectionItem(
       id: id ?? this.id,
@@ -44,18 +44,19 @@ class DetectionItem {
 
   @override
   int get hashCode => hashObjects([
-        this.id,
-        this.started,
-        this.originalRef,
-        this.extractedRef,
-        this.progress,
-        this.result,
+        id,
+        started,
+        originalRef,
+        extractedRef,
+        progress,
+        result,
       ]);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is DetectionItem &&
+          runtimeType == other.runtimeType &&
           id == other.id &&
           started == other.started &&
           originalRef == other.originalRef &&

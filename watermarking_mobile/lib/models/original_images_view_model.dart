@@ -1,26 +1,24 @@
 import 'package:watermarking_mobile/models/original_image_reference.dart';
 import 'package:watermarking_mobile/utilities/hash_utilities.dart';
 
-// TODO(nickm): when the image reference contains the size,
-// remove width and height from ImagesViewModel
 class OriginalImagesViewModel {
   const OriginalImagesViewModel({
-    this.images,
+    this.images = const [],
     this.selectedImage,
     this.selectedWidth,
     this.selectedHeight,
   });
 
   final List<OriginalImageReference> images;
-  final OriginalImageReference selectedImage;
-  final int selectedWidth;
-  final int selectedHeight;
+  final OriginalImageReference? selectedImage;
+  final int? selectedWidth;
+  final int? selectedHeight;
 
   OriginalImagesViewModel copyWith({
-    final List<OriginalImageReference> images,
-    final OriginalImageReference selectedImage,
-    final int selectedWidth,
-    final int selectedHeight,
+    List<OriginalImageReference>? images,
+    OriginalImageReference? selectedImage,
+    int? selectedWidth,
+    int? selectedHeight,
   }) {
     return OriginalImagesViewModel(
       images: images ?? this.images,
@@ -35,9 +33,10 @@ class OriginalImagesViewModel {
       hash4(hashObjects(images), selectedImage, selectedWidth, selectedHeight);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-      runtimeType == other.runtimeType &&
+      other is OriginalImagesViewModel &&
+          runtimeType == other.runtimeType &&
           images == other.images &&
           selectedImage == other.selectedImage &&
           selectedWidth == other.selectedWidth &&

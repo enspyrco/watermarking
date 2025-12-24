@@ -1,5 +1,5 @@
 /// Taken from Flutter > foundation > listEquals<T> function
-bool listEquals<T>(List<T> a, List<T> b) {
+bool listEquals<T>(List<T>? a, List<T>? b) {
   if (a == null) {
     return b == null;
   }

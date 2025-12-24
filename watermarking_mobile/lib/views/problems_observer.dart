@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
@@ -7,6 +6,8 @@ import 'package:watermarking_mobile/models/problem.dart';
 import 'package:watermarking_mobile/redux/actions.dart';
 
 class ProblemsObserver extends StatelessWidget {
+  const ProblemsObserver({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, List<Problem>>(
@@ -20,10 +21,10 @@ class ProblemsObserver extends StatelessWidget {
         }
 
         return (numProblems == 0)
-            ? Container(width: 0.0, height: 0.0)
-            : MaterialButton(
+            ? const SizedBox.shrink()
+            : TextButton(
+                onPressed: () {},
                 child: Text(numProblems.toString()),
-                onPressed: () => {},
               );
       },
     );
@@ -46,7 +47,7 @@ class ProblemsObserver extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: const Text('OK'),
               onPressed: () {
                 StoreProvider.of<AppState>(context)

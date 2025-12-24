@@ -7,18 +7,16 @@ import 'package:watermarking_mobile/models/app_state.dart';
 import 'package:watermarking_mobile/models/detection_item.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DetectionHistoryListView();
+    return const DetectionHistoryListView();
   }
 }
 
 class DetectionHistoryListView extends StatelessWidget {
-  const DetectionHistoryListView({
-    Key key,
-  }) : super(key: key);
+  const DetectionHistoryListView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +31,29 @@ class DetectionHistoryListView extends StatelessWidget {
                 child: ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (BuildContext context, int index) {
+                      final item = items[index];
+                      final originalUrl = item.originalRef?.url;
+                      final localPath = item.extractedRef?.localPath;
+                      final started = item.extractedRef?.upload?.started;
                       return Center(
                         child: Card(
-                          color: (items[index].result == null)
+                          color: (item.result == null)
                               ? Colors.blueGrey
                               : Colors.white,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
-                                leading:
-                                    Image.network(items[index].originalRef.url),
-                                title: Text(items[index].result ?? ''),
+                                leading: originalUrl != null
+                                    ? Image.network(originalUrl)
+                                    : const Icon(Icons.image),
+                                title: Text(item.result ?? ''),
                                 subtitle: Text(
-                                  items[index]
-                                      .extractedRef
-                                      .upload
-                                      .started
-                                      .toIso8601String(),
+                                  started?.toIso8601String() ?? '',
                                 ),
-                                trailing: Image.file(
-                                  File(items[index].extractedRef.localPath),
-                                ),
+                                trailing: localPath != null
+                                    ? Image.file(File(localPath))
+                                    : null,
                               ),
                             ],
                           ),
@@ -71,21 +70,24 @@ class DetectionHistoryListView extends StatelessWidget {
 class DetectionSteps extends StatelessWidget {
   const DetectionSteps(
     this.firstItem, {
-    Key key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final DetectionItem firstItem;
 
   @override
   Widget build(BuildContext context) {
     int currentStep = 2;
-    if (firstItem.extractedRef.upload.percent < 1)
+    final uploadPercent = firstItem.extractedRef?.upload?.percent ?? 0;
+    if (uploadPercent < 1) {
       currentStep = 0;
-    else if (firstItem.progress == null) currentStep = 1;
+    } else if (firstItem.progress == null) {
+      currentStep = 1;
+    }
     return Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
           height: 200,
           child: Theme(
             data: ThemeData(
@@ -93,31 +95,29 @@ class DetectionSteps extends StatelessWidget {
             ),
             child: Stepper(
               currentStep: currentStep,
-              controlsBuilder: (BuildContext context,
-                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                return Container();
+              controlsBuilder: (BuildContext context, ControlsDetails details) {
+                return const SizedBox.shrink();
               },
               type: StepperType.horizontal,
               steps: [
                 Step(
-                  title: Text('Upload'),
-                  content: LinearProgressIndicator(
-                      value: firstItem.extractedRef.upload.percent),
+                  title: const Text('Upload'),
+                  content: LinearProgressIndicator(value: uploadPercent),
                   isActive: currentStep == 0,
                   state: (currentStep > 0)
                       ? StepState.complete
                       : StepState.indexed,
                 ),
                 Step(
-                  title: Text('Setup'),
-                  content: Center(child: CircularProgressIndicator()),
+                  title: const Text('Setup'),
+                  content: const Center(child: CircularProgressIndicator()),
                   isActive: currentStep == 1,
                   state: (currentStep > 1)
                       ? StepState.complete
                       : StepState.indexed,
                 ),
                 Step(
-                  title: Text('Detect'),
+                  title: const Text('Detect'),
                   content: Text(firstItem.progress ?? ''),
                   isActive: currentStep == 2,
                   state: (currentStep > 2)
@@ -125,7 +125,7 @@ class DetectionSteps extends StatelessWidget {
                       : StepState.indexed,
                 ),
               ],
-              onStepTapped: print,
+              onStepTapped: (int step) {},
             ),
           ),
         ),
