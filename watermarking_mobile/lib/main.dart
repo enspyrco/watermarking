@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_mobile/models/app_state.dart';
 import 'package:watermarking_mobile/redux/epics.dart';
@@ -13,7 +14,13 @@ import 'package:watermarking_mobile/views/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Already initialized by google-services plugin
+  }
 
   final AuthService authService = AuthService();
   final DatabaseService databaseService = DatabaseService();

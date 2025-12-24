@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "78940960204",
+    "project_id": "watermarking-4a428",
+    "storage_bucket": "watermarking-4a428.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78940960204:android:a6062f553cfeda177cd969",
+        "android_client_info": {
+          "package_name": "co.enspyr.watermarking_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnrUDVgm0S-bejp2DxUO0ruTeccLxRP4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
