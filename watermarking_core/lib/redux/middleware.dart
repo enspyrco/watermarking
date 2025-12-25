@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:redux/redux.dart';
 import 'package:watermarking_core/models/app_state.dart';
 import 'package:watermarking_core/models/problem.dart';
@@ -30,6 +32,9 @@ List<Middleware<AppState>> createMiddlewares(
     ),
     TypedMiddleware<AppState, ActionCancelUpload>(
       _cancelUpload(storageService),
+    ),
+    TypedMiddleware<AppState, ActionUploadOriginalImage>(
+      _uploadOriginalImage(databaseService, storageService),
     ),
   ];
 }
@@ -187,5 +192,50 @@ void Function(
       NextDispatcher next) {
     next(action);
     storageService.cancelUpload(action.id);
+  };
+}
+
+void Function(Store<AppState> store, ActionUploadOriginalImage action,
+        NextDispatcher next)
+    _uploadOriginalImage(
+        DatabaseService databaseService, StorageService storageService) {
+  return (Store<AppState> store, ActionUploadOriginalImage action,
+      NextDispatcher next) async {
+    next(action);
+
+    try {
+      // Upload to Firebase Storage
+      final String downloadUrl = await storageService.uploadOriginalImageBytes(
+        fileName: action.fileName,
+        bytes: Uint8List.fromList(action.bytes),
+      );
+
+      final String storagePath =
+          'original-images/${storageService.userId}/${action.fileName}';
+
+      // Create database entry
+      final String imageId = await databaseService.addOriginalImageEntry(
+        name: action.fileName,
+        path: storagePath,
+        url: downloadUrl,
+        width: action.width,
+        height: action.height,
+      );
+
+      store.dispatch(ActionOriginalImageUploaded(
+        id: imageId,
+        name: action.fileName,
+        path: storagePath,
+        url: downloadUrl,
+      ));
+    } catch (error, trace) {
+      store.dispatch(ActionAddProblem(
+        problem: Problem(
+          type: ProblemType.imageUpload,
+          message: error.toString(),
+          trace: trace,
+        ),
+      ));
+    }
   };
 }

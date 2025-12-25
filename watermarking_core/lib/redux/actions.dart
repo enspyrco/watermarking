@@ -177,3 +177,41 @@ class ActionSetDetectingProgress extends Action {
   final String progress;
   final String? result;
 }
+
+/// Action to upload an original image (works with bytes for web compatibility)
+class ActionUploadOriginalImage extends Action {
+  ActionUploadOriginalImage({
+    required this.fileName,
+    required this.bytes,
+    required this.width,
+    required this.height,
+  }) : super(<String, Object>{
+          'fileName': fileName,
+          'bytes': bytes,
+          'width': width,
+          'height': height,
+        });
+  final String fileName;
+  final List<int> bytes;
+  final int width;
+  final int height;
+}
+
+/// Action when original image upload completes
+class ActionOriginalImageUploaded extends Action {
+  ActionOriginalImageUploaded({
+    required this.id,
+    required this.name,
+    required this.path,
+    required this.url,
+  }) : super(<String, Object>{
+          'id': id,
+          'name': name,
+          'path': path,
+          'url': url,
+        });
+  final String id;
+  final String name;
+  final String path;
+  final String url;
+}

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
@@ -10,6 +11,31 @@ class StorageService {
 
   String? userId;
   final Map<String, UploadTask> uploadTasks = <String, UploadTask>{};
+
+  /// Upload original image from bytes (web compatible)
+  /// Returns the download URL on success
+  Future<String> uploadOriginalImageBytes({
+    required String fileName,
+    required Uint8List bytes,
+  }) async {
+    final Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('original-images')
+        .child('$userId')
+        .child(fileName);
+
+    final UploadTask uploadTask = ref.putData(
+      bytes,
+      SettableMetadata(
+        contentType: 'image/png',
+        customMetadata: <String, String>{'uid': userId ?? ''},
+      ),
+    );
+
+    final TaskSnapshot snapshot = await uploadTask;
+    final String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
 
   /// Start an upload and return a stream that emits actions of type:
   /// - ActionSetUploadSuccess

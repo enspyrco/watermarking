@@ -77,6 +77,40 @@ class DatabaseService {
         .update(<String, dynamic>{'delete': true});
   }
 
+  /// Add an original image entry to the database
+  Future<String> addOriginalImageEntry({
+    required String name,
+    required String path,
+    required String url,
+    required int width,
+    required int height,
+  }) async {
+    final ref = FirebaseDatabase.instance
+        .ref()
+        .child('original-images/$userId')
+        .push();
+
+    await ref.set({
+      'name': name,
+      'path': path,
+      'url': url,
+      'servingUrl': url,
+      'width': width,
+      'height': height,
+      'timestamp': ServerValue.timestamp,
+    });
+
+    // Also create a task to get serving URL
+    await FirebaseDatabase.instance.ref().child('queue/tasks').push().set({
+      '_state': 'get_serving_url_spec_start',
+      'uid': userId,
+      'imageId': ref.key,
+      'path': path,
+    });
+
+    return ref.key!;
+  }
+
   Future<void> addDetectingEntry({
     required String itemId,
     required String originalPath,
