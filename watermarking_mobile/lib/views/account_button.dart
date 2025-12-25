@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/user_model.dart';
-import 'package:watermarking_mobile/redux/actions.dart';
+import 'package:watermarking_core/watermarking_core.dart';
 
 class AccountButton extends StatelessWidget {
   const AccountButton({super.key});

@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/redux/actions.dart';
+import 'package:watermarking_core/watermarking_core.dart';
 import 'package:watermarking_mobile/views/signin_button.dart';
 
 class SigninPage extends StatefulWidget {

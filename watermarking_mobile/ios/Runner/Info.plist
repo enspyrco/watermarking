@@ -48,11 +48,13 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-				<string>com.googleusercontent.apps.173633636954-ve2pjn0lhiuqccq57ku0k6nmm8tuqve4</string>
+				<string>com.googleusercontent.apps.78940960204-3ll8vqsf4pvr2r5fdv2rhinp8t63cn14</string>
 			</array>
 		</dict>
 	</array>
 	<!-- End of the Google Sign-in Section -->
+	<key>GIDClientID</key>
+	<string>78940960204-3ll8vqsf4pvr2r5fdv2rhinp8t63cn14.apps.googleusercontent.com</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

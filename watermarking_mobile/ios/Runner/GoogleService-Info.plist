@@ -2,10 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>78940960204-3ll8vqsf4pvr2r5fdv2rhinp8t63cn14.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.78940960204-3ll8vqsf4pvr2r5fdv2rhinp8t63cn14</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>78940960204-6tndhevn4gq6imfiofr86oina1ti9aob.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB7z6Q5_kobi1OmCzEeW6iv46z-MAeKxpw</string>
 	<key>GCM_SENDER_ID</key>
 	<string>78940960204</string>
+	<key>DATABASE_URL</key>
+	<string>https://watermarking-4a428-default-rtdb.firebaseio.com</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>

@@ -847,6 +847,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  watermarking_core:
+    dependency: "direct main"
+    description:
+      path: "../watermarking_core"
+      relative: true
+    source: path
+    version: "0.0.1"
   web:
     dependency: transitive
     description:

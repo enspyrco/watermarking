@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:watermarking_mobile/models/app_state.dart';
+import 'package:watermarking_core/watermarking_core.dart';
 import 'package:watermarking_mobile/views/select_image_bottom_sheet.dart';
 
 class SelectImageObserver extends StatefulWidget {

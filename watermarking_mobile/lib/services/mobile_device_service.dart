@@ -3,12 +3,16 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:watermarking_core/watermarking_core.dart';
 
-class DeviceService {
-  DeviceService();
+/// Mobile-specific implementation of DeviceService.
+/// Uses platform channels to communicate with native iOS/Android code.
+class MobileDeviceService implements DeviceService {
+  MobileDeviceService();
 
   static const platform = MethodChannel('watermarking.enspyr.co/detect');
 
+  /// For testing without native code
   Future<String> performFakeExtraction({
     required int width,
     required int height,
@@ -21,6 +25,7 @@ class DeviceService {
     return '$dir/lena';
   }
 
+  @override
   Future<String> performExtraction({
     required int width,
     required int height,
@@ -31,6 +36,7 @@ class DeviceService {
     return path;
   }
 
+  @override
   Future<int> findFileSize({required String path}) {
     return File(path).length();
   }

@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:watermarking_mobile/models/app_state.dart';
-import 'package:watermarking_mobile/models/detection_item.dart';
+import 'package:watermarking_core/watermarking_core.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

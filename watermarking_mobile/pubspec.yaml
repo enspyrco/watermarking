@@ -10,6 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Shared core package
+  watermarking_core:
+    path: ../watermarking_core
+
   # Firebase
   firebase_core: ^3.8.1
   firebase_auth: ^5.3.4
