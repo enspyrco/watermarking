@@ -43,3 +43,13 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# Firebase service account keys
+firebase-service-account.json
+*.p12
+*.pem
+
+# Sensitive configuration files
+.env
+.env.local
+.env.*.local

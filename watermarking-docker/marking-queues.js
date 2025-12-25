@@ -1,143 +1,83 @@
 // marking-queues.js
 // =================
+// Marking task processing for Firestore-based queue
 
 var firebaseAdminSingleton = require('./firebase-admin-singleton');
-var firebaseAdmin = firebaseAdminSingleton.getAdmin();
+var db = firebaseAdminSingleton.getFirestore();
 
-// setup variable for running shell script 
 var execFile = require('child_process').execFile;
+var { promisify } = require('util');
+var execFileAsync = promisify(execFile);
 
-var Queue = require('firebase-queue');
-var queueRef = firebaseAdmin.database().ref('queue');
+var storageHelper = require('./storage-helper');
 
-var tools = require('./tools');
+// Promisify storage helper functions
+function downloadFileAsync(gcsPath, localPath) {
+  return new Promise((resolve, reject) => {
+    storageHelper.downloadFile(gcsPath, localPath, (error) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+function uploadFileAsync(localPath, gcsPath) {
+  return new Promise((resolve, reject) => {
+    storageHelper.uploadFile(localPath, gcsPath, (error) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
 
 module.exports = {
+  /**
+   * Process a complete marking task:
+   * 1. Download original image from GCS
+   * 2. Run mark-image binary
+   * 3. Upload marked image to GCS
+   * 4. Update Firestore with result
+   */
+  processMarkingTask: async function(data) {
+    console.log(`Processing marking task for image: ${data.name}`);
 
-	setup: function () {
+    // Step 1: Download the original image
+    var timestamp = String(Date.now());
+    var filePath = '/tmp/' + timestamp + '/' + data.name;
 
-		console.log('Setting up marking queues.');
+    console.log('Downloading image from:', data.path);
+    await downloadFileAsync(data.path, filePath);
+    console.log('Downloaded to:', filePath);
 
-		/////////////////////////////////////////////////////
-		//
-		// first marking queue - downloads image 
-		// 
-		/////////////////////////////////////////////////////
+    // Step 2: Run the marking binary
+    console.log(`Marking image with message "${data.message}" at strength ${data.strength}`);
+    var { stdout } = await execFileAsync('./mark-image', [
+      filePath,
+      data.name,
+      data.message,
+      String(data.strength)
+    ]);
+    console.log('Mark output:', stdout);
 
-		var downloadForMarkingQueueOptions = {
-		  'specId': 'download_for_marking_spec',
-		  'sanitize': false
-		};
-		var downloadForMarkingQueue = new Queue(queueRef, downloadForMarkingQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    tools.sendSMStoNick('There was an error in downloadForMarkingQueue.');
-		    reject();
-		  }
+    // Step 3: Upload the marked image
+    var markedFilePath = filePath + '-marked.png';
+    var markedGcsPath = 'marked-images/' + data.userId + '/' + timestamp + '/' + data.name + '.png';
 
-		  console.log('Downloading image named: '+data.name+' for marking, from gcs at location: '+data.path);
+    console.log('Uploading marked image to:', markedGcsPath);
+    await uploadFileAsync(markedFilePath, markedGcsPath);
 
-		  // create a timestamp so we can store the marked image with a unique path 
-		  var timestamp = String(Date.now());
-		  var filePath = '/tmp/'+timestamp+'/'+data.name;
+    // Step 4: Get public URL (using direct Storage URL instead of App Engine serving URL)
+    var servingUrl = storageHelper.getPublicUrl(markedGcsPath);
+    console.log('Got public URL:', servingUrl);
 
-		  console.log('Saving file for marking onto the server at location: '+filePath); 
+    // Step 5: Update Firestore with the marked image data
+    await db.collection('markedImages').doc(data.markedImageId).update({
+      path: markedGcsPath,
+      servingUrl: servingUrl,
+      processedAt: new Date()
+    });
 
-		  // execFile: executes a file with the specified arguments
-		  execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.path, filePath], function(error, stdout, stderr){
-
-		    if (error) reject(error); 
-
-		    data.filePath = filePath; 
-		    data.timestamp = timestamp;
-		    data._new_state = 'download_for_marking_spec_finished';
-		    resolve(data);
-
-		  });
-
-		});
-
-		/////////////////////////////////////////////////////
-		//
-		// second marking queue - marks image 
-		// 
-		/////////////////////////////////////////////////////
-
-		var markImageQueueOptions = {
-		  'specId': 'mark_image_spec',
-		  'sanitize': false
-		};
-		var markImageQueue = new Queue(queueRef, markImageQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    tools.sendSMStoNick('There was an error in markImageQueue.');
-		    reject();
-		  }
-
-		  console.log('Marking image at location: '+data.filePath+' with message '+data.message+' at strength '+data.strength);
-
-		  execFile('./mark-image', [data.filePath, data.name, data.message, data.strength], function(error, stdout, stderr){
-		      
-		    if (error) reject(error); 
-
-		    // Pass out stdout for docker log 
-		    console.log('Marked image.\n'+stdout);
-
-		    data._new_state = 'mark_image_spec_finished';
-		    resolve(data); 
-
-		  });
-
-		});
-
-		/////////////////////////////////////////////////////
-		//
-		// third marking queue - uploads marked image 
-		// 
-		/////////////////////////////////////////////////////
-
-		var uploadMarkedImageQueueOptions = {
-		  'specId': 'upload_marked_image_spec',
-		  'sanitize': false
-		};
-		var uploadMarkedImageQueue = new Queue(queueRef, uploadMarkedImageQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    tools.sendSMStoNick('There was an error in uploadMarkedImageQueue.');
-		    reject();
-		  }
-		  
-		  console.log("Uploading marked image...");
-
-		  var markedFileGCSPath = 'marked-images/'+data.uid+'/'+data.timestamp+'/'+data.name+'.png';
-
-		  execFile('gsutil', ['cp', data.filePath+'-marked.png', 'gs://watermarking-print-and-scan.appspot.com/'+markedFileGCSPath], function(error, stdout, stderr){
-		      
-		    if (error) reject(error); 
-
-		    // Pass out stdout for docker log 
-		    console.log('Uploaded marked image.\n'+stdout);
-
-		    var updateBDCallback = function(urlString) {
-		        // Create a new 'marked' entry 
-		        var markedImageRef = firebaseAdmin.database().ref('/original-images/'+data.uid+'/'+data.imageSetKey+'/marked-images/'+data.markedImageKey);
-		        markedImageRef.update({
-		          message: data.message,
-		          name: data.name,
-		          path: markedFileGCSPath,
-		          strength: data.strength, 
-		          servingUrl: urlString
-		        });
-		        
-		        resolve();
-
-		    };
-
-		    tools.getServingUrl(markedFileGCSPath, updateBDCallback);
-
-		  });
-
-		});
-
-	}
+    console.log('Marking task completed successfully');
+  }
 };

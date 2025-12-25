@@ -12,7 +12,7 @@ module.exports = {
   getServingUrl: function (path, updateDBCallback) {
 
   	var options = {
-    	host: 'watermarking-print-and-scan.appspot.com',
+    	host: 'watermarking-4a428.appspot.com',
     	path: '/serving-url?path='+encodeURI(path),
     	headers: { 'secret': 'zpwmtujdmshwhdkpsjhatrenrpkahwhsngsgnsklaoxmshsgd' }
   	};

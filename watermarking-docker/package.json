@@ -13,9 +13,8 @@
   "author": "Nick Meinhold",
   "homepage": "https://bitbucket.org/watermarking_band/watermarking-docker#readme",
   "dependencies": {
-    "firebase": "^3.6.4",
-    "firebase-admin": "^4.0.4",
-    "firebase-queue": "^1.6.1",
-    "twilio": "^2.11.1"
+    "firebase-admin": "^11.11.0",
+    "twilio": "^4.19.0",
+    "@google-cloud/storage": "^7.7.0"
   }
 }

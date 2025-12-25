@@ -1,167 +1,121 @@
 // detection-queues.js
-// =================== 
+// ===================
+// Detection task processing for Firestore-based queue
 
 var firebaseAdminSingleton = require('./firebase-admin-singleton');
-var firebaseAdmin = firebaseAdminSingleton.getAdmin();
+var db = firebaseAdminSingleton.getFirestore();
 
-// setup variables for running shell script and accessing file system 
 var execFile = require('child_process').execFile;
 var fs = require('fs');
-
-var Queue = require('firebase-queue');
-var queueRef = firebaseAdmin.database().ref('queue');
+var { promisify } = require('util');
+var execFileAsync = promisify(execFile);
 
 var tools = require('./tools');
+var storageHelper = require('./storage-helper');
 
-var detectingRef = firebaseAdmin.database().ref("detecting/incomplete");
+// Promisify storage helper
+function downloadFileAsync(gcsPath, localPath) {
+  return new Promise((resolve, reject) => {
+    storageHelper.downloadFile(gcsPath, localPath, (error) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+// Helper to update detecting progress
+async function updateProgress(userId, updates) {
+  await db.collection('detecting').doc(userId).set(updates, { merge: true });
+}
 
 module.exports = {
+  /**
+   * Process a complete detection task:
+   * 1. Download original image from GCS
+   * 2. Download marked image from GCS
+   * 3. Run detect-wm binary
+   * 4. Update Firestore with results
+   */
+  processDetectionTask: async function(data) {
+    console.log(`Processing detection task for user: ${data.userId}`);
 
-	setup: function () {
+    var originalPath = '/tmp/' + data.userId + '/original';
+    var markedPath = '/tmp/' + data.userId + '/marked';
 
-		console.log('Setting up detection queues...');
+    try {
+      // Step 1: Download original image
+      await updateProgress(data.userId, {
+        progress: 'Server has received request, downloading original image from storage...',
+        isDetecting: true
+      });
 
-		/////////////////////////////////////////////////////
-		//
-		// first detection queue - download original image 
-		// 
-		/////////////////////////////////////////////////////
+      console.log('Downloading original image from:', data.pathOriginal);
+      await downloadFileAsync(data.pathOriginal, originalPath);
+      console.log('Downloaded original image.');
 
-		var downloadOriginalQueueOptions = {
-		  'specId': 'download_original_spec',
-		  'sanitize': false
-		};
-		var downloadOriginalQueue = new Queue(queueRef, downloadOriginalQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    	tools.sendSMStoNick('There was an error in downloadOriginalQueue.');
-		    	reject();
-		  	}
+      // Step 2: Download marked image
+      await updateProgress(data.userId, {
+        progress: 'Server downloaded original image, now downloading marked image from storage...'
+      });
 
-			var originalPath = '/tmp/'+data.uid+'/original';
+      console.log('Downloading marked image from:', data.pathMarked);
+      await downloadFileAsync(data.pathMarked, markedPath);
+      console.log('Downloaded marked image.');
 
-			console.log('Downloading original image file for detection, from gcs at location '+data.pathOriginal+', to '+originalPath); 
+      // Step 3: Run detection
+      await updateProgress(data.userId, {
+        progress: 'Server has downloaded both images, now detecting watermarks...'
+      });
 
-			// Update progress for webapp UI 
-      		detectingRef.child(data.uid).child('progress').set('Server has received request, downloading original image from storage...');
+      console.log('Detecting message...');
 
-			// download with gsutil 
-    		execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.pathOriginal, originalPath], function(error, stdout, stderr){
-      
-      			if (error) reject(error); 
-      			
-      			console.log('Downloaded original image.');
-  				
-  				// Update progress for webapp UI 
-      			detectingRef.child(data.uid).child('progress').set('Server downloaded original image, now downloading marked image from storage...');
+      // Run detection binary
+      await new Promise((resolve, reject) => {
+        var child = execFile('./detect-wm', [data.userId, originalPath, markedPath], (error, stdout, stderr) => {
+          if (error && error.code !== 0 && error.code !== 254) {
+            reject(error);
+          }
+        });
 
-      			// add data to task that is required for next step and resolve 
-      			data.originalPath = originalPath;
-		  		data._new_state = 'download_original_spec_finished';
-		  		resolve(data);
+        child.on('exit', async (code) => {
+          console.log('Detection exit code:', code);
 
-		  	});
+          if (code === 254) {
+            // Error - different sizes
+            console.log('Error - the marked and original images were of different sizes.');
+            await updateProgress(data.userId, {
+              progress: 'Detection unsuccessful.',
+              isDetecting: false,
+              error: 'Different sizes for marked and original images'
+            });
+            reject(new Error('Different sizes for marked and original images'));
+          } else if (code === 0) {
+            // Success - read results
+            var resultsJson = JSON.parse(fs.readFileSync('/tmp/' + data.userId + '.json', 'utf8'));
+            console.log('Detected watermark:', resultsJson);
 
-		});
+            await updateProgress(data.userId, {
+              progress: 'Detection complete.',
+              isDetecting: false,
+              results: resultsJson
+            });
 
-		/////////////////////////////////////////////////////
-		//
-		// second detection queue - download marked image 
-		// 
-		/////////////////////////////////////////////////////
+            console.log('Message detected and results saved to database.');
+            resolve();
+          } else {
+            reject(new Error(`Detection failed with code ${code}`));
+          }
+        });
+      });
 
-		var downloadMarkedQueueOptions = {
-		  'specId': 'download_marked_spec',
-		  'sanitize': false
-		};
-		var downloadMarkedQueue = new Queue(queueRef, downloadMarkedQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    	tools.sendSMStoNick('There was an error in downloadMarkedQueue.');
-		    	reject();
-		  	}
-
-			var markedPath = '/tmp/'+data.uid+'/marked';
-
-			console.log('Saving marked image file for detection, from gcs at location '+data.pathMarked+', to '+markedPath);
-
-			execFile('gsutil', ['cp', 'gs://watermarking-print-and-scan.appspot.com/'+data.pathMarked, markedPath], function(error, stdout, stderr){
-      
-        		if (error) reject(error); 
-
-        		console.log('Downloaded marked image.');
-        
-        		// Update progress for webapp UI 
-        		detectingRef.child(data.uid).child('progress').set('Server has downloaded both images, now detecting watermarks...');
-
-        		// add data to task that is required for next step and resolve 
-      			data.markedPath = markedPath;
-		  		data._new_state = 'download_marked_spec_finished';
-		  		resolve(data);
-
-		  	});
-
-		});
-
-		/////////////////////////////////////////////////////
-		//
-		// third detection queue - performs detection 
-		// 
-		/////////////////////////////////////////////////////
-
-		var performDetectionQueueOptions = {
-		  'specId': 'perform_detection_spec',
-		  'sanitize': false
-		};
-		var performDetectionQueue = new Queue(queueRef, performDetectionQueueOptions, function(data, progress, resolve, reject) {
-		  
-		  	if(data.hasOwnProperty('_error_details')) { // if we have made a previous attempt and failed 
-		    	tools.sendSMStoNick('There was an error in performDetectionQueue.');
-		    	reject();
-		  	}
-
-		  	console.log('Detecting message...');
-
-		  	execFile('./detect-wm', [data.uid, data.originalPath, data.markedPath], function(error, stdout, stderr){
-    
-	          	if (error) reject(error); 
-
-	       	}).on('exit', code => {
-
-	       		console.log('final exit code is', code);
-
-	       		if(code == 254) {
-
-	       			console.log('Error - the marked and original images were of different sizes.')
-	       			// Update progress for webapp UI 
-	          		detectingRef.child(data.uid).child('progress').set('Detection unsuccessful.');
-	          		detectingRef.child(data.uid).child('isDetecting').set(false);
-	          		detectingRef.child(data.uid).child('error').set('Different sizes for marked and original images');
-
-	       			reject('Error - different sizes for marked and original images.'); 
-	       		}
-	       		else if(code == 0) {
-
-	       			// Read in the output.json file 
-	          		var resultsJson = JSON.parse(fs.readFileSync('/tmp/'+data.uid+'.json', 'utf8'));
-
-	          		console.log('Detected watermark.');
-	          
-		          	// Update progress for webapp UI 
-		          	detectingRef.child(data.uid).child('progress').set('Detection complete.');
-		          	detectingRef.child(data.uid).child('isDetecting').set(false);
-		          	detectingRef.child(data.uid).child('results').set(resultsJson);
-		          
-		          	console.log('Message detected and results saved to database.');
-
-		          	resolve();
-
-	       		}
-	       		
-
-	       	});
-
-		});
-
-	}
+    } catch (error) {
+      console.error('Detection task failed:', error);
+      await updateProgress(data.userId, {
+        progress: 'Detection failed.',
+        isDetecting: false,
+        error: error.message || String(error)
+      });
+      throw error;
+    }
+  }
 };
