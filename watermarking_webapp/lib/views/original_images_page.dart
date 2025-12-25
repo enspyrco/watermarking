@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -87,10 +90,43 @@ class OriginalImagesPage extends StatelessWidget {
     if (result != null && result.files.isNotEmpty && context.mounted) {
       final file = result.files.first;
       if (file.bytes != null) {
-        // TODO: Implement upload action with file bytes
+        // Show loading indicator
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selected: ${file.name}')),
+          SnackBar(content: Text('Uploading ${file.name}...')),
         );
+
+        try {
+          // Decode image to get dimensions
+          final Completer<ui.Image> completer = Completer<ui.Image>();
+          ui.decodeImageFromList(file.bytes!, (ui.Image img) {
+            completer.complete(img);
+          });
+          final ui.Image image = await completer.future;
+          final int width = image.width;
+          final int height = image.height;
+
+          if (context.mounted) {
+            // Dispatch upload action
+            StoreProvider.of<AppState>(context).dispatch(
+              ActionUploadOriginalImage(
+                fileName: file.name,
+                bytes: file.bytes!,
+                width: width,
+                height: height,
+              ),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Uploaded ${file.name} (${width}x$height)')),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error uploading: $e')),
+            );
+          }
+        }
       }
     }
   }
