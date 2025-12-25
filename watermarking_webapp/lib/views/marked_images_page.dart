@@ -87,7 +87,7 @@ class MarkedImagesPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      // Marked images list (placeholder)
+                      // Marked images list
                       Expanded(
                         flex: 2,
                         child: Card(
@@ -96,21 +96,39 @@ class MarkedImagesPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Watermarked Versions',
-                                  style: TextStyle(
+                                Text(
+                                  'Watermarked Versions (${viewModel.selectedImage!.markedCount})',
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                const Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      'Click "Apply Watermark" to create a watermarked version.',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
+                                Expanded(
+                                  child: viewModel
+                                          .selectedImage!.markedImages.isEmpty
+                                      ? const Center(
+                                          child: Text(
+                                            'Click "Apply Watermark" to create a watermarked version.',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                        )
+                                      : GridView.builder(
+                                          gridDelegate:
+                                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 250,
+                                            crossAxisSpacing: 16,
+                                            mainAxisSpacing: 16,
+                                            childAspectRatio: 0.8,
+                                          ),
+                                          itemCount: viewModel
+                                              .selectedImage!.markedImages.length,
+                                          itemBuilder: (context, index) {
+                                            final marked = viewModel.selectedImage!
+                                                .markedImages[index];
+                                            return _MarkedImageCard(marked: marked);
+                                          },
+                                        ),
                                 ),
                               ],
                             ),
@@ -177,12 +195,21 @@ class MarkedImagesPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     if (messageController.text.isNotEmpty) {
-                      // TODO: Dispatch marking action
+                      final selectedImage = viewModel.selectedImage!;
+                      StoreProvider.of<AppState>(context).dispatch(
+                        ActionMarkImage(
+                          imageId: selectedImage.id!,
+                          imageName: selectedImage.name!,
+                          imagePath: selectedImage.filePath!,
+                          message: messageController.text,
+                          strength: strength * 10, // Convert 0-1 to 1-10 scale
+                        ),
+                      );
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                              'Watermarking with message: ${messageController.text}'),
+                              'Watermarking "${selectedImage.name}" with message: ${messageController.text}'),
                         ),
                       );
                     }
@@ -194,6 +221,70 @@ class MarkedImagesPage extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _MarkedImageCard extends StatelessWidget {
+  const _MarkedImageCard({required this.marked});
+
+  final MarkedImageReference marked;
+
+  @override
+  Widget build(BuildContext context) {
+    final isProcessing = marked.isProcessing;
+
+    return Card(
+      elevation: 2,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: isProcessing
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 8),
+                        Text(
+                          'Processing...',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  )
+                : Image.network(
+                    marked.servingUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(Icons.broken_image, size: 48),
+                      );
+                    },
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Message: ${marked.message ?? "N/A"}',
+                  style: const TextStyle(fontSize: 12),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Strength: ${marked.strength ?? "N/A"}',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:redux/redux.dart';
 import 'package:watermarking_core/watermarking_core.dart';
 
@@ -69,6 +70,16 @@ class OriginalImagesPage extends StatelessWidget {
                                   height: 512,
                                 ),
                               );
+                            },
+                            onDoubleTap: () {
+                              StoreProvider.of<AppState>(context).dispatch(
+                                ActionSetSelectedImage(
+                                  image: image,
+                                  width: 512,
+                                  height: 512,
+                                ),
+                              );
+                              context.go('/marked');
                             },
                           );
                         },
@@ -137,11 +148,13 @@ class _ImageCard extends StatelessWidget {
     required this.image,
     required this.isSelected,
     required this.onTap,
+    required this.onDoubleTap,
   });
 
   final OriginalImageReference image;
   final bool isSelected;
   final VoidCallback onTap;
+  final VoidCallback onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
@@ -159,33 +172,73 @@ class _ImageCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        onDoubleTap: onDoubleTap,
+        child: Stack(
           children: [
-            Expanded(
-              child: image.url != null
-                  ? Image.network(
-                      image.url!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Icon(Icons.broken_image, size: 48),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Icon(Icons.image, size: 48),
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: image.url != null
+                      ? Image.network(
+                          image.url!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(Icons.broken_image, size: 48),
+                            );
+                          },
+                        )
+                      : const Center(
+                          child: Icon(Icons.image, size: 48),
+                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    image.name ?? 'Unnamed',
+                    style: const TextStyle(fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                image.name ?? 'Unnamed',
-                style: const TextStyle(fontSize: 12),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            // Badge showing marked count
+            if (image.markedCount > 0)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.water_drop,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${image.markedCount}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
