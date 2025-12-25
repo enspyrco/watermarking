@@ -36,6 +36,9 @@ List<Middleware<AppState>> createMiddlewares(
     TypedMiddleware<AppState, ActionUploadOriginalImage>(
       _uploadOriginalImage(databaseService, storageService),
     ),
+    TypedMiddleware<AppState, ActionMarkImage>(
+      _markImage(databaseService),
+    ),
   ];
 }
 
@@ -69,6 +72,7 @@ void Function(
 
     databaseService.profileSubscription?.cancel();
     databaseService.originalsSubscription?.cancel();
+    databaseService.markedImagesSubscription?.cancel();
     databaseService.detectingSubscription?.cancel();
     databaseService.detectionItemsSubscription?.cancel();
 
@@ -90,6 +94,20 @@ void Function(
 
     databaseService.originalsSubscription = databaseService
         .connectToOriginals()
+        .listen((dynamic action) => store.dispatch(action),
+            onError: (Object error, StackTrace trace) => store.dispatch(
+                  ActionAddProblem(
+                    problem: Problem(
+                      type: ProblemType.images,
+                      message: error.toString(),
+                      trace: trace,
+                    ),
+                  ),
+                ),
+            cancelOnError: true);
+
+    databaseService.markedImagesSubscription = databaseService
+        .connectToMarkedImages()
         .listen((dynamic action) => store.dispatch(action),
             onError: (Object error, StackTrace trace) => store.dispatch(
                   ActionAddProblem(
@@ -232,6 +250,32 @@ void Function(Store<AppState> store, ActionUploadOriginalImage action,
       store.dispatch(ActionAddProblem(
         problem: Problem(
           type: ProblemType.imageUpload,
+          message: error.toString(),
+          trace: trace,
+        ),
+      ));
+    }
+  };
+}
+
+void Function(Store<AppState> store, ActionMarkImage action, NextDispatcher next)
+    _markImage(DatabaseService databaseService) {
+  return (Store<AppState> store, ActionMarkImage action,
+      NextDispatcher next) async {
+    next(action);
+
+    try {
+      await databaseService.addMarkingTask(
+        imageId: action.imageId,
+        imageName: action.imageName,
+        imagePath: action.imagePath,
+        message: action.message,
+        strength: action.strength.round(),
+      );
+    } catch (error, trace) {
+      store.dispatch(ActionAddProblem(
+        problem: Problem(
+          type: ProblemType.marking,
           message: error.toString(),
           trace: trace,
         ),

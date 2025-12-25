@@ -3,6 +3,8 @@ import 'package:watermarking_core/models/app_state.dart';
 import 'package:watermarking_core/models/detection_item.dart';
 import 'package:watermarking_core/models/extracted_image_reference.dart';
 import 'package:watermarking_core/models/file_upload.dart';
+import 'package:watermarking_core/models/marked_image_reference.dart';
+import 'package:watermarking_core/models/original_image_reference.dart';
 import 'package:watermarking_core/models/original_images_view_model.dart';
 import 'package:watermarking_core/models/problem.dart';
 import 'package:watermarking_core/models/user_model.dart';
@@ -13,6 +15,7 @@ final Reducer<AppState> appReducer = combineReducers<AppState>(<Reducer<AppState
   TypedReducer<AppState, ActionSetAuthState>(_setAuthState),
   TypedReducer<AppState, ActionSetProfilePicUrl>(_setProfilePicUrl),
   TypedReducer<AppState, ActionSetOriginalImages>(_setOriginalImages),
+  TypedReducer<AppState, ActionUpdateMarkedImages>(_updateMarkedImages),
   TypedReducer<AppState, ActionSetDetectionItems>(_setDetectionItems),
   TypedReducer<AppState, ActionSetBottomNav>(_setBottomNav),
   TypedReducer<AppState, ActionShowBottomSheet>(_setBottomSheet),
@@ -39,6 +42,50 @@ AppState _setProfilePicUrl(AppState state, ActionSetProfilePicUrl action) {
 AppState _setOriginalImages(AppState state, ActionSetOriginalImages action) {
   return state.copyWith(
       originals: OriginalImagesViewModel(images: action.images));
+}
+
+AppState _updateMarkedImages(
+    AppState state, ActionUpdateMarkedImages action) {
+  // Update each original image with its marked images
+  final updatedImages = state.originals.images.map((original) {
+    final markedData = action.markedImagesByOriginal[original.id] ?? [];
+    final markedImages = markedData
+        .map((data) => MarkedImageReference(
+              id: data['id'] as String?,
+              message: data['message'] as String?,
+              name: data['name'] as String?,
+              strength: data['strength'] as int?,
+              path: data['path'] as String?,
+              servingUrl: data['servingUrl'] as String?,
+            ))
+        .toList();
+    return original.copyWith(markedImages: markedImages);
+  }).toList();
+
+  // Also update selectedImage if it exists
+  final selectedImage = state.originals.selectedImage;
+  OriginalImageReference? updatedSelectedImage;
+  if (selectedImage != null) {
+    final markedData = action.markedImagesByOriginal[selectedImage.id] ?? [];
+    final markedImages = markedData
+        .map((data) => MarkedImageReference(
+              id: data['id'] as String?,
+              message: data['message'] as String?,
+              name: data['name'] as String?,
+              strength: data['strength'] as int?,
+              path: data['path'] as String?,
+              servingUrl: data['servingUrl'] as String?,
+            ))
+        .toList();
+    updatedSelectedImage = selectedImage.copyWith(markedImages: markedImages);
+  }
+
+  return state.copyWith(
+    originals: state.originals.copyWith(
+      images: updatedImages,
+      selectedImage: updatedSelectedImage,
+    ),
+  );
 }
 
 AppState _setBottomNav(AppState state, ActionSetBottomNav action) {

@@ -8,6 +8,7 @@ export 'models/detection_item.dart';
 export 'models/detection_items_view_model.dart';
 export 'models/extracted_image_reference.dart';
 export 'models/file_upload.dart';
+export 'models/marked_image_reference.dart';
 export 'models/original_image_reference.dart';
 export 'models/original_images_view_model.dart';
 export 'models/problem.dart';

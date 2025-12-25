@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:watermarking_core/models/detection_item.dart';
+import 'package:watermarking_core/models/marked_image_reference.dart';
 import 'package:watermarking_core/models/original_image_reference.dart';
 import 'package:watermarking_core/redux/actions.dart';
 
@@ -11,36 +12,71 @@ class DatabaseService {
 
   String? userId;
   StreamSubscription<dynamic>? originalsSubscription;
+  StreamSubscription<dynamic>? markedImagesSubscription;
   StreamSubscription<dynamic>? profileSubscription;
   StreamSubscription<dynamic>? detectingSubscription;
   StreamSubscription<dynamic>? detectionItemsSubscription;
 
-  String getDetectionItemId() => FirebaseDatabase.instance
-      .ref()
-      .child('detection-items/$userId')
-      .push()
-      .key!;
+  FirebaseFirestore get _db => FirebaseFirestore.instance;
+
+  String getDetectionItemId() =>
+      _db.collection('detectionItems').doc().id;
 
   Stream<dynamic> connectToOriginals() {
-    return FirebaseDatabase.instance
-        .ref()
-        .child('original-images/$userId')
-        .onValue
-        .map<dynamic>((DatabaseEvent event) {
-      final value = event.snapshot.value;
-      if (value == null) {
-        return ActionSetOriginalImages(images: []);
+    // Listen to original images for this user
+    // Note: Sorting client-side to avoid requiring a composite index
+    return _db
+        .collection('originalImages')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .asyncMap<dynamic>((QuerySnapshot snapshot) async {
+      final List<OriginalImageReference> imagesList = [];
+
+      // Sort docs by timestamp descending (newest first)
+      final sortedDocs = snapshot.docs.toList()
+        ..sort((a, b) {
+          final aData = a.data() as Map<String, dynamic>;
+          final bData = b.data() as Map<String, dynamic>;
+          final aTimestamp = aData['timestamp'] as Timestamp?;
+          final bTimestamp = bData['timestamp'] as Timestamp?;
+          if (aTimestamp == null && bTimestamp == null) return 0;
+          if (aTimestamp == null) return 1;
+          if (bTimestamp == null) return -1;
+          return bTimestamp.compareTo(aTimestamp);
+        });
+
+      for (final doc in sortedDocs) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        // Fetch marked images for this original
+        final markedSnapshot = await _db
+            .collection('markedImages')
+            .where('originalImageId', isEqualTo: doc.id)
+            .get();
+
+        final List<MarkedImageReference> markedImages = markedSnapshot.docs
+            .map((markedDoc) {
+              final markedData = markedDoc.data();
+              return MarkedImageReference(
+                id: markedDoc.id,
+                message: markedData['message'] as String?,
+                name: markedData['name'] as String?,
+                strength: markedData['strength'] as int?,
+                path: markedData['path'] as String?,
+                servingUrl: markedData['servingUrl'] as String?,
+              );
+            })
+            .toList();
+
+        imagesList.add(OriginalImageReference(
+          id: doc.id,
+          name: data['name'] as String?,
+          filePath: data['path'] as String?,
+          url: data['servingUrl'] as String?,
+          markedImages: markedImages,
+        ));
       }
 
-      final Map<String, dynamic> imagesMap =
-          Map<String, dynamic>.from(value as Map);
-      final List<OriginalImageReference> imagesList = imagesMap.keys
-          .map<OriginalImageReference>((String key) => OriginalImageReference(
-              id: key,
-              name: imagesMap[key]["name"] as String?,
-              filePath: imagesMap[key]["path"] as String?,
-              url: imagesMap[key]["servingUrl"] as String?))
-          .toList();
       return ActionSetOriginalImages(images: imagesList);
     });
   }
@@ -49,20 +85,53 @@ class DatabaseService {
     return originalsSubscription?.cancel() ?? Future<dynamic>.value(null);
   }
 
+  /// Listen to marked images for this user and group by originalImageId
+  Stream<dynamic> connectToMarkedImages() {
+    return _db
+        .collection('markedImages')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map<dynamic>((QuerySnapshot snapshot) {
+      final Map<String, List<Map<String, dynamic>>> markedByOriginal = {};
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final originalImageId = data['originalImageId'] as String?;
+        if (originalImageId == null) continue;
+
+        markedByOriginal.putIfAbsent(originalImageId, () => []);
+        markedByOriginal[originalImageId]!.add({
+          'id': doc.id,
+          'message': data['message'],
+          'name': data['name'],
+          'strength': data['strength'],
+          'path': data['path'],
+          'servingUrl': data['servingUrl'],
+        });
+      }
+
+      return ActionUpdateMarkedImages(markedImagesByOriginal: markedByOriginal);
+    });
+  }
+
+  Future<dynamic> cancelMarkedImagesSubscription() {
+    return markedImagesSubscription?.cancel() ?? Future<dynamic>.value(null);
+  }
+
   Stream<dynamic> connectToProfile() {
-    return FirebaseDatabase.instance
-        .ref()
-        .child('users/$userId')
-        .onValue
-        .map<dynamic>((DatabaseEvent event) {
-      final value = event.snapshot.value;
-      if (value == null) {
+    return _db
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .map<dynamic>((DocumentSnapshot snapshot) {
+      if (!snapshot.exists) {
         return ActionSetProfile(name: '', email: '');
       }
-      final data = value as Map;
+      final data = snapshot.data() as Map<String, dynamic>?;
       return ActionSetProfile(
-          name: data['name'] as String? ?? '',
-          email: data['email'] as String? ?? '');
+        name: data?['name'] as String? ?? '',
+        email: data?['email'] as String? ?? '',
+      );
     });
   }
 
@@ -71,10 +140,10 @@ class DatabaseService {
   }
 
   Future<void> requestOriginalDelete(String entryId) {
-    return FirebaseDatabase.instance
-        .ref()
-        .child('original-images/$userId/$entryId')
-        .update(<String, dynamic>{'delete': true});
+    return _db
+        .collection('originalImages')
+        .doc(entryId)
+        .update({'delete': true});
   }
 
   /// Add an original image entry to the database
@@ -85,30 +154,63 @@ class DatabaseService {
     required int width,
     required int height,
   }) async {
-    final ref = FirebaseDatabase.instance
-        .ref()
-        .child('original-images/$userId')
-        .push();
-
-    await ref.set({
+    final docRef = await _db.collection('originalImages').add({
+      'userId': userId,
       'name': name,
       'path': path,
       'url': url,
       'servingUrl': url,
       'width': width,
       'height': height,
-      'timestamp': ServerValue.timestamp,
+      'timestamp': FieldValue.serverTimestamp(),
     });
 
-    // Also create a task to get serving URL
-    await FirebaseDatabase.instance.ref().child('queue/tasks').push().set({
-      '_state': 'get_serving_url_spec_start',
-      'uid': userId,
-      'imageId': ref.key,
+    // Create a task to get serving URL
+    await _db.collection('tasks').add({
+      'type': 'get_serving_url',
+      'status': 'pending',
+      'userId': userId,
+      'imageId': docRef.id,
       'path': path,
+      'createdAt': FieldValue.serverTimestamp(),
     });
 
-    return ref.key!;
+    return docRef.id;
+  }
+
+  /// Create a marking task to apply a watermark to an image
+  Future<String> addMarkingTask({
+    required String imageId,
+    required String imageName,
+    required String imagePath,
+    required String message,
+    required int strength,
+  }) async {
+    // 1. Create marked image placeholder entry
+    final markedRef = await _db.collection('markedImages').add({
+      'originalImageId': imageId,
+      'userId': userId,
+      'message': message,
+      'name': imageName,
+      'strength': strength,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    // 2. Create queue task to trigger backend processing
+    await _db.collection('tasks').add({
+      'type': 'mark',
+      'status': 'pending',
+      'userId': userId,
+      'markedImageId': markedRef.id,
+      'originalImageId': imageId,
+      'name': imageName,
+      'path': imagePath,
+      'message': message,
+      'strength': strength,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return markedRef.id;
   }
 
   Future<void> addDetectingEntry({
@@ -116,8 +218,8 @@ class DatabaseService {
     required String originalPath,
     required String markedPath,
   }) async {
-    final ref = FirebaseDatabase.instance.ref();
-    await ref.child('detecting/incomplete/$userId').set({
+    // Set detecting status
+    await _db.collection('detecting').doc(userId).set({
       'itemId': itemId,
       'progress': 'Adding a detection task to the queue...',
       'isDetecting': true,
@@ -125,22 +227,25 @@ class DatabaseService {
       'pathMarked': markedPath,
       'attempts': 0,
     });
-    await ref.child('queue/tasks').push().set({
-      '_state': 'download_original_spec_start',
-      'uid': userId,
+
+    // Create detection task
+    await _db.collection('tasks').add({
+      'type': 'detect',
+      'status': 'pending',
+      'userId': userId,
       'pathOriginal': originalPath,
       'pathMarked': markedPath,
+      'createdAt': FieldValue.serverTimestamp(),
     });
   }
 
   Stream<dynamic> connectToDetecting() {
-    return FirebaseDatabase.instance
-        .ref()
-        .child('detecting/incomplete/$userId/')
-        .onValue
-        .map<dynamic>((DatabaseEvent event) {
-      final value = event.snapshot.value;
-      if (value == null) {
+    return _db
+        .collection('detecting')
+        .doc(userId)
+        .snapshots()
+        .map<dynamic>((DocumentSnapshot snapshot) {
+      if (!snapshot.exists) {
         return ActionSetDetectingProgress(
           id: '',
           progress: '',
@@ -148,15 +253,15 @@ class DatabaseService {
         );
       }
 
-      final data = value as Map;
+      final data = snapshot.data() as Map<String, dynamic>?;
       Map<String, dynamic>? resultsMap;
-      if (data['results'] != null) {
-        resultsMap = Map<String, dynamic>.from(data['results'] as Map);
+      if (data?['results'] != null) {
+        resultsMap = Map<String, dynamic>.from(data!['results'] as Map);
       }
 
       return ActionSetDetectingProgress(
-        id: data['itemId'] as String? ?? '',
-        progress: data['progress'] as String? ?? '',
+        id: data?['itemId'] as String? ?? '',
+        progress: data?['progress'] as String? ?? '',
         result: resultsMap?['message'] as String?,
       );
     });
@@ -167,31 +272,19 @@ class DatabaseService {
   }
 
   Stream<dynamic> connectToDetectionItems() {
-    return FirebaseDatabase.instance
-        .ref()
-        .child('detection-items/$userId/')
-        .onValue
-        .map<dynamic>((DatabaseEvent event) {
-      final List<DetectionItem> list = [];
-
-      final value = event.snapshot.value;
-      if (value == null) {
-        return ActionSetDetectionItems(items: list);
-      }
-
-      final Map<String, dynamic> itemsMap =
-          Map<String, dynamic>.from(value as Map);
-      for (final String key in itemsMap.keys) {
-        final item = itemsMap[key] as Map?;
-        if (item != null) {
-          list.add(
-            DetectionItem(
-                id: key,
-                progress: item['progress'] as String? ?? '',
-                result: item['result'] as String?),
-          );
-        }
-      }
+    return _db
+        .collection('detectionItems')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map<dynamic>((QuerySnapshot snapshot) {
+      final List<DetectionItem> list = snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return DetectionItem(
+          id: doc.id,
+          progress: data['progress'] as String? ?? '',
+          result: data['result'] as String?,
+        );
+      }).toList();
 
       return ActionSetDetectionItems(items: list);
     });

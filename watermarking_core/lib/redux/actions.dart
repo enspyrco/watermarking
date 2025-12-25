@@ -215,3 +215,33 @@ class ActionOriginalImageUploaded extends Action {
   final String path;
   final String url;
 }
+
+/// Action to apply a watermark to an original image
+class ActionMarkImage extends Action {
+  ActionMarkImage({
+    required this.imageId,
+    required this.imageName,
+    required this.imagePath,
+    required this.message,
+    required this.strength,
+  }) : super(<String, Object>{
+          'imageId': imageId,
+          'imageName': imageName,
+          'imagePath': imagePath,
+          'message': message,
+          'strength': strength,
+        });
+  final String imageId;
+  final String imageName;
+  final String imagePath;
+  final String message;
+  final double strength;
+}
+
+/// Action to update marked images for originals
+class ActionUpdateMarkedImages extends Action {
+  ActionUpdateMarkedImages({required this.markedImagesByOriginal})
+      : super(<String, Object>{'markedImagesByOriginal': markedImagesByOriginal});
+  /// Map of originalImageId -> list of marked images
+  final Map<String, List<Map<String, dynamic>>> markedImagesByOriginal;
+}

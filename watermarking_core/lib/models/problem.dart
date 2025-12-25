@@ -4,6 +4,7 @@ enum ProblemType {
   images,
   deleteImage,
   imageUpload,
+  marking,
 }
 
 // Note: copyWith and state based equality are intentionally not implemented
