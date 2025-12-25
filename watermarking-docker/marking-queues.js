@@ -5,9 +5,7 @@
 var firebaseAdminSingleton = require('./firebase-admin-singleton');
 var db = firebaseAdminSingleton.getFirestore();
 
-var execFile = require('child_process').execFile;
-var { promisify } = require('util');
-var execFileAsync = promisify(execFile);
+var { spawn } = require('child_process');
 
 var storageHelper = require('./storage-helper');
 
@@ -31,6 +29,69 @@ function uploadFileAsync(localPath, gcsPath) {
 }
 
 
+// Helper to update progress in Firestore
+async function updateProgress(markedImageId, progress) {
+  try {
+    await db.collection('markedImages').doc(markedImageId).update({ progress });
+  } catch (err) {
+    console.error('Error updating progress:', err);
+  }
+}
+
+// Run mark-image binary with real-time progress updates
+function runMarkImageWithProgress(filePath, imageName, message, strength, markedImageId) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('./mark-image', [
+      filePath,
+      imageName,
+      message,
+      String(strength)
+    ]);
+
+    child.stdout.on('data', async (data) => {
+      const lines = data.toString().split('\n').filter(line => line.trim());
+      for (const line of lines) {
+        console.log('Mark output:', line);
+        if (line.startsWith('PROGRESS:')) {
+          const parts = line.substring(9).split(':');
+          const step = parts[0];
+
+          let progressText;
+          if (step === 'loading') {
+            progressText = 'Loading image...';
+          } else if (step === 'marking') {
+            const current = parts[1];
+            const total = parts[2];
+            progressText = `Embedding watermark (${current}/${total})...`;
+          } else if (step === 'saving') {
+            progressText = 'Compressing image...';
+          }
+
+          if (progressText) {
+            await updateProgress(markedImageId, progressText);
+          }
+        }
+      }
+    });
+
+    child.stderr.on('data', (data) => {
+      console.error('Mark stderr:', data.toString());
+    });
+
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`mark-image exited with code ${code}`));
+      }
+    });
+
+    child.on('error', (err) => {
+      reject(err);
+    });
+  });
+}
+
 module.exports = {
   /**
    * Process a complete marking task:
@@ -46,35 +107,39 @@ module.exports = {
     var timestamp = String(Date.now());
     var filePath = '/tmp/' + timestamp + '/' + data.name;
 
+    await updateProgress(data.markedImageId, 'Downloading image...');
     console.log('Downloading image from:', data.path);
     await downloadFileAsync(data.path, filePath);
     console.log('Downloaded to:', filePath);
 
-    // Step 2: Run the marking binary
+    // Step 2: Run the marking binary with progress updates
     console.log(`Marking image with message "${data.message}" at strength ${data.strength}`);
-    var { stdout } = await execFileAsync('./mark-image', [
+    await runMarkImageWithProgress(
       filePath,
       data.name,
       data.message,
-      String(data.strength)
-    ]);
-    console.log('Mark output:', stdout);
+      data.strength,
+      data.markedImageId
+    );
 
     // Step 3: Upload the marked image
     var markedFilePath = filePath + '-marked.png';
     var markedGcsPath = 'marked-images/' + data.userId + '/' + timestamp + '/' + data.name + '.png';
 
+    await updateProgress(data.markedImageId, 'Uploading marked image...');
     console.log('Uploading marked image to:', markedGcsPath);
     await uploadFileAsync(markedFilePath, markedGcsPath);
 
-    // Step 4: Get public URL (using direct Storage URL instead of App Engine serving URL)
-    var servingUrl = storageHelper.getPublicUrl(markedGcsPath);
-    console.log('Got public URL:', servingUrl);
+    // Step 4: Get signed URL (valid for 10 years)
+    await updateProgress(data.markedImageId, 'Generating URL...');
+    var servingUrl = await storageHelper.getSignedUrl(markedGcsPath);
+    console.log('Got signed URL:', servingUrl);
 
-    // Step 5: Update Firestore with the marked image data
+    // Step 5: Update Firestore with the marked image data (clears progress)
     await db.collection('markedImages').doc(data.markedImageId).update({
       path: markedGcsPath,
       servingUrl: servingUrl,
+      progress: null,
       processedAt: new Date()
     });
 

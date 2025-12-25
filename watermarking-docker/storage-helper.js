@@ -80,8 +80,27 @@ function getPublicUrl(gcsPath) {
   return `https://firebasestorage.googleapis.com/v0/b/${BUCKET_NAME}/o/${encodedPath}?alt=media`;
 }
 
+/**
+ * Gets a signed URL for a file in GCS (valid for 10 years)
+ * @param {string} gcsPath - Path within the GCS bucket
+ * @returns {Promise<string>} The signed URL for the file
+ */
+async function getSignedUrl(gcsPath) {
+  const bucket = storage.bucket(BUCKET_NAME);
+  const file = bucket.file(gcsPath);
+
+  // Generate signed URL valid for 10 years
+  const [url] = await file.getSignedUrl({
+    action: 'read',
+    expires: Date.now() + 10 * 365 * 24 * 60 * 60 * 1000, // 10 years
+  });
+
+  return url;
+}
+
 module.exports = {
   downloadFile,
   uploadFile,
-  getPublicUrl
+  getPublicUrl,
+  getSignedUrl
 };

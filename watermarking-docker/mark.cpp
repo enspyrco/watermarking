@@ -31,9 +31,12 @@ int main(int argc, const char * argv[]) {
     std::string filePath = argv[argc-4];
     
     // read in image and convert to 3 channel BGR
-    
+
     cv::Mat original = cv::imread(filePath, cv::IMREAD_COLOR);
-    
+
+    std::cout << "PROGRESS:loading" << std::endl;
+    std::cout.flush();
+
     // calculate the largest prime for this image
     
     int p = largestPrimeFor(original);
@@ -62,8 +65,13 @@ int main(int argc, const char * argv[]) {
     // generate each array and mark the image
     
     std::vector<int> messageShifts = getShifts(message, p*p);
-    for(int k = 1; k <= messageShifts.size(); k++) {
-        
+    int totalShifts = (int)messageShifts.size();
+
+    for(int k = 1; k <= totalShifts; k++) {
+
+        std::cout << "PROGRESS:marking:" << k << ":" << totalShifts << std::endl;
+        std::cout.flush();
+
         generateArray(p, k, wmArray);
         
         // multiply the watermark array by the strength
@@ -101,7 +109,10 @@ int main(int argc, const char * argv[]) {
     
     // IMWRITE_PNG_COMPRESSION
     // compression level from 0 to 9. A higher value means a smaller size and longer compression time
-    
+
+    std::cout << "PROGRESS:saving" << std::endl;
+    std::cout.flush();
+
     std::vector<int> compression_params;
     compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(9);

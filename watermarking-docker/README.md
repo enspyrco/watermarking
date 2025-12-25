@@ -4,7 +4,7 @@ Backend processing service for watermark embedding and detection. Listens to Fir
 
 ## Deployment
 
-**Cloud Run**: https://watermarking-backend-78940960204.us-central1.run.app
+**Cloud Run**: <https://watermarking-backend-78940960204.us-central1.run.app>
 
 ### Build & Deploy
 
@@ -44,14 +44,14 @@ curl https://watermarking-backend-78940960204.us-central1.run.app/
 ## Task Types
 
 | Type | Description |
-|------|-------------|
+| ------ | ------------- |
 | `mark` | Embed watermark message into image |
 | `detect` | Extract watermark from captured image |
 | `get_serving_url` | Generate public URL for uploaded image |
 
 ## Firestore Collections
 
-```
+```sh
 /tasks              - Processing queue (pending → processing → completed)
 /originalImages     - Uploaded original images
 /markedImages       - Watermarked output images
