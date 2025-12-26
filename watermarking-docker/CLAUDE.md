@@ -1,5 +1,68 @@
 # watermarking-docker
 
+## Current Work (Dec 2025)
+
+### Progress Reporting - DONE
+
+Added real-time progress updates during watermark embedding:
+
+- **mark.cpp**: Outputs `PROGRESS:loading`, `PROGRESS:marking:n:total`, `PROGRESS:saving` to stdout
+- **marking-queues.js**: Uses `spawn()` to stream stdout, parses progress, updates Firestore
+- **storage-helper.js**: Added `getSignedUrl()` for 10-year signed URLs
+- **Firestore**: Progress written to `/markedImages/{id}.progress`, cleared on completion
+
+The pipeline works end-to-end but...
+
+### Performance Problem - BLOCKING
+
+The watermarking algorithm is **extremely slow** on CPU. A small avatar image with a 4-character message takes **hours** to process, hitting Cloud Run's 1-hour timeout.
+
+**Root cause**: `insertMark()` in `WatermarkDetection.cpp` does 2 full-image DFTs per character:
+```cpp
+cv::dft(mat, mat, ...);            // Forward DFT on FULL image
+// add watermark in frequency domain
+cv::dft(mat, mat, DFT_INVERSE...); // Inverse DFT
+```
+
+For a 1000×1000 image, each DFT is ~20M operations. A 4-shift message = 8 full-image DFTs.
+
+### Optimization Options
+
+Discuss with Andrew Tirkel (inventor of digital watermark) before implementing:
+
+| Optimization | Speedup | Effort | Quality/Robustness Impact |
+|--------------|---------|--------|---------------------------|
+| **Batch watermarks in freq domain** | ~Nx | Medium | None - mathematically equivalent |
+| Downsample to 512×512 | ~4x | Easy | Slight reduction |
+| Downsample to 256×256 | ~16x | Easy | Moderate reduction |
+| Use optimal DFT size (power of 2) | ~2x | Easy | None |
+| OpenCV with TBB/IPP | ~2-4x | Build flag | None |
+| GPU acceleration (CUDA/OpenCL) | ~10-100x | High | None |
+| Move to GCE VM (no timeout) | N/A | Low | None |
+
+#### Batch Watermarks (Biggest Win)
+
+Current approach (2N DFTs for N shifts):
+```
+DFT → add wm1 → IDFT → DFT → add wm2 → IDFT → DFT → add wm3 → IDFT → ...
+```
+
+Optimized approach (2 DFTs total):
+```
+DFT → add (wm1 + wm2 + wm3 + ...) → IDFT
+```
+
+Since addition is linear, adding watermarks in the frequency domain then doing a single IDFT is mathematically equivalent. This alone could give Nx speedup where N = number of shifts.
+
+#### GPU Acceleration
+
+The DFT is embarrassingly parallel. Options:
+- **OpenCV CUDA**: Rebuild with CUDA, use `cv::cuda::dft()`
+- **Cloud Run GPU**: Now supports nvidia-l4 GPUs
+- **cuFFT**: NVIDIA's CUDA FFT library directly
+
+---
+
 ## Current Status (Dec 2025)
 
 **Deployed to Cloud Run**: https://watermarking-backend-78940960204.us-central1.run.app
@@ -253,7 +316,9 @@ Required files:
 
 ## TODO
 
-- [ ] Test full marking flow end-to-end
+- [x] Test full marking flow end-to-end (works, but too slow)
+- [x] Add progress reporting to marking flow
+- [ ] **Optimize marking performance** (discuss with Andrew Tirkel)
 - [ ] Test detection flow
 - [ ] Add Firestore security rules
 - [ ] Add retry logic for failed tasks
