@@ -7,9 +7,9 @@ using namespace cv;
 
 // p is any prime, k is a constant that defines the family of arrays produced by
 // shifts array is assumed to be packed into 1d, in row major order
-void generateArray(int p, int k, double *array) {
+void generateArray(int p, int k, double* array) {
   int i, j, shift;
-  int *legendre = new int[p];
+  int* legendre = new int[p];
 
   // set all values to -1
   for (i = 0; i < p; i++) {
@@ -32,10 +32,9 @@ void generateArray(int p, int k, double *array) {
 // p is any prime, k is a constant that defines the family of arrays produced by
 // shifts k is spread across coefficients array is assumed to be packed into 1d,
 // in row major order
-void generateArray2(int p, int k, double *array) {
-
+void generateArray2(int p, int k, double* array) {
   int i, j, l, m, shift;
-  int *legendre = new int[p];
+  int* legendre = new int[p];
 
   // spread k across coefficients
   if (k > p) {
@@ -67,8 +66,8 @@ void generateArray2(int p, int k, double *array) {
 // takes 2d array in the form of a 1d array in row major order
 // applies right shift, then downward shift
 //  - right shift = message % array_width, down shift = message / array_width
-void shiftIntoNewArray(double *array, double *shifted_array, int array_height,
-                       int array_width, int message_num) {
+void shiftIntoNewArray(double* array, double* shifted_array, int array_height, int array_width,
+                       int message_num) {
   int v_shift, h_shift;
   v_shift = (message_num / array_width) % array_height;
   h_shift = message_num % array_width;
@@ -83,9 +82,8 @@ void shiftIntoNewArray(double *array, double *shifted_array, int array_height,
   }
 }
 
-int fastCorrelation(int height, int width, double *matrix1, double *matrix2,
-                    double *correlation_vals) {
-
+int fastCorrelation(int height, int width, double* matrix1, double* matrix2,
+                    double* correlation_vals) {
   // TODO - need to check array sizes are the same, return -1 if not
   // TODO - this function could be sped up using the packed format for the
   // complex output
@@ -110,24 +108,22 @@ int fastCorrelation(int height, int width, double *matrix1, double *matrix2,
   Mat planes2[] = {Mat_<float>(mat2), Mat::zeros(mat2.size(), CV_32F)};
   Mat complexI1, complexI2;
 
-  merge(planes1, 2, complexI1); // Add to the expanded another plane with zeros
+  merge(planes1, 2, complexI1);  // Add to the expanded another plane with zeros
   merge(planes2, 2,
-        complexI2); // this way the result may fit in the source matrix
+        complexI2);  // this way the result may fit in the source matrix
 
   dft(mat1, complexI1, DFT_COMPLEX_OUTPUT, mat1.rows);
   dft(mat2, complexI2, DFT_COMPLEX_OUTPUT, mat2.rows);
 
-  split(complexI1, planes1); // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
+  split(complexI1, planes1);  // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
   split(complexI2, planes2);
 
   complex<float> z1, z2, z3;
 
   for (i = 0; i < mat1.rows; i++) {
     for (j = 0; j < mat1.cols; j++) {
-      z1 = complex<float>(planes1[0].at<float>(i, j),
-                          planes1[1].at<float>(i, j));
-      z2 = complex<float>(planes2[0].at<float>(i, j),
-                          planes2[1].at<float>(i, j));
+      z1 = complex<float>(planes1[0].at<float>(i, j), planes1[1].at<float>(i, j));
+      z2 = complex<float>(planes2[0].at<float>(i, j), planes2[1].at<float>(i, j));
       z3 = z1 * std::conj(z2);
 
       // put the result back in
@@ -153,12 +149,10 @@ int fastCorrelation(int height, int width, double *matrix1, double *matrix2,
 
 // convert to freqency domain and extract watermark data from the top-left
 // square of the image data
-int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
-                int watermarkWidth, double *pixelsArray,
-                double *extracted_mark) {
+int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth,
+                double* pixelsArray, double* extracted_mark) {
   int i, j;
-  Mat mat =
-      Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type, pixelsArray);
+  Mat mat = Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type, pixelsArray);
 
   cv::dft(mat, mat, cv::DFT_REAL_OUTPUT, mat.rows);
 
@@ -169,13 +163,10 @@ int extractMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
   return 1;
 }
 
-int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
-               int watermarkWidth, double *pixelsArray,
-               double *watermarkArray) {
-
+int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth,
+               double* pixelsArray, double* watermarkArray) {
   int i, j;
-  Mat mat = cv::Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type,
-                    pixelsArray);
+  Mat mat = cv::Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type, pixelsArray);
 
   cv::dft(mat, mat, cv::DFT_REAL_OUTPUT, mat.rows);
 
@@ -193,18 +184,14 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
 }
 
 // Note: original watermark remains unshifted, ie. no side effects
-int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
-               int watermarkWidth, double *pixelsArray, double *watermarkArray,
-               int message_num) {
-
+int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight, int watermarkWidth,
+               double* pixelsArray, double* watermarkArray, int message_num) {
   int i, j;
 
-  double *shifted_mark = new double[watermarkHeight * watermarkWidth];
-  shiftIntoNewArray(watermarkArray, shifted_mark, watermarkHeight,
-                    watermarkWidth, message_num);
+  double* shifted_mark = new double[watermarkHeight * watermarkWidth];
+  shiftIntoNewArray(watermarkArray, shifted_mark, watermarkHeight, watermarkWidth, message_num);
 
-  Mat mat = cv::Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type,
-                    pixelsArray);
+  Mat mat = cv::Mat(pixelsHeight, pixelsWidth, cv::DataType<double>::type, pixelsArray);
 
   std::cout << "PROGRESS:dft" << std::endl;
   cv::dft(mat, mat, cv::DFT_REAL_OUTPUT, mat.rows);
@@ -227,24 +214,21 @@ int insertMark(int pixelsHeight, int pixelsWidth, int watermarkHeight,
 
 // subtract the original object image from the extracted object image and put
 // the result into a 1d array
-void extractMarkedImageDataWithSubtraction(Mat &extracted_obj_img, Mat &obj_img,
-                                           double *marked_image_data) {
-
+void extractMarkedImageDataWithSubtraction(Mat& extracted_obj_img, Mat& obj_img,
+                                           double* marked_image_data) {
   // subtract the original object and store the result in a double array
 
   int subtracted_value;
   for (int y = 0; y < obj_img.rows; y++) {
     for (int x = 0; x < obj_img.cols; x++) {
-      subtracted_value =
-          extracted_obj_img.at<uchar>(y, x) - obj_img.at<uchar>(y, x);
+      subtracted_value = extracted_obj_img.at<uchar>(y, x) - obj_img.at<uchar>(y, x);
 
       marked_image_data[y * obj_img.cols + x] = subtracted_value / 255.0f;
     }
   }
 }
 
-double peak2rms(double *array, int array_len) {
-
+double peak2rms(double* array, int array_len) {
   // calculate message and peak2rms
   double maxVal = 0.0;
   int i, maxI = -1;
@@ -263,7 +247,6 @@ double peak2rms(double *array, int array_len) {
 }
 
 std::vector<int> getShifts(std::string ascii, int arraySize) {
-
   vector<int> bits;
   vector<int> shifts;
 
@@ -319,13 +302,11 @@ std::vector<int> getShifts(std::string ascii, int arraySize) {
 }
 
 std::string getASCII(std::vector<int> shifts, int arraySize) {
-
   boost::multiprecision::cpp_int n, z;
 
   // print input
   std::cout << "shiftDigitsArray: ";
-  std::copy(shifts.begin(), shifts.end(),
-            std::ostream_iterator<int>(std::cout, " "));
+  std::copy(shifts.begin(), shifts.end(), std::ostream_iterator<int>(std::cout, " "));
   std::cout << std::endl;
 
   // convert base array-size to base 10 (store in n)
@@ -355,8 +336,7 @@ std::string getASCII(std::vector<int> shifts, int arraySize) {
 
   // print the bits array
   std::cout << "bitsArray: ";
-  std::copy(bits.begin(), bits.end(),
-            std::ostream_iterator<int>(std::cout, " "));
+  std::copy(bits.begin(), bits.end(), std::ostream_iterator<int>(std::cout, " "));
   std::cout << std::endl;
 
   // convert the array of bits to ASCII
@@ -364,10 +344,9 @@ std::string getASCII(std::vector<int> shifts, int arraySize) {
   unsigned char char_sum = 0;
   std::string messageStr;
   while (bits.size() > 0) {
-
     bit = bits.front();
     char_sum += bit * pow(2, 6 - char_count);
-    bits.erase(bits.begin()); // remove first element
+    bits.erase(bits.begin());  // remove first element
     char_count++;
     char_count %= 7;
     if (char_count == 0) {
