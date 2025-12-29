@@ -46,7 +46,7 @@ std::string ocv_type2str(int type) {
 void saveImageToFile(std::string file_name, cv::Mat& imageMat) {
     
     std::vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(9);
     
     try {
