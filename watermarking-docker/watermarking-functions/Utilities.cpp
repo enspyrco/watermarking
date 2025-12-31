@@ -149,10 +149,11 @@ void unscramble(double* array, int array_len, int key) {
   }
 }
 
-// write out a json file with the message to the specified path
-int outputResultsFile(std::string message, std::string filePath) {
+// write out a json file with the message and confidence to the specified path
+int outputResultsFile(std::string message, double confidence, std::string filePath) {
   nlohmann::json j;
   j["message"] = message;
+  j["confidence"] = confidence;
 
   // write prettified JSON to file
   std::ofstream o(filePath);

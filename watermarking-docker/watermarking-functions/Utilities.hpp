@@ -18,6 +18,6 @@ void findShiftAndPSNR(double* array, int array_len, double& peak2rms, int& shift
 void scramble(double* array, int array_len, int key);
 void unscramble(double* array, int array_len, int key);
 
-int outputResultsFile(std::string message, std::string filePath);
+int outputResultsFile(std::string message, double confidence, std::string filePath);
 
 #endif /* Utilities_hpp */
